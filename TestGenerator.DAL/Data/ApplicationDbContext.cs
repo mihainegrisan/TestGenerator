@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TestGenerator.DAL.Models;
 
-namespace TestGenerator.Web.Data
+namespace TestGenerator.DAL.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

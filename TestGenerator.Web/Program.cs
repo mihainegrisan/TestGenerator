@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TestGenerator.Web.Data;
+using TestGenerator.DAL.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
