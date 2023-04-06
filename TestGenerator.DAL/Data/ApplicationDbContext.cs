@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TestGenerator.DAL.Models;
 
 namespace TestGenerator.Web.Data
 {
