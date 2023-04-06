@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
+using TestGenerator.DAL.Data;
 using TestGenerator.Web.Data;
 
 namespace TestGenerator.Web.Data.Migrations
