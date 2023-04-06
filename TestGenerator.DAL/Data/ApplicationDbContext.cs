@@ -11,9 +11,9 @@ namespace TestGenerator.DAL.Data
         {
         }
 
-        public DbSet<Test> TestItem { get; set; }
-        public DbSet<Question> Question { get; set; }
-        public DbSet<Answer> Answer { get; set; }
+        public DbSet<Test>? TestItem { get; set; }
+        public DbSet<Question>? Question { get; set; }
+        public DbSet<Answer>? Answer { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
