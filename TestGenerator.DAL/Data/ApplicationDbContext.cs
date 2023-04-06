@@ -17,7 +17,9 @@ namespace TestGenerator.Web.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Test>().ToTable("TestItem");
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Test>().ToTable("Test");
             modelBuilder.Entity<Question>().ToTable("Question");
             modelBuilder.Entity<Answer>().ToTable("Answer");
         }
