@@ -10,5 +10,16 @@ namespace TestGenerator.Web.Data
             : base(options)
         {
         }
+
+        public DbSet<Test> TestItem { get; set; }
+        public DbSet<Question> Question { get; set; }
+        public DbSet<Answer> Answer { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Test>().ToTable("TestItem");
+            modelBuilder.Entity<Question>().ToTable("Question");
+            modelBuilder.Entity<Answer>().ToTable("Answer");
+        }
     }
 }
