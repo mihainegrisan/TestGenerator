@@ -22,21 +22,21 @@ namespace TestGenerator.Web.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> GenerateTest(IFormFile file)
+    public Task<IActionResult> GenerateTest(IFormFile file)
     {
-      bool isUploaded = await _fileProcessor.UploadFile(file);
+      //bool isUploaded = await _fileProcessor.UploadFile(file);
 
-      if (!isUploaded)
-      {
-        return View();
-      }
+      //if (!isUploaded)
+      //{
+      //  return View();
+      //}
 
-      TempData["Message"] = "File uploaded successfully";
+      //TempData["Message"] = "File uploaded successfully";
       // From now on, work with the saved file
 
       var text = _fileProcessor.GetTextFromFile(file);
 
-      return View();
+      return Task.FromResult<IActionResult>(View());
     }
   }
 }

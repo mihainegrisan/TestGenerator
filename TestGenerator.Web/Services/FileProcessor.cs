@@ -1,4 +1,7 @@
-﻿namespace TestGenerator.Web.Services;
+﻿using System.IO;
+using Spire.Doc;
+
+namespace TestGenerator.Web.Services;
 
 public class FileProcessor : IFileProcessor
 {
@@ -6,20 +9,32 @@ public class FileProcessor : IFileProcessor
 
     public string GetTextFromFile(IFormFile file)
     {
-        string text;
+        string cleanedText;
 
         try
         {
+            if (!IsFileValid(file))
+            {
+                throw new Exception("File not valid!");
+            }
+
+            Document doc = new Document();
             var filePath = GetPath(file);
-            text = File.ReadAllText(filePath);
+            doc.LoadFromFile(filePath);
+
+            var text = doc.GetText();
+
+            cleanedText = text.Replace("Evaluation Warning: The document was created with Spire.Doc for .NET.\r\n", "");
         }
         catch (Exception ex)
         {
             throw new Exception($"Message {ex.Message}");
         }
 
-        return text;
+        return cleanedText;
     }
+
+
 
     /// <summary>
     /// Uploads the file to the server and returns true if the file is uploaded successfully.
@@ -35,7 +50,7 @@ public class FileProcessor : IFileProcessor
 
       try
       {
-        if (!IsUploadedFileValid(file))
+        if (!IsFileValid(file))
         {
           return false;
         }
@@ -58,7 +73,7 @@ public class FileProcessor : IFileProcessor
       return isCopied;
     }
 
-    private static bool IsUploadedFileValid(IFormFile file)
+    private static bool IsFileValid(IFormFile file)
     {
       var allowedExtensions = new[] { ".doc", ".docx" };
       var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
