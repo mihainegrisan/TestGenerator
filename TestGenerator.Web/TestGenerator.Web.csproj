@@ -27,4 +27,8 @@
     <ProjectReference Include="..\TestGenerator.DAL\TestGenerator.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uploaded\" />
+  </ItemGroup>
+
 </Project>
