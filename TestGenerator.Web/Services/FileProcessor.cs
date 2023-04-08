@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Spire.Doc;
+﻿using Spire.Doc;
 
 namespace TestGenerator.Web.Services;
 
@@ -34,7 +33,22 @@ public class FileProcessor : IFileProcessor
         return cleanedText;
     }
 
+    public string GetTextFromSavedFile(IFormFile file)
+    {
+        string text;
 
+        try
+        {
+            var filePath = GetPath(file);
+            text = File.ReadAllText(filePath);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Message {ex.Message}");
+        }
+
+        return text;
+    }
 
     /// <summary>
     /// Uploads the file to the server and returns true if the file is uploaded successfully.
