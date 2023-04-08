@@ -1,0 +1,22 @@
+﻿@model TestGenerator.DAL.Models.Test
+
+<h1>Edit Test</h1>
+
+<a class="btn btn-primary mb-3" href="@Url.Action("Index")">Back to List</a>
+
+@using (Html.BeginForm("Edit", "Test"))
+{
+  @Html.AntiForgeryToken()
+
+  <div class="form-floating mb-3">
+    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
+    @Html.LabelFor(model => model.Name, new { @class = "form-label" })
+  </div>
+
+  <div class="form-floating mb-3">
+    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Description" } })
+    @Html.LabelFor(model => model.Description, new { @class = "form-label" })
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save</button>
+}

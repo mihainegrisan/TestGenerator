@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model TestGenerator.DAL.Models.Test
+
+<form asp-action="Add" method="post">
+  <div class=" justify-content-center">
+    <div class="form-floating mb-3 col-sm-4">
+      <input asp-for="Name" class="form-control"/>
+      <label asp-for="Name">Name</label>
+      <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3 col-sm-4">
+      <input asp-for="Description" class="form-control"/>
+      <label asp-for="Description">Description</label>
+      <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <fieldset disabled>
+      <div class="form-floating mb-3 col-sm-4">
+        <input asp-for="NumberOfQuestions" class="form-control"/>
+        <label asp-for="NumberOfQuestions">Number of Questions</label>
+        <span asp-validation-for="NumberOfQuestions" class="text-danger"></span>
+      </div>
+      <div class="form-floating mb-3 col-sm-4">
+        <input asp-for="NumberOfAnswersPerQuestion" class="form-control"/>
+        <label asp-for="NumberOfAnswersPerQuestion">Number of Answers per Question</label>
+        <span asp-validation-for="NumberOfAnswersPerQuestion" class="text-danger"></span>
+      </div>
+    </fieldset>
+  </div>
+  
+
+  <h3 class="my-3">Questions:</h3>
+
+  @for (int i = 0; i < Model.NumberOfQuestions; i++)
+  {
+    <div class="row mb-3">
+      <label asp-for="Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
+      <div class="col-sm-11">
+        <input asp-for="Questions[i].QuestionText" class="form-control"/>
+        <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
+      </div>
+    </div>
+
+    @for (int j = 0; j < Model.NumberOfAnswersPerQuestion; j++)
+    {
+      var answerLabel = j == 0 ? $"Correct Answer {j + 1}" : $"Answer {j + 1}";
+      var answerLabelColorClass = j == 0 ? "text-success" : "text-danger";
+
+      <div class="row mb-3 align-middle">
+        <label asp-for="Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end @answerLabelColorClass">@answerLabel</label>
+        <div class="col-sm-10">
+          <input asp-for="Questions[i].Answers[j].AnswerText" class="form-control"/>
+          <span asp-validation-for="Questions[i].Answers[j].AnswerText" class="text-danger"></span>
+        </div>
+      </div>
+    }
+  }
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

@@ -1,0 +1,26 @@
+﻿@model dynamic
+
+@{
+  Layout = "_Layout";
+}
+
+<div class="text-center">
+  <h1 class="display-4">Word Upload</h1>
+</div>
+
+<div class="container">
+  <div class="mb-3 mt-3">
+    <form method="post" asp-controller="Test" asp-action="GenerateTest" enctype="multipart/form-data">
+      <div class="col-md-6 mb-3">
+        <label for="file">Upload File</label>
+        <input type="file" name="file" id="file" />
+      </div>
+      <div class="col-md-6 mb-3">
+        <input type="submit" value="Upload" class="btn btn-primary" />
+      </div>
+      <div>
+        <span>@TempData["Message"]</span>
+      </div>
+    </form>
+  </div>
+</div>
