@@ -8,5 +8,17 @@ public class Test
     public int TestId { get; set; }
 
     [Required]
+    public string? Name { get; set; }
+
+    [Required]
+    public string? Description { get; set; }
+
+    [Required]
     public List<Question>? Questions { get; set; }
+
+    [Required]
+    public int NumberOfQuestions { get; set; }
+
+    [Required]
+    public int NumberOfAnswersPerQuestion { get; set; }
 }
