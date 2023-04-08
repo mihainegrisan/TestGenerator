@@ -25,6 +25,11 @@ public class TestRepository : ITestRepository
         return await _dbContext.Tests.FindAsync(id);
     }
 
+    public async Task<List<Test>> GetTests()
+    {
+        return await _dbContext.Tests.ToListAsync();
+    }
+
     public async Task<Test> UpdateTest(Test test)
     {
         _dbContext.Entry(test).State = EntityState.Modified;
