@@ -16,27 +16,70 @@ namespace TestGenerator.Web.Controllers
             _fileProcessor = fileProcessor;
         }
 
-        // GET: Test/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var tests = await _testRepository.GetTests();
+            return View(tests);
         }
 
         // POST: Test/AddTest
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(Test test)
+        public async Task<IActionResult> Add(Test test)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _testRepository.AddTest(test);
-
-                return RedirectToAction("Index");
+                return View(test);
             }
+
+            await _testRepository.AddTest(test);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var test = await _testRepository.GetTest(id);
 
             return View(test);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var test = await _testRepository.GetTest(id);
+
+            return View(test);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Test test)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(test);
+            }
+
+            await _testRepository.UpdateTest(test);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var test = await _testRepository.GetTest(id);
+
+            return View(test);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var result = await _testRepository.DeleteTest(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: Test/Generate
         public IActionResult Generate()
