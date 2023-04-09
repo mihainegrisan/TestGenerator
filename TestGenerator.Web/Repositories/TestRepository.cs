@@ -25,11 +25,6 @@ public class TestRepository : ITestRepository
         return test;
     }
 
-    public async Task<Test> GetTest(int id)
-    {
-        return await _dbContext.Tests.FindAsync(id);
-    }
-
     public async Task<List<Test>> GetTests()
     {
         return await _dbContext.Tests.ToListAsync();
