@@ -13,9 +13,9 @@ public class TestRepository : ITestRepository
         _dbContext = dbContext;
     }
 
-    public Test Find(int? id)
+    public async Task<Test> FindAsync(int? id)
     {
-      return _dbContext.Tests.Find(id);
+      return await _dbContext.Tests.FindAsync(id);
     }
 
     public async Task<Test> AddTest(Test test)
@@ -35,7 +35,7 @@ public class TestRepository : ITestRepository
         return await _dbContext.Tests.ToListAsync();
     }
 
-    public async Task<Test> UpdateTest(Test test)
+    public async Task<Test> UpdateTestAsync(Test test)
     {
         _dbContext.Entry(test).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
