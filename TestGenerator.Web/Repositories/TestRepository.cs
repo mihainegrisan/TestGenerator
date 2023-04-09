@@ -13,6 +13,11 @@ public class TestRepository : ITestRepository
         _dbContext = dbContext;
     }
 
+    public Test Find(int? id)
+    {
+      return _dbContext.Tests.Find(id);
+    }
+
     public async Task<Test> AddTest(Test test)
     {
         _dbContext.Tests?.Add(test);
@@ -37,14 +42,19 @@ public class TestRepository : ITestRepository
         return test;
     }
 
-    public async Task<bool> DeleteTest(int id)
+    public async Task<bool> DeleteTestAsync(int id)
     {
         var test = await _dbContext.Tests.FindAsync(id);
+
         if (test == null)
+        {
             return false;
+        }
 
         _dbContext.Tests.Remove(test);
+
         await _dbContext.SaveChangesAsync();
+
         return true;
     }
 }
