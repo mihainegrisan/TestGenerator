@@ -84,23 +84,27 @@ namespace TestGenerator.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int id)
+        // GET: Test/Delete/5
+        public IActionResult Delete(int? id)
         {
-            var test = await _testRepository.GetTest(id);
-
-            return View(test);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var result = await _testRepository.DeleteTest(id);
-            if (!result)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+            var test = _testRepository.Find(id);
+
+            return View(test);
+        }
+
+        // POST: Test/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _testRepository.DeleteTestAsync(id);
+
+            return RedirectToAction("Index");
         }
 
         // GET: Test/Generate
