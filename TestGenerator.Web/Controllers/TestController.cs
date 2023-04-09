@@ -22,10 +22,30 @@ namespace TestGenerator.Web.Controllers
             return View(tests);
         }
 
-        // POST: Test/AddTest
+        [HttpGet]
+        public async Task<IActionResult> Add()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(Test test)
+        {
+            if (!ModelState.IsValid)
+            {
+              return View(test);
+            }
+
+            ViewBag.NumberOfQuestions = test.NumberOfQuestions;
+            ViewBag.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
+
+            return View(nameof(AddTest));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTest(Test test)
         {
             if (!ModelState.IsValid)
             {
@@ -33,6 +53,7 @@ namespace TestGenerator.Web.Controllers
             }
 
             await _testRepository.AddTest(test);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -59,6 +80,7 @@ namespace TestGenerator.Web.Controllers
             }
 
             await _testRepository.UpdateTest(test);
+
             return RedirectToAction(nameof(Index));
         }
 

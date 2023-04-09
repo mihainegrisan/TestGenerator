@@ -2,25 +2,19 @@
 
 <h1>Tests</h1>
 
-<form asp-action="Add" method="post">
-  <div class="form-floating mb-3">
-    <input type="text" id="name" name="Name" class="form-control" placeholder="name@example.com"/>
-    <label for="name">Name</label>
+<a class="btn btn-primary btn-sm" href="@Url.Action("Add")">Add New Test</a>
+<a asp-action="Add" asp-controller="Test" class="btn btn-primary btn-sm">Add Test</a>
+
+<div class="row">
+  <div class="col-md-6">
+    <form asp-action="Search" method="post">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search Tests" name="SearchString" />
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
   </div>
-  <div class="form-floating mb-3">
-    <input type="text" id="description" name="Description" class="form-control" placeholder="password" />
-    <label for="description">Description</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="number" id="numberOfQuestions" name="NumberOfQuestions" class="form-control" placeholder="1" />
-    <label for="numberOfQuestions">Number of Questions</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="number" id="numberOfAnswersPerQuestion" name="NumberOfAnswersPerQuestion" class="form-control" placeholder="1" />
-    <label for="numberOfAnswersPerQuestion">Number of Answers per question</label>
-  </div>
-  <button type="submit" class="btn btn-primary">Create Test</button>
-</form>
+</div>
 
 @if (Model.Count > 0)
 {
