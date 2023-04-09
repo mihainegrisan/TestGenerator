@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model TestGenerator.DAL.Models.Test
 @{
+  ViewData["Title"] = "Add Test";
   int numberOfQuestions = ViewBag.NumberOfQuestions;
   int numberOfAnswersPerQuestion = ViewBag.NumberOfAnswersPerQuestion;
 }

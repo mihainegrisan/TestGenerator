@@ -1,11 +1,14 @@
 ﻿@model List<TestGenerator.DAL.Models.Test>
+@{
+  ViewData["Title"] = "Index";
+  var i = 0;
+}
 
 <h1>Tests</h1>
 
-<a class="btn btn-primary btn-sm" href="@Url.Action("Add")">Add New Test</a>
-<a asp-action="Add" asp-controller="Test" class="btn btn-primary btn-sm">Add Test</a>
+<a asp-action="Add" asp-controller="Test" class="btn btn-primary btn-sm">Add New Test</a>
 
-<div class="row">
+<div class="row my-3">
   <div class="col-md-6">
     <form asp-action="Search" method="post">
       <div class="input-group mb-3">
@@ -21,25 +24,25 @@
   <table class="table">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>Nr.</th>
         <th>Name</th>
         <th>Description</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      @foreach (var test in Model)
-      {
-        <tr>
-          <td>@test.TestId</td>
-          <td>@test.Name</td>
-          <td>@test.Description</td>
-          <td>
-            <a class="btn btn-primary btn-sm" href="@Url.Action("Edit", new { id = test.TestId })">Edit</a>
-            <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = test.TestId })">Delete</a>
-          </td>
-        </tr>
-      }
+    @foreach (var test in Model)
+    {
+      <tr>
+        <td>@(++i)</td>
+        <td>@test.Name</td>
+        <td>@test.Description</td>
+        <td>
+          <a class="btn btn-primary btn-sm" href="@Url.Action("Edit", new { id = test.TestId })">Edit</a>
+          <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = test.TestId })">Delete</a>
+        </td>
+      </tr>
+    }
     </tbody>
   </table>
 }
