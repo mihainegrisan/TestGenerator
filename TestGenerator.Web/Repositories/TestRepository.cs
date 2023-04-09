@@ -52,4 +52,9 @@ public class TestRepository : ITestRepository
 
         return true;
     }
+
+    public bool TestExists(int id)
+    {
+      return _dbContext.Tests.Any(e => e.TestId == id);
+    }
 }
