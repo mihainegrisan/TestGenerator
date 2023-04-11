@@ -7,11 +7,13 @@ namespace TestGenerator.Web.Services;
 public class ChatGPTClient : IChatGPTClient
 {
     private readonly HttpClient _httpClient;
+    private readonly string _apiKey;
 
-    public ChatGPTClient(string apiKey)
+    public ChatGPTClient(SecretsManager secretsManager)
     {
         _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+        _apiKey = secretsManager.GetApiKey();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
     }
 
     public async Task<string> SendMessage(string message, int maxChunkSize = 250)

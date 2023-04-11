@@ -19,6 +19,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IFileProcessor, FileProcessor>();
 builder.Services.AddScoped<ITestRepository, TestRepository>();
 builder.Services.AddScoped<IChatGPTClient, ChatGPTClient>();
+builder.Services.AddSingleton<SecretsManager>();
 
 var app = builder.Build();
 
