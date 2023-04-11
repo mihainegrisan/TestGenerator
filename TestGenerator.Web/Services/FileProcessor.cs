@@ -31,7 +31,6 @@ public class FileProcessor : IFileProcessor
 
     /// <summary>
     /// Uploads the file to the server and returns true if the file is uploaded successfully.
-    /// It changes the file name to a random GUID.
     /// </summary>
     /// <param name="file"></param>
     /// <param name="newFileName"></param>
@@ -64,6 +63,33 @@ public class FileProcessor : IFileProcessor
         }
 
         return isCopied;
+    }
+
+    private string GetTextFromSavedFile(IFormFile file)
+    {
+        string cleanedText;
+
+        try
+        {
+            if (!IsFileValid(file))
+            {
+                throw new Exception("File not valid!");
+            }
+
+            Document doc = new Document();
+            var filePath = GetPath(file);
+            doc.LoadFromFile(filePath);
+
+            var text = doc.GetText();
+
+            cleanedText = text.Replace("Evaluation Warning: The document was created with Spire.Doc for .NET.\r\n", "");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Message {ex.Message}");
+        }
+
+        return cleanedText;
     }
 
     private static bool IsFileValid(IFormFile file)
