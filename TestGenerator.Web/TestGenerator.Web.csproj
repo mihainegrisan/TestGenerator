@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Uploaded\" />
+    <Folder Include="Uploaded\" />
   </ItemGroup>
 
 </Project>

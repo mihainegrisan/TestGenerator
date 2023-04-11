@@ -6,10 +6,8 @@ public class FileProcessor : IFileProcessor
 {
     private const string UploadFolderName = "Uploaded";
 
-    public string GetTextFromFile(IFormFile file)
+    public async Task<string> GetTextFromFileAsync(IFormFile file)
     {
-        string cleanedText;
-
         try
         {
             if (!IsFileValid(file))
@@ -17,37 +15,18 @@ public class FileProcessor : IFileProcessor
                 throw new Exception("File not valid!");
             }
 
-            Document doc = new Document();
-            var filePath = GetPath(file);
-            doc.LoadFromFile(filePath);
-
-            var text = doc.GetText();
-
-            cleanedText = text.Replace("Evaluation Warning: The document was created with Spire.Doc for .NET.\r\n", "");
+            using (var stream = file.OpenReadStream())
+            {
+                var document = new Document();
+                await Task.Run(() => document.LoadFromStream(stream, FileFormat.Auto));
+                var text = document.GetText();
+                return text.Replace("Evaluation Warning: The document was created with Spire.Doc for .NET.\r\n", "");
+            }
         }
         catch (Exception ex)
         {
             throw new Exception($"Message {ex.Message}");
         }
-
-        return cleanedText;
-    }
-
-    public string GetTextFromSavedFile(IFormFile file)
-    {
-        string text;
-
-        try
-        {
-            var filePath = GetPath(file);
-            text = File.ReadAllText(filePath);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Message {ex.Message}");
-        }
-
-        return text;
     }
 
     /// <summary>

@@ -8,11 +8,13 @@ namespace TestGenerator.Web.Controllers
     {
         private readonly ITestRepository _testRepository;
         private readonly IFileProcessor _fileProcessor;
+        private readonly IChatGPTClient _chatGPTClient;
 
-        public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor)
+        public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor, IChatGPTClient chatGPTClient)
         {
             _testRepository = testRepository;
             _fileProcessor = fileProcessor;
+            _chatGPTClient = chatGPTClient;
         }
 
         public IActionResult Index()
@@ -27,7 +29,7 @@ namespace TestGenerator.Web.Controllers
         }
 
         [HttpPost]
-        public Task<IActionResult> Generate(IFormFile file)
+        public async Task<IActionResult> Generate(IFormFile file)
         {
             //bool isUploaded = await _fileProcessor.UploadFile(file);
 
@@ -39,9 +41,11 @@ namespace TestGenerator.Web.Controllers
             //TempData["Message"] = "File uploaded successfully";
             // From now on, work with the saved file
 
-            var text = _fileProcessor.GetTextFromFile(file);
+            var text = await _fileProcessor.GetTextFromFileAsync(file);
 
-            return Task.FromResult<IActionResult>(View());
+            var response = await _chatGPTClient.SendMessage(text, maxChunkSize: 250);
+
+            return await Task.FromResult<IActionResult>(View());
         }
     }
 }
