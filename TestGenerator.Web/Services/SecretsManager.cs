@@ -1,21 +1,21 @@
-﻿namespace TestGenerator.Web.Services;
+﻿using System.Reflection;
+
+namespace TestGenerator.Web.Services;
 
 public class SecretsManager
 {
-    private const string ApiKey = "apiKey";
+    private readonly (string Section, string Key) ApiConnectionInfo = ("ChatGPTSecrets:Api", "Key");
     private readonly IConfiguration _configuration;
 
     public SecretsManager()
     {
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
+        var builder = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
         _configuration = builder.Build();
     }
 
     public string GetApiKey()
     {
-        return _configuration[ApiKey];
+        return _configuration.GetSection(ApiConnectionInfo.Section)[ApiConnectionInfo.Key];
     }
 }
