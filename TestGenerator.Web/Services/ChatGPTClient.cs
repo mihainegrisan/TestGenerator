@@ -1,71 +1,77 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Text;
+﻿using OpenAI_API;
+using OpenAI_API.Completions;
+using OpenAI_API.Models;
 
 namespace TestGenerator.Web.Services;
 
-public class ChatGPTClient : IChatGPTClient
+public class ChatGptClient : IChatGptClient
 {
-    private readonly HttpClient _httpClient;
     private readonly string _apiKey;
 
-    public ChatGPTClient(SecretsManager secretsManager)
+    public ChatGptClient(SecretsManager secretsManager)
     {
-        _httpClient = new HttpClient();
         _apiKey = secretsManager.GetApiKey();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
     }
 
-    public async Task<string> SendMessage(string message, int maxChunkSize = 250)
+    public async Task<string> SendMessageNew(string message, int maxChunkSize = 250)
     {
-        var request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Post,
-            RequestUri = new Uri("https://api.openai.com/v1/engines/davinci-codex/completions"),
-            Content = new StringContent(JsonConvert.SerializeObject(new
-            {
-                prompt = message,
-                max_tokens = 60,
-                n = 1,
-                stop = "\n",
-            }), Encoding.UTF8, "application/json")
-        };
+        var openai = new OpenAIAPI(_apiKey);
+        var completions = await openai.Chat.CreateChatCompletionAsync(message);
 
-        var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-
-        var responseContent = await response.Content.ReadAsStringAsync();
-
-        dynamic data = JsonConvert.DeserializeObject(responseContent);
-
-        var fullResponse = data.choices[0].text;
+        var fullResponse = completions.Choices[0].Message.Content;
 
         var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
 
-        var tasks = chunks.Select((Func<string, Task<dynamic>>)(async chunk =>
+        var tasks = new List<Task<string>>();
+
+        foreach (var chunk in chunks)
         {
-            var chunkRequest = new HttpRequestMessage
+            tasks.Add(Task.Run(async () =>
             {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri("https://api.openai.com/v1/engines/davinci-codex/completions"),
-                Content = new StringContent(JsonConvert.SerializeObject(new
+                var chunkCompletions = await openai.Chat.CreateChatCompletionAsync(chunk);
+
+                return chunkCompletions.Choices[0].Message.Content;
+            }));
+        }
+
+        var results = await Task.WhenAll(tasks);
+
+        return string.Join(" ", results);
+    }
+
+
+    public async Task<string> SendMessage(string message, int maxChunkSize = 250)
+    {
+        var openai = new OpenAIAPI(_apiKey);
+        var completions = await openai.Completions.CreateCompletionsAsync(new CompletionRequest
+        {
+            Prompt = message,
+            Model = Model.ChatGPTTurbo,
+            MaxTokens = 60,
+            StopSequence = "\n"
+        });
+
+        var fullResponse = completions.Completions[0].Text;
+
+        var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+
+        var tasks = new List<Task<string>>();
+
+        foreach (var chunk in chunks)
+        {
+            tasks.Add(Task.Run(async () =>
+            {
+                var chunkCompletions = await openai.Completions.CreateCompletionsAsync(new CompletionRequest
                 {
-                    prompt = chunk,
-                    max_tokens = 60,
-                    n = 1,
-                    stop = "\n",
-                }), Encoding.UTF8, "application/json")
-            };
+                    Prompt = chunk,
+                    Model = Model.ChatGPTTurbo,
+                    MaxTokens = 60,
+                    StopSequence = "\n"
+                });
 
-            var chunkResponse = await _httpClient.SendAsync(chunkRequest);
-            chunkResponse.EnsureSuccessStatusCode();
-
-            var chunkResponseContent = await chunkResponse.Content.ReadAsStringAsync();
-
-            dynamic chunkData = JsonConvert.DeserializeObject(chunkResponseContent);
-
-            return chunkData.choices[0].text;
-        }));
+                return chunkCompletions.Completions[0].Text;
+            }));
+        }
 
         var results = await Task.WhenAll(tasks);
 

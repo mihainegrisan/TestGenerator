@@ -8,9 +8,9 @@ namespace TestGenerator.Web.Controllers
     {
         private readonly ITestRepository _testRepository;
         private readonly IFileProcessor _fileProcessor;
-        private readonly IChatGPTClient _chatGPTClient;
+        private readonly IChatGptClient _chatGPTClient;
 
-        public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor, IChatGPTClient chatGPTClient)
+        public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor, IChatGptClient chatGPTClient)
         {
             _testRepository = testRepository;
             _fileProcessor = fileProcessor;
@@ -45,7 +45,7 @@ namespace TestGenerator.Web.Controllers
 
             var response = await _chatGPTClient.SendMessage(text, maxChunkSize: 250);
 
-            return await Task.FromResult<IActionResult>(View());
+            return await Task.FromResult<IActionResult>(View(response));
         }
     }
 }
