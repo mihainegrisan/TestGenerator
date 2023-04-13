@@ -15,8 +15,8 @@ public class ChatGptClient : IChatGptClient
 
     public async Task<string> SendMessageNew(string message, int maxChunkSize = 250)
     {
-        var openai = new OpenAIAPI(_apiKey);
-        var completions = await openai.Chat.CreateChatCompletionAsync(message);
+        var openAi = new OpenAIAPI(_apiKey);
+        var completions = await openAi.Chat.CreateChatCompletionAsync(message);
 
         var fullResponse = completions.Choices[0].Message.Content;
 
@@ -28,7 +28,7 @@ public class ChatGptClient : IChatGptClient
         {
             tasks.Add(Task.Run(async () =>
             {
-                var chunkCompletions = await openai.Chat.CreateChatCompletionAsync(chunk);
+                var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
 
                 return chunkCompletions.Choices[0].Message.Content;
             }));
@@ -42,8 +42,8 @@ public class ChatGptClient : IChatGptClient
 
     public async Task<string> SendMessage(string message, int maxChunkSize = 250)
     {
-        var openai = new OpenAIAPI(_apiKey);
-        var completions = await openai.Completions.CreateCompletionsAsync(new CompletionRequest
+        var openAi = new OpenAIAPI(_apiKey);
+        var completions = await openAi.Completions.CreateCompletionsAsync(new CompletionRequest
         {
             Prompt = message,
             Model = Model.ChatGPTTurbo,
@@ -61,7 +61,7 @@ public class ChatGptClient : IChatGptClient
         {
             tasks.Add(Task.Run(async () =>
             {
-                var chunkCompletions = await openai.Completions.CreateCompletionsAsync(new CompletionRequest
+                var chunkCompletions = await openAi.Completions.CreateCompletionsAsync(new CompletionRequest
                 {
                     Prompt = chunk,
                     Model = Model.ChatGPTTurbo,
