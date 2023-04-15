@@ -9,4 +9,7 @@ public class Answer
 
     [Required]
     public string? AnswerText { get; set; }
+
+    [Required]
+    public bool IsCorrect { get; set; }
 }

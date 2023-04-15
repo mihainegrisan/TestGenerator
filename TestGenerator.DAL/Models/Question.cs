@@ -12,4 +12,7 @@ public class Question
 
     [Required]
     public List<Answer>? Answers { get; set; }
+
+    [Required] 
+    public int CorrectAnswerIndex { get; set; } = 1;
 }
