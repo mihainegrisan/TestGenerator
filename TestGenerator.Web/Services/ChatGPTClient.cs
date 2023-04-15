@@ -1,6 +1,4 @@
 ﻿using OpenAI_API;
-using OpenAI_API.Completions;
-using OpenAI_API.Models;
 
 namespace TestGenerator.Web.Services;
 
@@ -13,78 +11,91 @@ public class ChatGptClient : IChatGptClient
         _apiKey = secretsManager.GetApiKey();
     }
 
-    public async Task<string> SendMessageNew(string message, int maxChunkSize = 250)
+    public async Task<string> SendChatMessage(string message)
     {
         var openAi = new OpenAIAPI(_apiKey);
-        var completions = await openAi.Chat.CreateChatCompletionAsync(message);
 
-        var fullResponse = completions.Choices[0].Message.Content;
+        var chat = openAi.Chat.CreateConversation();
 
-        var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+        // give instruction as System
+        chat.AppendSystemMessage("""
+		You are a teacher who creates a multiple choice test with only one answer per question being the correct one. If the user tells you "Extract 3 questions and 4 possible answers with only one correct answer from the next paragraph: "Knowledge Assistant leverages machine learning (ML) advances to help you automatically generate questions and answers from any textual content in minutes.", you will say something like: 
+		"1. What technology does Knowledge Assistant use to generate questions and answers?
+		a) Robotics
+		b) Blockchain
+		c) Artificial intelligence
+		d) Virtual reality
+		Answer: c) Artificial intelligence
+		2. How long does it take for Knowledge Assistant to generate questions and answers?
+		a) Hours
+		b) Days
+		c) Minutes
+		d) Seconds
+		Answer: c) Minutes
+		3. Can Knowledge Assistant generate questions and answers from any type of content?
+		a) Yes, only textual content
+		b) Yes, any type of content
+		c) No, only video content
+		d) No, only audio content
+		Answer: b) Yes, any type of content".  
+		You only ever respond with the questions, answers and the correct answer. You do not say anything else.
+		""");
 
-        var tasks = new List<Task<string>>();
+        // give a few examples as user and assistant
+        //chat.AppendUserInput("Is this an animal? Cat");
+        //chat.AppendExampleChatbotOutput("Yes");
+        //chat.AppendUserInput("Is this an animal? House");
+        //chat.AppendExampleChatbotOutput("No");
 
-        foreach (var chunk in chunks)
-        {
-            tasks.Add(Task.Run(async () =>
-            {
-                var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
+        chat.AppendUserInput(
+            $"""Extract 3 questions and 4 possible answers with only one correct answer from the next paragraph: "{message}".""");
 
-                return chunkCompletions.Choices[0].Message.Content;
-            }));
-        }
-
-        var results = await Task.WhenAll(tasks);
-
-        return string.Join(" ", results);
+        var response = await chat.GetResponseFromChatbotAsync();
+        Console.WriteLine(response);
+        return response;
     }
 
-
-    public async Task<string> SendMessage(string message, int maxChunkSize = 250)
+    public Task<string> SendMessage(string message, int maxChunkSize)
     {
-        var openAi = new OpenAIAPI(_apiKey);
-        var completions = await openAi.Completions.CreateCompletionsAsync(new CompletionRequest
-        {
-            Prompt = message,
-            Model = Model.ChatGPTTurbo,
-            MaxTokens = 60,
-            StopSequence = "\n"
-        });
-
-        var fullResponse = completions.Completions[0].Text;
-
-        var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
-
-        var tasks = new List<Task<string>>();
-
-        foreach (var chunk in chunks)
-        {
-            tasks.Add(Task.Run(async () =>
-            {
-                var chunkCompletions = await openAi.Completions.CreateCompletionsAsync(new CompletionRequest
-                {
-                    Prompt = chunk,
-                    Model = Model.ChatGPTTurbo,
-                    MaxTokens = 60,
-                    StopSequence = "\n"
-                });
-
-                return chunkCompletions.Completions[0].Text;
-            }));
-        }
-
-        var results = await Task.WhenAll(tasks);
-
-        return string.Join(" ", results);
+        throw new NotImplementedException();
     }
+
+    public string InterpretApiResponseMessage(string message)
+    {
+        return "asd";
+    }
+
+    //public async Task<string> SendMessage(string message, int maxChunkSize = 250)
+    //{
+    //  var openAi = new OpenAIAPI(_apiKey);
+    //  var completions = await openAi.Chat.CreateChatCompletionAsync(message);
+
+    //  var fullResponse = completions.Choices[0].Message.Content;
+
+    //  var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+
+    //  var tasks = new List<Task<string>>();
+
+    //  foreach (var chunk in chunks)
+    //  {
+    //    tasks.Add(Task.Run(async () =>
+    //    {
+    //      var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
+
+    //      return chunkCompletions.Choices[0].Message.Content;
+    //    }));
+    //  }
+
+    //  var results = await Task.WhenAll(tasks);
+
+    //  return string.Join(" ", results);
+    //}
 
     private static List<string> SplitIntoChunks(string text, int maxChunkSize)
     {
         var words = text.Split(' ');
-
         var chunks = new List<string>();
         var currentChunk = "";
-
         foreach (var word in words)
         {
             if ((currentChunk + word).Length > maxChunkSize)
@@ -96,12 +107,8 @@ public class ChatGptClient : IChatGptClient
             currentChunk += $"{word} ";
         }
 
-        if (!string.IsNullOrWhiteSpace(currentChunk))
-        {
-            chunks.Add(currentChunk.Trim());
-        }
+        if (!string.IsNullOrWhiteSpace(currentChunk)) chunks.Add(currentChunk.Trim());
 
         return chunks;
     }
-
 }
