@@ -8,13 +8,13 @@ namespace TestGenerator.Web.Controllers
     {
         private readonly ITestRepository _testRepository;
         private readonly IFileProcessor _fileProcessor;
-        private readonly IChatGptClient _chatGPTClient;
+        private readonly IChatGptClient _chatGptClient;
 
-        public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor, IChatGptClient chatGPTClient)
+        public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor, IChatGptClient chatGptClient)
         {
             _testRepository = testRepository;
             _fileProcessor = fileProcessor;
-            _chatGPTClient = chatGPTClient;
+            _chatGptClient = chatGptClient;
         }
 
         public IActionResult Index()
@@ -43,7 +43,7 @@ namespace TestGenerator.Web.Controllers
 
             var text = await _fileProcessor.GetTextFromFileAsync(file);
 
-            var response = await _chatGPTClient.SendMessage(text, maxChunkSize: 250);
+            var response = await _chatGptClient.SendChatMessage(text);
 
             return await Task.FromResult<IActionResult>(View(response));
         }
