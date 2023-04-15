@@ -43,7 +43,7 @@ namespace TestGenerator.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTest([Bind("TestId,Name,Description,NumberOfQuestions,NumberOfAnswersPerQuestion")] Test test)
+        public async Task<IActionResult> AddTest(Test test)
         {
             if (!ModelState.IsValid)
             {
