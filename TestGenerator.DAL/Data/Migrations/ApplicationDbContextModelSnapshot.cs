@@ -236,9 +236,6 @@ namespace TestGenerator.Web.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("QuestionId")
                         .HasColumnType("int");
 
@@ -256,6 +253,9 @@ namespace TestGenerator.Web.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionId"));
+
+                    b.Property<int>("CorrectAnswerIndex")
+                        .HasColumnType("int");
 
                     b.Property<string>("QuestionText")
                         .IsRequired()
