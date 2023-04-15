@@ -1,4 +1,6 @@
 ﻿using OpenAI_API;
+using System.Text.RegularExpressions;
+using TestGenerator.DAL.Models;
 
 namespace TestGenerator.Web.Services;
 
@@ -60,38 +62,91 @@ public class ChatGptClient : IChatGptClient
         throw new NotImplementedException();
     }
 
-    public string InterpretApiResponseMessage(string message)
+    public Test ParseQuestions(string input)
     {
-        return "asd";
+    // Initialize test object
+    var test = new Test
+    {
+      Name = "Factory Method, Abstract Factory, and Builder Patterns Test",
+      Description = "Test your knowledge on the Factory Method, Abstract Factory, and Builder patterns.",
+      NumberOfQuestions = 3,
+      NumberOfAnswersPerQuestion = 4
+    };
+
+    var questions = new List<Question>();
+
+    // Split input string into individual questions
+    var regex = new Regex(@"(\d+)\. ([\s\S]*?)(?=\d+\.|$)");
+    var matches = regex.Matches(input);
+
+    // Loop through each question and extract information
+    foreach (Match match in matches)
+    {
+      var questionNumber = int.Parse(match.Groups[1].Value);
+      var questionText = match.Groups[2].Value.Trim();
+      var answerRegex = new Regex($@"([a-z])\) ([\s\S]*?)(?=\r\n[a-z]\)|Answer:|\z)");
+      var answerMatches = answerRegex.Matches(match.Value);
+
+      // Initialize question object
+      var question = new Question
+      {
+        QuestionText = questionText,
+        Answers = new List<Answer>()
+      };
+
+      // Loop through each answer and extract information
+      foreach (Match answerMatch in answerMatches)
+      {
+        var answerLetter = answerMatch.Groups[1].Value;
+        var answerText = answerMatch.Groups[2].Value.Trim();
+        var isCorrect = answerMatch.Value.Contains("(Answer: ") && answerMatch.Value.Contains("a)");
+
+        // Add answer to question object
+        var answer = new Answer
+        {
+          AnswerText = answerText,
+          IsCorrect = isCorrect
+        };
+        question.Answers.Add(answer);
+      }
+
+      // Add question to test object
+      questions.Add(question);
     }
 
+    // Add questions to test object
+    test.Questions = questions;
+
+    return test;
+  }
+
     //public async Task<string> SendMessage(string message, int maxChunkSize = 250)
-    //{
-    //  var openAi = new OpenAIAPI(_apiKey);
-    //  var completions = await openAi.Chat.CreateChatCompletionAsync(message);
+  //{
+  //  var openAi = new OpenAIAPI(_apiKey);
+  //  var completions = await openAi.Chat.CreateChatCompletionAsync(message);
 
-    //  var fullResponse = completions.Choices[0].Message.Content;
+  //  var fullResponse = completions.Choices[0].Message.Content;
 
-    //  var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+  //  var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
 
-    //  var tasks = new List<Task<string>>();
+  //  var tasks = new List<Task<string>>();
 
-    //  foreach (var chunk in chunks)
-    //  {
-    //    tasks.Add(Task.Run(async () =>
-    //    {
-    //      var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
+  //  foreach (var chunk in chunks)
+  //  {
+  //    tasks.Add(Task.Run(async () =>
+  //    {
+  //      var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
 
-    //      return chunkCompletions.Choices[0].Message.Content;
-    //    }));
-    //  }
+  //      return chunkCompletions.Choices[0].Message.Content;
+  //    }));
+  //  }
 
-    //  var results = await Task.WhenAll(tasks);
+  //  var results = await Task.WhenAll(tasks);
 
-    //  return string.Join(" ", results);
-    //}
+  //  return string.Join(" ", results);
+  //}
 
-    private static List<string> SplitIntoChunks(string text, int maxChunkSize)
+  private static List<string> SplitIntoChunks(string text, int maxChunkSize)
     {
         var words = text.Split(' ');
         var chunks = new List<string>();

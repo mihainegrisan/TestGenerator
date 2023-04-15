@@ -1,4 +1,6 @@
-﻿namespace TestGenerator.Web.Services;
+﻿using TestGenerator.DAL.Models;
+
+namespace TestGenerator.Web.Services;
 
 public interface IChatGptClient
 {
@@ -6,5 +8,5 @@ public interface IChatGptClient
 
     Task<string> SendMessage(string message, int maxChunkSize);
 
-    string InterpretApiResponseMessage(string message);
+    Test ParseQuestions(string input);
 }
