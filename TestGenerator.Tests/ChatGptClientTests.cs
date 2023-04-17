@@ -20,7 +20,6 @@ public class ChatGptClientTests
   {
     _chatGptClient = new ChatGptClient(new SecretsManager());
     var response = _chatGptClient.ParseQuestions(_apiAnswer);
-    var response2 = _chatGptClient.CreateTestObject(_apiAnswer);
 
     Assert.IsNotNull(response);
   }
