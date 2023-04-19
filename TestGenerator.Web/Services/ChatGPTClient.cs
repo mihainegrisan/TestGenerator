@@ -62,91 +62,92 @@ public class ChatGptClient : IChatGptClient
         throw new NotImplementedException();
     }
 
-    public Test ParseQuestions(string input)
+    public Test GetTestFromInput(string input)
     {
-    // Initialize test object
-    var test = new Test
-    {
-      Name = "Factory Method, Abstract Factory, and Builder Patterns Test",
-      Description = "Test your knowledge on the Factory Method, Abstract Factory, and Builder patterns.",
-      NumberOfQuestions = 3,
-      NumberOfAnswersPerQuestion = 4
-    };
+        Test test = new Test();
 
-    var questions = new List<Question>();
+        // Get name and description
+        string[] nameAndDesc = input.Substring(0, input.IndexOf("\\r\\n\\r\\n")).Split("\\r\\n");
+        test.Name = nameAndDesc[0].Trim();
+        test.Description = nameAndDesc[1].Trim();
 
-    // Split input string into individual questions
-    var regex = new Regex(@"(\d+)\. ([\s\S]*?)(?=\d+\.|$)");
-    var matches = regex.Matches(input);
+        // Get questions and answers
+        string[] questionStrings = input.Split(new string[] { "\\r\\n\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-    // Loop through each question and extract information
-    foreach (Match match in matches)
-    {
-      var questionNumber = int.Parse(match.Groups[1].Value);
-      var questionText = match.Groups[2].Value.Trim();
-      var answerRegex = new Regex($@"([a-z])\) ([\s\S]*?)(?=\r\n[a-z]\)|Answer:|\z)");
-      var answerMatches = answerRegex.Matches(match.Value);
-
-      // Initialize question object
-      var question = new Question
-      {
-        QuestionText = questionText,
-        Answers = new List<Answer>()
-      };
-
-      // Loop through each answer and extract information
-      foreach (Match answerMatch in answerMatches)
-      {
-        var answerLetter = answerMatch.Groups[1].Value;
-        var answerText = answerMatch.Groups[2].Value.Trim();
-        var isCorrect = answerMatch.Value.Contains("(Answer: ") && answerMatch.Value.Contains("a)");
-
-        // Add answer to question object
-        var answer = new Answer
+        test.Questions = new List<Question>();
+        foreach (string questionString in questionStrings)
         {
-          AnswerText = answerText,
-          IsCorrect = isCorrect
-        };
-        question.Answers.Add(answer);
-      }
+            Question question = new Question();
 
-      // Add question to test object
-      questions.Add(question);
+            string questionText = questionString.Substring(questionString.IndexOf('.') + 2);
+            int answerStartIndex = questionString.IndexOf("\\r\\na)") + 6;
+
+            // Get the options
+            List<string> options = new List<string>();
+            int optionIndex = 0;
+            while (true)
+            {
+                string optionString = (char)(97 + optionIndex) + ")";
+                int optionStartIndex = questionString.IndexOf(optionString, answerStartIndex);
+                if (optionStartIndex == -1)
+                {
+                    break;
+                }
+                options.Add(optionString);
+                optionIndex++;
+            }
+
+            // Get answer text and set IsCorrect flag
+            string[] answerParts = questionString.Substring(answerStartIndex).Split(new string[] { "\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
+            string answerOption = answerParts[0];
+            string answerText = string.Join("\\r\\n", answerParts.Skip(1)).Trim();
+            int correctAnswerIndex = options.IndexOf(answerOption);
+            question.Answers = new List<Answer>();
+            for (int i = 0; i < options.Count; i++)
+            {
+                string optionText = questionString.Substring(questionString.IndexOf(options[i]) + options[i].Length).Trim();
+                bool isCorrect = i == correctAnswerIndex;
+                question.Answers.Add(new Answer { AnswerText = optionText, IsCorrect = isCorrect });
+            }
+
+            // Set question text and add to test
+            question.QuestionText = questionText.Substring(0, questionText.IndexOf("\\r\\n")).Trim();
+            test.Questions.Add(question);
+        }
+
+        test.NumberOfQuestions = test.Questions.Count;
+        test.NumberOfAnswersPerQuestion = test.Questions[0].Answers.Count;
+
+        return test;
     }
 
-    // Add questions to test object
-    test.Questions = questions;
-
-    return test;
-  }
-
     //public async Task<string> SendMessage(string message, int maxChunkSize = 250)
-  //{
-  //  var openAi = new OpenAIAPI(_apiKey);
-  //  var completions = await openAi.Chat.CreateChatCompletionAsync(message);
+    //{
+    //  var openAi = new OpenAIAPI(_apiKey);
+    //  var completions = await openAi.Chat.CreateChatCompletionAsync(message);
 
-  //  var fullResponse = completions.Choices[0].Message.Content;
+    //  var fullResponse = completions.Choices[0].Message.Content;
 
-  //  var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+    //  var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
 
-  //  var tasks = new List<Task<string>>();
+    //  var tasks = new List<Task<string>>();
 
-  //  foreach (var chunk in chunks)
-  //  {
-  //    tasks.Add(Task.Run(async () =>
-  //    {
-  //      var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
+    //  foreach (var chunk in chunks)
+    //  {
+    //    tasks.Add(Task.Run(async () =>
+    //    {
+    //      var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
 
-  //      return chunkCompletions.Choices[0].Message.Content;
-  //    }));
-  //  }
+    //      return chunkCompletions.Choices[0].Message.Content;
+    //    }));
+    //  }
 
-  //  var results = await Task.WhenAll(tasks);
+    //  var results = await Task.WhenAll(tasks);
 
-  //  return string.Join(" ", results);
-  //}
+    //  return string.Join(" ", results);
+    //}
 
-  private static List<string> SplitIntoChunks(string text, int maxChunkSize)
+    private static List<string> SplitIntoChunks(string text, int maxChunkSize)
     {
         var words = text.Split(' ');
         var chunks = new List<string>();

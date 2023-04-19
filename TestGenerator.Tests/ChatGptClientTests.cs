@@ -19,7 +19,7 @@ public class ChatGptClientTests
   public void Test1()
   {
     _chatGptClient = new ChatGptClient(new SecretsManager());
-    var response = _chatGptClient.ParseQuestions(_apiAnswer);
+    var response = _chatGptClient.GetTestFromInput(_apiAnswer);
 
     Assert.IsNotNull(response);
   }

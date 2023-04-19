@@ -50,7 +50,7 @@ public class TestGeneratorController : Controller
 
         var response = await _chatGptClient.SendChatMessage(text);
 
-        test = _chatGptClient.ParseQuestions(response);
+        test = _chatGptClient.GetTestFromInput(response);
 
         // Pass the test to the view
         // How to prepopulate all the fields from chatGPT to the questions and answers on the next view?
