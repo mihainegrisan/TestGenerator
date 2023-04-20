@@ -79,7 +79,16 @@ public class ChatGptClient : IChatGptClient
         {
             Question question = new Question();
 
-            string questionText = questionString.Substring(questionString.IndexOf('.') + 2);
+            // this was before
+            // string questionText = questionString.Substring(questionString.IndexOf('.') + 2);
+            int questionNumberEndIndex = questionString.IndexOf('.') + 1;
+            while (Char.IsDigit(questionString[questionNumberEndIndex]))
+            {
+                questionNumberEndIndex++;
+            }
+            string questionText = questionString.Substring(questionNumberEndIndex + 1);
+
+
             int answerStartIndex = questionString.IndexOf("\\r\\na)") + 6;
 
             // Get the options
@@ -99,13 +108,19 @@ public class ChatGptClient : IChatGptClient
 
             // Get answer text and set IsCorrect flag
             string[] answerParts = questionString.Substring(answerStartIndex).Split(new string[] { "\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
-            string answerOption = answerParts[0];
-            string answerText = string.Join("\\r\\n", answerParts.Skip(1)).Trim();
+            
+            var startIndex = answerParts[options.Count].IndexOf(' ') + 1; // +1 to skip the space after "Answer:"
+            var length = answerParts[options.Count].IndexOf(')') - startIndex + 1; // +1 to take the ")" after the letter "a)"
+            string answerOption = answerParts[options.Count].Substring(startIndex, length).Trim();
+            
             int correctAnswerIndex = options.IndexOf(answerOption);
+
             question.Answers = new List<Answer>();
+
             for (int i = 0; i < options.Count; i++)
             {
                 string optionText = questionString.Substring(questionString.IndexOf(options[i]) + options[i].Length).Trim();
+                optionText = optionText.Substring(0, optionText.IndexOf("\\r\\n")).Trim();
                 bool isCorrect = i == correctAnswerIndex;
                 question.Answers.Add(new Answer { AnswerText = optionText, IsCorrect = isCorrect });
             }
@@ -116,7 +131,10 @@ public class ChatGptClient : IChatGptClient
         }
 
         test.NumberOfQuestions = test.Questions.Count;
-        test.NumberOfAnswersPerQuestion = test.Questions[0].Answers.Count;
+        if (test.Questions.Count > 0)
+        {
+            test.NumberOfAnswersPerQuestion = test.Questions[0].Answers.Count;
+        }
 
         return test;
     }
