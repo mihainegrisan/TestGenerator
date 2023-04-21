@@ -15,7 +15,7 @@ public class TestRepository : ITestRepository
 
     public async Task<Test> FindAsync(int? id)
     {
-      return await _dbContext.Tests.FindAsync(id);
+        return await _dbContext.Tests.FindAsync(id);
     }
 
     public async Task<Test> AddTest(Test test)
@@ -55,6 +55,6 @@ public class TestRepository : ITestRepository
 
     public bool TestExists(int id)
     {
-      return _dbContext.Tests.Any(e => e.TestId == id);
+        return _dbContext.Tests.Any(e => e.TestId == id);
     }
 }

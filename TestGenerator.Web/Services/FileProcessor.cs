@@ -30,7 +30,7 @@ public class FileProcessor : IFileProcessor
     }
 
     /// <summary>
-    /// Uploads the file to the server and returns true if the file is uploaded successfully.
+    ///     Uploads the file to the server and returns true if the file is uploaded successfully.
     /// </summary>
     /// <param name="file"></param>
     /// <param name="newFileName"></param>
@@ -76,7 +76,7 @@ public class FileProcessor : IFileProcessor
                 throw new Exception("File not valid!");
             }
 
-            Document doc = new Document();
+            var doc = new Document();
             var filePath = GetPath(file);
             doc.LoadFromFile(filePath);
 
@@ -121,10 +121,9 @@ public class FileProcessor : IFileProcessor
 
     private static string GetPathWithRandomFileName(IFormFile file)
     {
-        string newFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+        var newFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
         var path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), UploadFolderName));
 
         return Path.Combine(path, newFileName);
     }
 }
-

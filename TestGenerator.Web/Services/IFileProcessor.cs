@@ -6,4 +6,3 @@ public interface IFileProcessor
 
     Task<bool> UploadFile(IFormFile file);
 }
-

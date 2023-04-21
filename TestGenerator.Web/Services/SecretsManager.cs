@@ -4,8 +4,8 @@ namespace TestGenerator.Web.Services;
 
 public class SecretsManager
 {
-    private readonly (string Section, string Key) ApiConnectionInfo = ("ChatGPTSecrets:Api", "Key");
     private readonly IConfiguration _configuration;
+    private readonly (string Section, string Key) ApiConnectionInfo = ("ChatGPTSecrets:Api", "Key");
 
     public SecretsManager()
     {

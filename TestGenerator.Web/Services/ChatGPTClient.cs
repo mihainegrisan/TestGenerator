@@ -71,9 +71,9 @@ public class ChatGptClient : IChatGptClient
             var question = new Question();
 
             var questionText = GetQuestionText(questionString);
-            
+
             var answerStartIndex = questionString.IndexOf("\r\na)", StringComparison.Ordinal) + 2;
-            
+
             var options = GetOptions(questionString, answerStartIndex);
 
             // Get answer text and set IsCorrect flag
@@ -108,6 +108,32 @@ public class ChatGptClient : IChatGptClient
         return test;
     }
 
+    public async Task<string> SendMessage(string message, int maxChunkSize = 250)
+    {
+        var openAi = new OpenAIAPI(_apiKey);
+        var completions = await openAi.Chat.CreateChatCompletionAsync(message);
+
+        var fullResponse = completions.Choices[0].Message.Content;
+
+        var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+
+        var tasks = new List<Task<string>>();
+
+        foreach (var chunk in chunks)
+        {
+            tasks.Add(Task.Run(async () =>
+            {
+                var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
+
+                return chunkCompletions.Choices[0].Message.Content;
+            }));
+        }
+
+        var results = await Task.WhenAll(tasks);
+
+        return string.Join(" ", results);
+    }
+
     private static string GetQuestionText(string questionString)
     {
         var questionNumberEndIndex = questionString.IndexOf('.') + 1;
@@ -140,32 +166,6 @@ public class ChatGptClient : IChatGptClient
         }
 
         return options;
-    }
-
-    public async Task<string> SendMessage(string message, int maxChunkSize = 250)
-    {
-        var openAi = new OpenAIAPI(_apiKey);
-        var completions = await openAi.Chat.CreateChatCompletionAsync(message);
-
-        var fullResponse = completions.Choices[0].Message.Content;
-
-        var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
-
-        var tasks = new List<Task<string>>();
-
-        foreach (var chunk in chunks)
-        {
-            tasks.Add(Task.Run(async () =>
-            {
-                var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
-
-                return chunkCompletions.Choices[0].Message.Content;
-            }));
-        }
-
-        var results = await Task.WhenAll(tasks);
-
-        return string.Join(" ", results);
     }
 
     private static List<string> SplitIntoChunks(string text, int maxChunkSize)
