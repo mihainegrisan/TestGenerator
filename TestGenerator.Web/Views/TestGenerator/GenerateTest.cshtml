@@ -1,10 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TestGenerator.DAL.Models
 @model TestGenerator.DAL.Models.Test
 @{
-    ViewData["Title"] = "Generate Test";
-    int numberOfQuestions = ViewBag.NumberOfQuestions;
-    int numberOfAnswersPerQuestion = ViewBag.NumberOfAnswersPerQuestion;
+    Test test = ViewBag.Test;
 }
+
+<h2>Generate Test</h2>
 
 <form asp-action="GenerateTest" asp-controller="TestGenerator" method="post">
   <div class="form-floating mb-3 col-sm-6">
@@ -19,41 +20,46 @@
   </div>
 
   <div class="form-floating mb-3 col-sm-6">
-    <input asp-for="NumberOfQuestions" class="form-control" value="@numberOfQuestions" readonly/>
+    <input asp-for="NumberOfQuestions" class="form-control" value="@test.NumberOfQuestions" readonly />
     <label asp-for="NumberOfQuestions">Number of Questions</label>
     <span asp-validation-for="NumberOfQuestions" class="text-danger"></span>
   </div>
   <div class="form-floating mb-3 col-sm-6">
-    <input asp-for="NumberOfAnswersPerQuestion" class="form-control" value="@numberOfAnswersPerQuestion" readonly/>
+    <input asp-for="NumberOfAnswersPerQuestion" class="form-control" value="@test.NumberOfAnswersPerQuestion" readonly />
     <label asp-for="NumberOfAnswersPerQuestion">Number of Answers per Question</label>
     <span asp-validation-for="NumberOfAnswersPerQuestion" class="text-danger"></span>
   </div>
 
-  <h3 class="my-3">Questions:</h3>
+  <h3 class="my-3"><u>Questions:</u></h3>
 
-  @for (var i = 0; i < numberOfQuestions; i++)
+  @for (var i = 0; i < test.NumberOfQuestions; i++)
   {
       <div class="row mb-3">
-        <label asp-for="Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
+        <label asp-for="@test.Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
         <div class="col-sm-11">
-          <input asp-for="Questions[i].QuestionText" class="form-control"/>
-          <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
+          <input asp-for="@test.Questions[i].QuestionText" class="form-control" value="@test.Questions[i].QuestionText"/>
+          <span asp-validation-for="@test.Questions[i].QuestionText" class="text-danger"></span>
         </div>
       </div>
 
-      @for (var j = 0; j < numberOfAnswersPerQuestion; j++)
+      @for (var j = 0; j < test.NumberOfAnswersPerQuestion; j++)
       {
           var answerLabel = j == 0 ? $"Correct Answer {j + 1}" : $"Answer {j + 1}";
 
           <div class="row mb-3 align-middle">
-            <label asp-for="Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
+            <label asp-for="@test.Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
             <div class="col-sm-10">
-              <input asp-for="Questions[i].Answers[j].AnswerText" class="form-control"/>
-              <span asp-validation-for="Questions[i].Answers[j].AnswerText" class="text-danger"></span>
-              <input asp-for="Questions[i].Answers[j].IsCorrect" type="checkbox" class="form-check-input ms-2"/>
+              <input asp-for="@test.Questions[i].Answers[j].AnswerText" class="form-control" value="@test.Questions[i].Answers[j].AnswerText"/>
+              <span asp-validation-for="@test.Questions[i].Answers[j].AnswerText" class="text-danger"></span>
+              @{
+                  bool isChecked = test.Questions[i].Answers[j].IsCorrect;
+              }
+              <input asp-for="@test.Questions[i].Answers[j].IsCorrect" type="checkbox" class="form-check-input ms-2" checked="@(isChecked)" />
+
             </div>
           </div>
       }
   }
+
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
