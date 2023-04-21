@@ -18,7 +18,6 @@ public class ChatGptClient : IChatGptClient
 
         var chat = openAi.Chat.CreateConversation();
 
-        // give instruction as System
         chat.AppendSystemMessage("""
 		You are a teacher who creates a multiple choice test with only one answer per question being the correct one. For example, if the user tells you "Extract 3 questions and 4 possible answers with only one correct answer from the next paragraph: "Knowledge Assistant leverages machine learning (ML) advances to help you automatically generate questions and answers from any textual content in minutes.", you will say something like: 
 
@@ -43,7 +42,7 @@ public class ChatGptClient : IChatGptClient
 		d) No, only audio content
 		Answer: b) Yes, any type of content".
 
-		The Questions will always be separated by a new line. You only ever respond with the questions, answers and the correct answer. You do not say anything else.
+		The Questions will always be separated by a new line. You only ever respond with the questions, answers and the correct answer. You do not say anything else. Also the number of questions and answers will differ from test to test. It's up to you to extract the questions and answers from the paragraph but you must return the exact number of questions and answers that the user asked for.
 		""");
 
         // give a few examples as user and assistant
@@ -53,14 +52,14 @@ public class ChatGptClient : IChatGptClient
         //chat.AppendExampleChatbotOutput("No");
 
         chat.AppendUserInput(
-            $"""Extract {test.NumberOfQuestions} questions and {test.NumberOfAnswersPerQuestion} possible answers with only one correct answer from the next paragraph: "{message}".""");
+            $"""Extract {test.NumberOfQuestions} questions and {test.NumberOfAnswersPerQuestion} answers per question with only one correct answer from the next paragraph: "{message}". You must respect the number of questions and answers per question requested.""");
 
         var response = await chat.GetResponseFromChatbotAsync();
-        Console.WriteLine(response);
+
         return response;
     }
 
-    public Test UpdateTestWithQuestionsAndAnswersFromApiResponse(Test test, string responseMessage)
+    public Test PopulateTestWithApiResponse(Test test, string responseMessage)
     {
         var questionStrings = responseMessage.Split(new[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -78,7 +77,7 @@ public class ChatGptClient : IChatGptClient
 
             // Get answer text and set IsCorrect flag
             var answerParts = questionString.Substring(answerStartIndex).Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-
+       
             var startIndex = answerParts[options.Count].IndexOf(' ') + 1; // +1 to skip the space after "Answer:"
             var length = answerParts[options.Count].IndexOf(')') - startIndex + 1; // +1 to take the ")" after the letter "a)"
             var answerOption = answerParts[options.Count].Substring(startIndex, length).Trim();
