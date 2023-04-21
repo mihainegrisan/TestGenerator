@@ -49,8 +49,8 @@ public class TestGeneratorController : Controller
 
         test = new Test
         {
-            Name = "Test 1",
-            Description = "Test 1 description",
+            Name = test.Name,
+            Description = test.Description,
             NumberOfQuestions = 3,
             NumberOfAnswersPerQuestion = 4,
             Questions = new List<Question>
@@ -158,7 +158,7 @@ public class TestGeneratorController : Controller
         //}
 
         //TempData["Message"] = "File uploaded successfully";
-        // From now on, work with the saved filex
+        // From now on, work with the saved file
 
         if (!ModelState.IsValid)
         {
