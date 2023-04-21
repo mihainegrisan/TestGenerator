@@ -1,3 +1,4 @@
+using TestGenerator.DAL.Models;
 using TestGenerator.Web.Services;
 
 namespace TestGenerator.Tests;
@@ -19,8 +20,21 @@ public class ChatGptClientTests
   public void Test1()
   {
     _chatGptClient = new ChatGptClient(new SecretsManager());
-    var response = _chatGptClient.GetTestFromInput(_apiAnswer);
 
-    Assert.IsNotNull(response);
+    var test = new Test
+    {
+        Name = "Test Name",
+        Description = "Test Description",
+        Questions = null,
+        NumberOfQuestions = 3,
+        NumberOfAnswersPerQuestion = 4
+    };
+
+    var response = _chatGptClient.UpdateTestWithQuestionsAndAnswersFromApiResponse(test, _apiAnswer);
+
+    Assert.IsNotNull(test.Questions);
+    Assert.IsNotNull(test.Questions[0].Answers);
+    Assert.IsNotNull(test.Questions[1].Answers);
+    Assert.IsNotNull(test.Questions[2].Answers);
   }
 }
