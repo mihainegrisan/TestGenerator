@@ -1,8 +1,12 @@
-﻿namespace TestGenerator.Web.Services;
+﻿using TestGenerator.DAL.Models;
+
+namespace TestGenerator.Web.Services;
 
 public interface IFileProcessor
 {
     Task<string> GetTextFromFileAsync(IFormFile file);
+
+    MemoryStream GeneratePdf(Test test);
 
     Task<bool> UploadFile(IFormFile file);
 }

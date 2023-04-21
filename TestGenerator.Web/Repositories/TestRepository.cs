@@ -25,7 +25,15 @@ public class TestRepository : ITestRepository
         return test;
     }
 
-    public async Task<List<Test>> GetTests()
+    public async Task<Test> GetTest(int id)
+    {
+        return await _dbContext.Tests
+            .Include(test => test.Questions)
+            .ThenInclude(question => question.Answers)
+            .FirstOrDefaultAsync(test => test.TestId == id);
+    }
+
+  public async Task<List<Test>> GetTests()
     {
         return await _dbContext.Tests.ToListAsync();
     }

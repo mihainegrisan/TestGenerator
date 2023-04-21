@@ -81,4 +81,14 @@ public class TestGeneratorController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> DownloadPdf(int id)
+    {
+        var test = await _testRepository.GetTest(id);
+
+        var stream = _fileProcessor.GeneratePdf(test);
+        stream.Position = 0;
+
+        return File(stream, "application/pdf", $"{test.Name}.pdf");
+    }
 }
