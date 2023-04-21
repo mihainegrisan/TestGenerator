@@ -139,11 +139,11 @@ public class TestGeneratorController : Controller
             }
         };
 
-        ViewBag.Test = test;
+        TempData["Test"] = test;
 
         _chatGptClient.UpdateTestWithQuestionsAndAnswersFromApiResponse(test, responseMessage);
-
-        return View(nameof(GenerateTest));
+        // test will have the questions and answers populated but not the name and description when it gets to the GenerateTest action
+        return View(nameof(GenerateTest), test);
     }
 
     [HttpPost]
@@ -158,8 +158,7 @@ public class TestGeneratorController : Controller
         //}
 
         //TempData["Message"] = "File uploaded successfully";
-        // From now on, work with the saved file
-        test = ViewBag.Test as Test;
+        // From now on, work with the saved filex
 
         if (!ModelState.IsValid)
         {
@@ -168,6 +167,8 @@ public class TestGeneratorController : Controller
 
         await _testRepository.AddTest(test);
 
-        return RedirectToAction(nameof(Index));
+        var tests = await _testRepository.GetTests();
+
+        return View(nameof(Index), tests);
     }
 }
