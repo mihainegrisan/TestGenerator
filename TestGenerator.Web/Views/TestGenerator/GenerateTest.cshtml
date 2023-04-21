@@ -2,32 +2,32 @@
 @using TestGenerator.DAL.Models
 @model TestGenerator.DAL.Models.Test
 @{
-    Test test = ViewBag.Test;
+    Test test = TempData["Test"] as Test;
 }
 
 <h2>Generate Test</h2>
 
 <form asp-action="GenerateTest" asp-controller="TestGenerator" method="post">
   <div class="form-floating mb-3 col-sm-6">
-    <input asp-for="Name" class="form-control"/>
-    <label asp-for="Name">Name</label>
-    <span asp-validation-for="Name" class="text-danger"></span>
+    <input asp-for="@test.Name" class="form-control"/>
+    <label asp-for="@test.Name">Name</label>
+    <span asp-validation-for="@test.Name" class="text-danger"></span>
   </div>
   <div class="form-floating mb-3 col-sm-6">
-    <input asp-for="Description" class="form-control"/>
-    <label asp-for="Description">Description</label>
-    <span asp-validation-for="Description" class="text-danger"></span>
+    <input asp-for="@test.Description" class="form-control" />
+    <label asp-for="@test.Description">Description</label>
+    <span asp-validation-for="@test.Description" class="text-danger"></span>
   </div>
 
   <div class="form-floating mb-3 col-sm-6">
-    <input asp-for="NumberOfQuestions" class="form-control" value="@test.NumberOfQuestions" readonly />
-    <label asp-for="NumberOfQuestions">Number of Questions</label>
-    <span asp-validation-for="NumberOfQuestions" class="text-danger"></span>
+    <input asp-for="@test.NumberOfQuestions" class="form-control" value="@test.NumberOfQuestions" readonly />
+    <label asp-for="@test.NumberOfQuestions">Number of Questions</label>
+    <span asp-validation-for="@test.NumberOfQuestions" class="text-danger"></span>
   </div>
   <div class="form-floating mb-3 col-sm-6">
-    <input asp-for="NumberOfAnswersPerQuestion" class="form-control" value="@test.NumberOfAnswersPerQuestion" readonly />
-    <label asp-for="NumberOfAnswersPerQuestion">Number of Answers per Question</label>
-    <span asp-validation-for="NumberOfAnswersPerQuestion" class="text-danger"></span>
+    <input asp-for="@test.NumberOfAnswersPerQuestion" class="form-control" value="@test.NumberOfAnswersPerQuestion" readonly />
+    <label asp-for="@test.NumberOfAnswersPerQuestion">Number of Answers per Question</label>
+    <span asp-validation-for="@test.NumberOfAnswersPerQuestion" class="text-danger"></span>
   </div>
 
   <h3 class="my-3"><u>Questions:</u></h3>
