@@ -1,10 +1,9 @@
 ﻿using System.Drawing;
 using Spire.Doc;
 using Spire.Pdf;
-using FileFormat = Spire.Doc.FileFormat;
 using Spire.Pdf.Graphics;
 using TestGenerator.DAL.Models;
-
+using FileFormat = Spire.Doc.FileFormat;
 
 namespace TestGenerator.Web.Services;
 
@@ -71,98 +70,71 @@ public class FileProcessor : IFileProcessor
         return isCopied;
     }
 
-    //public async Task<MemoryStream> GeneratePdf(Test test)
-    //{
-    //    var pdfDocument = new PdfDocument();
-    //    var section = pdfDocument.AddSection();
-    //    var paragraph = section.AddParagraph();
-
-    //    paragraph.AppendText(test.Name + Environment.NewLine + Environment.NewLine);
-    //    paragraph.AppendText(test.Description + Environment.NewLine + Environment.NewLine);
-
-    //    foreach (var question in test.Questions)
-    //    {
-    //        paragraph.AppendText(question.QuestionText + Environment.NewLine);
-
-    //        foreach (var answer in question.Answers)
-    //        {
-    //            paragraph.AppendText(answer.AnswerText + Environment.NewLine);
-    //        }
-
-    //        paragraph.AppendText(Environment.NewLine);
-    //    }
-
-    //    var stream = new MemoryStream();
-    //    pdfDocument.SaveToStream(stream);
-
-    //    return stream;
-    //}
-
-  public MemoryStream GeneratePdf(Test test)
-  {
-    // Create a new PDF document
-    PdfDocument pdfDoc = new PdfDocument();
-
-    // Add a new page to the document
-    PdfPageBase page = pdfDoc.Pages.Add();
-
-    // Create a PDF brush for text color
-    PdfSolidBrush brush = new PdfSolidBrush(Color.Black);
-
-    // Create a PDF font for text formatting
-    PdfTrueTypeFont font = new PdfTrueTypeFont(new Font("Arial", 14f), true);
-
-    // Set the starting y-coordinate for the text
-    float y = 50f;
-
-    // Add the test name to the PDF
-    page.Canvas.DrawString("Test Name: " + test.Name, font, brush, 50, y);
-    y += 20f;
-
-    // Add the test description to the PDF
-    page.Canvas.DrawString("Test Description: " + test.Description, font, brush, 50, y);
-    y += 40f;
-
-    // Loop through each question in the test
-    for (int i = 0; i < test.Questions.Count; i++)
+    public MemoryStream GeneratePdf(Test test)
     {
-      // Add the question text to the PDF
-      page.Canvas.DrawString($"Question {i + 1}: {test.Questions[i].QuestionText}", font, brush, 50, y);
-      y += 20f;
+        // Create a new PDF document
+        var pdfDoc = new PdfDocument();
 
-      // Loop through each answer in the question
-      for (int j = 0; j < test.Questions[i].Answers.Count; j++)
-      {
-        // Add the answer text to the PDF
-        page.Canvas.DrawString($"Answer {j + 1}: {test.Questions[i].Answers[j].AnswerText}", font, brush, 70, y);
+        // Add a new page to the document
+        var page = pdfDoc.Pages.Add();
 
-        // If the answer is correct, mark it as correct in the PDF
-        if (test.Questions[i].Answers[j].IsCorrect)
+        // Create a PDF brush for text color
+        var brush = new PdfSolidBrush(Color.Black);
+
+        // Create a PDF font for text formatting
+        var font = new PdfTrueTypeFont(new Font("Arial", 14f), true);
+
+        // Set the starting y-coordinate for the text
+        var y = 50f;
+
+        // Add the test name to the PDF
+        page.Canvas.DrawString("Test Name: " + test.Name, font, brush, 50, y);
+        y += 20f;
+
+        // Add the test description to the PDF
+        page.Canvas.DrawString("Test Description: " + test.Description, font, brush, 50, y);
+        y += 40f;
+
+        // Loop through each question in the test
+        for (var i = 0; i < test.Questions.Count; i++)
         {
-          page.Canvas.DrawString("✔", font, brush, 50, y);
+            // Add the question text to the PDF
+            page.Canvas.DrawString($"Question {i + 1}: {test.Questions[i].QuestionText}", font, brush, 50, y);
+            y += 20f;
+
+            // Loop through each answer in the question
+            for (var j = 0; j < test.Questions[i].Answers.Count; j++)
+            {
+                // Add the answer text to the PDF
+                page.Canvas.DrawString($"{(char)(97 + j) + ")"}: {test.Questions[i].Answers[j].AnswerText}", font, brush, 70, y);
+
+                // If the answer is correct, mark it as correct in the PDF
+                if (test.Questions[i].Answers[j].IsCorrect)
+                {
+                    page.Canvas.DrawString("✔", font, brush, 50, y);
+                }
+
+                y += 20f;
+            }
+
+            // Add some space between questions
+            y += 20f;
         }
 
-        y += 20f;
-      }
+        // Save the PDF to a memory stream
+        var stream = new MemoryStream();
+        pdfDoc.SaveToStream(stream);
 
-      // Add some space between questions
-      y += 20f;
+        // Dispose of the PDF document
+        pdfDoc.Dispose();
+
+        // Reset the memory stream position to the beginning
+        stream.Position = 0;
+
+        return stream;
     }
 
-    // Save the PDF to a memory stream
-    MemoryStream stream = new MemoryStream();
-    pdfDoc.SaveToStream(stream);
-
-    // Dispose of the PDF document
-    pdfDoc.Dispose();
-
-    // Reset the memory stream position to the beginning
-    stream.Position = 0;
-
-    return stream;
-  }
-
-  private string GetTextFromSavedFile(IFormFile file)
+    private string GetTextFromSavedFile(IFormFile file)
     {
         string cleanedText;
 
