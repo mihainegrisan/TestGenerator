@@ -32,25 +32,21 @@ public class TestGeneratorController : Controller
         return View();
     }
 
-  [HttpPost]
+    [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Generate(Test test, IFormFile file)
     {
-        if (!ModelState.IsValid)
-        {
-            return View(test);
-        }
+        if (!ModelState.IsValid) return View(test);
 
         // might not need this here if I can pass the test to the view
-        // probably I can't
         ViewBag.NumberOfQuestions = test.NumberOfQuestions;
         ViewBag.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
 
         var text = await _fileProcessor.GetTextFromFileAsync(file);
 
-        var response = await _chatGptClient.SendChatMessage(text);
+        var responseMessage = await _chatGptClient.SendChatMessage(text);
 
-        test = _chatGptClient.GetTestFromInput(response);
+        _chatGptClient.UpdateTestWithQuestionsAndAnswersFromApiResponse(test, responseMessage);
 
         // Pass the test to the view
         // How to prepopulate all the fields from chatGPT to the questions and answers on the next view?
@@ -72,11 +68,8 @@ public class TestGeneratorController : Controller
         //TempData["Message"] = "File uploaded successfully";
         // From now on, work with the saved file
 
-        
-        if (!ModelState.IsValid)
-        {
-            return View(test);
-        }
+
+        if (!ModelState.IsValid) return View(test);
 
         await _testRepository.AddTest(test);
 

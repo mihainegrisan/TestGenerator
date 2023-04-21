@@ -1,5 +1,4 @@
 ﻿using OpenAI_API;
-using System.Text.RegularExpressions;
 using TestGenerator.DAL.Models;
 
 namespace TestGenerator.Web.Services;
@@ -57,76 +56,42 @@ public class ChatGptClient : IChatGptClient
         return response;
     }
 
-    public Task<string> SendMessage(string message, int maxChunkSize)
+    public Test UpdateTestWithQuestionsAndAnswersFromApiResponse(Test test, string responseMessage)
     {
-        throw new NotImplementedException();
-    }
-
-    public Test GetTestFromInput(string input)
-    {
-        Test test = new Test();
-
-        // Get name and description
-        string[] nameAndDesc = input.Substring(0, input.IndexOf("\\r\\n\\r\\n")).Split("\\r\\n");
-        test.Name = nameAndDesc[0].Trim();
-        test.Description = nameAndDesc[1].Trim();
-
-        // Get questions and answers
-        string[] questionStrings = input.Split(new string[] { "\\r\\n\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
+        var questionStrings = responseMessage.Split(new[] { "\\r\\n\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
 
         test.Questions = new List<Question>();
-        foreach (string questionString in questionStrings)
+
+        foreach (var questionString in questionStrings)
         {
-            Question question = new Question();
+            var question = new Question();
 
-            // this was before
-            // string questionText = questionString.Substring(questionString.IndexOf('.') + 2);
-            int questionNumberEndIndex = questionString.IndexOf('.') + 1;
-            while (Char.IsDigit(questionString[questionNumberEndIndex]))
-            {
-                questionNumberEndIndex++;
-            }
-            string questionText = questionString.Substring(questionNumberEndIndex + 1);
-
-
-            int answerStartIndex = questionString.IndexOf("\\r\\na)") + 6;
-
-            // Get the options
-            List<string> options = new List<string>();
-            int optionIndex = 0;
-            while (true)
-            {
-                string optionString = (char)(97 + optionIndex) + ")";
-                int optionStartIndex = questionString.IndexOf(optionString, answerStartIndex);
-                if (optionStartIndex == -1)
-                {
-                    break;
-                }
-                options.Add(optionString);
-                optionIndex++;
-            }
+            var questionText = GetQuestionText(questionString);
+            
+            var answerStartIndex = questionString.IndexOf("\\r\\na)", StringComparison.Ordinal) + 4;
+            
+            var options = GetOptions(questionString, answerStartIndex);
 
             // Get answer text and set IsCorrect flag
-            string[] answerParts = questionString.Substring(answerStartIndex).Split(new string[] { "\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
-            
+            var answerParts = questionString.Substring(answerStartIndex).Split(new[] { "\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
+
             var startIndex = answerParts[options.Count].IndexOf(' ') + 1; // +1 to skip the space after "Answer:"
             var length = answerParts[options.Count].IndexOf(')') - startIndex + 1; // +1 to take the ")" after the letter "a)"
-            string answerOption = answerParts[options.Count].Substring(startIndex, length).Trim();
-            
-            int correctAnswerIndex = options.IndexOf(answerOption);
+            var answerOption = answerParts[options.Count].Substring(startIndex, length).Trim();
+
+            var correctAnswerIndex = options.IndexOf(answerOption);
 
             question.Answers = new List<Answer>();
 
-            for (int i = 0; i < options.Count; i++)
+            for (var i = 0; i < options.Count; i++)
             {
-                string optionText = questionString.Substring(questionString.IndexOf(options[i]) + options[i].Length).Trim();
-                optionText = optionText.Substring(0, optionText.IndexOf("\\r\\n")).Trim();
-                bool isCorrect = i == correctAnswerIndex;
+                var optionText = questionString.Substring(questionString.IndexOf(options[i], StringComparison.Ordinal) + options[i].Length).Trim();
+                optionText = optionText.Substring(0, optionText.IndexOf("\\r\\n", StringComparison.Ordinal)).Trim();
+                var isCorrect = i == correctAnswerIndex;
                 question.Answers.Add(new Answer { AnswerText = optionText, IsCorrect = isCorrect });
             }
 
-            // Set question text and add to test
-            question.QuestionText = questionText.Substring(0, questionText.IndexOf("\\r\\n")).Trim();
+            question.QuestionText = questionText.Substring(0, questionText.IndexOf("\\r\\n", StringComparison.Ordinal)).Trim();
             test.Questions.Add(question);
         }
 
@@ -139,31 +104,65 @@ public class ChatGptClient : IChatGptClient
         return test;
     }
 
-    //public async Task<string> SendMessage(string message, int maxChunkSize = 250)
-    //{
-    //  var openAi = new OpenAIAPI(_apiKey);
-    //  var completions = await openAi.Chat.CreateChatCompletionAsync(message);
+    private static string GetQuestionText(string questionString)
+    {
+        var questionNumberEndIndex = questionString.IndexOf('.') + 1;
 
-    //  var fullResponse = completions.Choices[0].Message.Content;
+        while (char.IsDigit(questionString[questionNumberEndIndex]))
+        {
+            questionNumberEndIndex++;
+        }
 
-    //  var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+        return questionString.Substring(questionNumberEndIndex + 1);
+    }
 
-    //  var tasks = new List<Task<string>>();
+    private static List<string> GetOptions(string questionString, int answerStartIndex)
+    {
+        var options = new List<string>();
+        var optionIndex = 0;
 
-    //  foreach (var chunk in chunks)
-    //  {
-    //    tasks.Add(Task.Run(async () =>
-    //    {
-    //      var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
+        while (true)
+        {
+            var optionString = (char)(97 + optionIndex) + ")";
+            var optionStartIndex = questionString.IndexOf(optionString, answerStartIndex, StringComparison.Ordinal);
 
-    //      return chunkCompletions.Choices[0].Message.Content;
-    //    }));
-    //  }
+            if (optionStartIndex == -1)
+            {
+                break;
+            }
 
-    //  var results = await Task.WhenAll(tasks);
+            options.Add(optionString);
+            optionIndex++;
+        }
 
-    //  return string.Join(" ", results);
-    //}
+        return options;
+    }
+
+    public async Task<string> SendMessage(string message, int maxChunkSize = 250)
+    {
+        var openAi = new OpenAIAPI(_apiKey);
+        var completions = await openAi.Chat.CreateChatCompletionAsync(message);
+
+        var fullResponse = completions.Choices[0].Message.Content;
+
+        var chunks = SplitIntoChunks(fullResponse, maxChunkSize);
+
+        var tasks = new List<Task<string>>();
+
+        foreach (var chunk in chunks)
+        {
+            tasks.Add(Task.Run(async () =>
+            {
+                var chunkCompletions = await openAi.Chat.CreateChatCompletionAsync(chunk);
+
+                return chunkCompletions.Choices[0].Message.Content;
+            }));
+        }
+
+        var results = await Task.WhenAll(tasks);
+
+        return string.Join(" ", results);
+    }
 
     private static List<string> SplitIntoChunks(string text, int maxChunkSize)
     {
@@ -181,7 +180,10 @@ public class ChatGptClient : IChatGptClient
             currentChunk += $"{word} ";
         }
 
-        if (!string.IsNullOrWhiteSpace(currentChunk)) chunks.Add(currentChunk.Trim());
+        if (!string.IsNullOrWhiteSpace(currentChunk))
+        {
+            chunks.Add(currentChunk.Trim());
+        }
 
         return chunks;
     }

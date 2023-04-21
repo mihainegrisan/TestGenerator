@@ -8,5 +8,5 @@ public interface IChatGptClient
 
     Task<string> SendMessage(string message, int maxChunkSize);
 
-    Test GetTestFromInput(string input);
+    Test UpdateTestWithQuestionsAndAnswersFromApiResponse(Test test, string responseMessage);
 }
