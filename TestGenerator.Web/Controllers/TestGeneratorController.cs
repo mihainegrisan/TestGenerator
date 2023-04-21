@@ -36,15 +36,18 @@ public class TestGeneratorController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Generate(Test test, IFormFile file)
     {
-        if (!ModelState.IsValid) return View(test);
+        if (!ModelState.IsValid)
+        {
+            return View(test);
+        }
 
         // might not need this here if I can pass the test to the view
         ViewBag.NumberOfQuestions = test.NumberOfQuestions;
         ViewBag.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
 
-        var text = await _fileProcessor.GetTextFromFileAsync(file);
+        var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-        var responseMessage = await _chatGptClient.SendChatMessage(text);
+        var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
 
         _chatGptClient.UpdateTestWithQuestionsAndAnswersFromApiResponse(test, responseMessage);
 
@@ -69,7 +72,10 @@ public class TestGeneratorController : Controller
         // From now on, work with the saved file
 
 
-        if (!ModelState.IsValid) return View(test);
+        if (!ModelState.IsValid)
+        {
+            return View(test);
+        }
 
         await _testRepository.AddTest(test);
 

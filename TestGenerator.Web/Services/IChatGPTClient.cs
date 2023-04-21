@@ -4,7 +4,7 @@ namespace TestGenerator.Web.Services;
 
 public interface IChatGptClient
 {
-    Task<string> SendChatMessage(string message);
+    Task<string> SendChatMessage(Test test, string message);
 
     Task<string> SendMessage(string message, int maxChunkSize);
 

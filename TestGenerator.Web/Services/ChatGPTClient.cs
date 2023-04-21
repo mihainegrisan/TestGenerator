@@ -12,7 +12,7 @@ public class ChatGptClient : IChatGptClient
         _apiKey = secretsManager.GetApiKey();
     }
 
-    public async Task<string> SendChatMessage(string message)
+    public async Task<string> SendChatMessage(Test test, string message)
     {
         var openAi = new OpenAIAPI(_apiKey);
 
@@ -20,26 +20,30 @@ public class ChatGptClient : IChatGptClient
 
         // give instruction as System
         chat.AppendSystemMessage("""
-		You are a teacher who creates a multiple choice test with only one answer per question being the correct one. If the user tells you "Extract 3 questions and 4 possible answers with only one correct answer from the next paragraph: "Knowledge Assistant leverages machine learning (ML) advances to help you automatically generate questions and answers from any textual content in minutes.", you will say something like: 
+		You are a teacher who creates a multiple choice test with only one answer per question being the correct one. For example, if the user tells you "Extract 3 questions and 4 possible answers with only one correct answer from the next paragraph: "Knowledge Assistant leverages machine learning (ML) advances to help you automatically generate questions and answers from any textual content in minutes.", you will say something like: 
+
 		"1. What technology does Knowledge Assistant use to generate questions and answers?
 		a) Robotics
 		b) Blockchain
 		c) Artificial intelligence
 		d) Virtual reality
 		Answer: c) Artificial intelligence
+
 		2. How long does it take for Knowledge Assistant to generate questions and answers?
 		a) Hours
 		b) Days
 		c) Minutes
 		d) Seconds
 		Answer: c) Minutes
+
 		3. Can Knowledge Assistant generate questions and answers from any type of content?
 		a) Yes, only textual content
 		b) Yes, any type of content
 		c) No, only video content
 		d) No, only audio content
-		Answer: b) Yes, any type of content".  
-		You only ever respond with the questions, answers and the correct answer. You do not say anything else.
+		Answer: b) Yes, any type of content".
+
+		The Questions will always be separated by a new line. You only ever respond with the questions, answers and the correct answer. You do not say anything else.
 		""");
 
         // give a few examples as user and assistant
@@ -49,7 +53,7 @@ public class ChatGptClient : IChatGptClient
         //chat.AppendExampleChatbotOutput("No");
 
         chat.AppendUserInput(
-            $"""Extract 3 questions and 4 possible answers with only one correct answer from the next paragraph: "{message}".""");
+            $"""Extract {test.NumberOfQuestions} questions and {test.NumberOfAnswersPerQuestion} possible answers with only one correct answer from the next paragraph: "{message}".""");
 
         var response = await chat.GetResponseFromChatbotAsync();
         Console.WriteLine(response);
@@ -58,7 +62,7 @@ public class ChatGptClient : IChatGptClient
 
     public Test UpdateTestWithQuestionsAndAnswersFromApiResponse(Test test, string responseMessage)
     {
-        var questionStrings = responseMessage.Split(new[] { "\\r\\n\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
+        var questionStrings = responseMessage.Split(new[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
         test.Questions = new List<Question>();
 
@@ -68,12 +72,12 @@ public class ChatGptClient : IChatGptClient
 
             var questionText = GetQuestionText(questionString);
             
-            var answerStartIndex = questionString.IndexOf("\\r\\na)", StringComparison.Ordinal) + 4;
+            var answerStartIndex = questionString.IndexOf("\r\na)", StringComparison.Ordinal) + 2;
             
             var options = GetOptions(questionString, answerStartIndex);
 
             // Get answer text and set IsCorrect flag
-            var answerParts = questionString.Substring(answerStartIndex).Split(new[] { "\\r\\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var answerParts = questionString.Substring(answerStartIndex).Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             var startIndex = answerParts[options.Count].IndexOf(' ') + 1; // +1 to skip the space after "Answer:"
             var length = answerParts[options.Count].IndexOf(')') - startIndex + 1; // +1 to take the ")" after the letter "a)"
@@ -86,12 +90,12 @@ public class ChatGptClient : IChatGptClient
             for (var i = 0; i < options.Count; i++)
             {
                 var optionText = questionString.Substring(questionString.IndexOf(options[i], StringComparison.Ordinal) + options[i].Length).Trim();
-                optionText = optionText.Substring(0, optionText.IndexOf("\\r\\n", StringComparison.Ordinal)).Trim();
+                optionText = optionText.Substring(0, optionText.IndexOf("\r\n", StringComparison.Ordinal)).Trim();
                 var isCorrect = i == correctAnswerIndex;
                 question.Answers.Add(new Answer { AnswerText = optionText, IsCorrect = isCorrect });
             }
 
-            question.QuestionText = questionText.Substring(0, questionText.IndexOf("\\r\\n", StringComparison.Ordinal)).Trim();
+            question.QuestionText = questionText.Substring(0, questionText.IndexOf("\r\n", StringComparison.Ordinal)).Trim();
             test.Questions.Add(question);
         }
 
