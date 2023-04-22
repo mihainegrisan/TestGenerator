@@ -40,6 +40,10 @@
             <td>
               <a class="btn btn-primary btn-sm" href="@Url.Action("Edit", new { id = test.TestId })">Edit</a>
               <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = test.TestId })">Delete</a>
+              <a class="btn btn-secondary btn-sm" href="@Url.Action("Details", new { id = test.TestId })">Details</a>
+              <a class="btn btn-dark btn-sm" href="@Url.Action("DownloadPdf", new { id = test.TestId })">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF
+              </a>
             </td>
           </tr>
       }
