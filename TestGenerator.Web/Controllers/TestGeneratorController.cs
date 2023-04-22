@@ -32,6 +32,26 @@ public class TestGeneratorController : Controller
         return View();
     }
 
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public async Task<IActionResult> Generate(Test test, IFormFile file)
+    //{
+    //    if (!ModelState.IsValid)
+    //    {
+    //        return View(test);
+    //    }
+
+    //    var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
+
+    //    var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
+
+    //    _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
+
+    //    TempData["Test"] = test;
+
+    //    return View(nameof(GenerateTest), test);
+    //}
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Generate(Test test, IFormFile file)
@@ -41,20 +61,109 @@ public class TestGeneratorController : Controller
             return View(test);
         }
 
-        // might not need this here if I can pass the test to the view
-        ViewBag.NumberOfQuestions = test.NumberOfQuestions;
-        ViewBag.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
-
         var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-        var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
 
-        _chatGptClient.UpdateTestWithQuestionsAndAnswersFromApiResponse(test, responseMessage);
+        var responseMessage =
+            "1. What is the Factory Method Pattern?\r\na) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\nb) A pattern that uses an interface for creating families of related objects without specifying their concrete classes\r\nc) A pattern that allows you to build complex objects by using a step-by-step approach\r\nd) None of the above\r\nAnswer: a) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\n\r\n2. What is the purpose of the Abstract Factory Pattern?\r\na) To decouple code\r\nb) To build complex objects by using a step-by-step approach\r\nc) To enforce the use of related objects together\r\nd) None of the above\r\nAnswer: c) To enforce the use of related objects together\r\n\r\n3. How does the Builder pattern help control object creation?\r\na) By using an interface for object creation and leaving the instantiation to a subclass\r\nb) By using an interface for creating families of related objects without specifying their concrete classes\r\nc) By using a step-by-step approach\r\nd) None of the above\r\nAnswer: c) By using a step-by-step approach";
 
-        // Pass the test to the view
-        // How to prepopulate all the fields from chatGPT to the questions and answers on the next view?
+        test = new Test
+        {
+            Name = test.Name,
+            Description = test.Description,
+            NumberOfQuestions = 3,
+            NumberOfAnswersPerQuestion = 4,
+            Questions = new List<Question>
+            {
+                new ()
+                {
+                    QuestionText = "What is the Factory Method Pattern?",
+                    Answers = new List<Answer>
+                    {
+                        new ()
+                        {
+                            AnswerText = "A pattern that defines an interface for creating families of related or dependent objects without specifying their concrete classes",
+                            IsCorrect = false
+                        },
+                        new ()
+                        {
+                            AnswerText = "A pattern that creates complex objects by using a step-by-step approach",
+                            IsCorrect = false
+                        },
+                        new()
+                        {
+                            AnswerText = "A pattern that defines an interface for object creation but the actual instantiation is done by a subclass",
+                            IsCorrect = true
+                        },
+                        new()
+                        {
+                            AnswerText = "None of the above",
+                            IsCorrect = false
+                        }
+                    }
+                },
+                new()
+                {
+                    QuestionText = "What is the purpose of the Abstract Factory Pattern?",
+                    Answers = new List<Answer>
+                    {
+                        new()
+                        {
+                            AnswerText = "To create an abstraction to object creation",
+                            IsCorrect = false
+                        },
+                        new()
+                        {
+                            AnswerText = "To build complex objects by using a step-by-step approach",
+                            IsCorrect = false
+                        },
+                        new()
+                        {
+                            AnswerText = "To define an interface for object creation but the actual instantiation is done by a subclass",
+                            IsCorrect = false
+                        },
+                        new()
+                        {
+                            AnswerText = "To provide an interface for creating families of related or dependent objects without specifying their concrete classes",
+                            IsCorrect = true
+                        }
+                    }
+                },
+                new()
+                {
+                    QuestionText = "What is the purpose of the Abstract Factory Pattern?",
+                    Answers = new List<Answer>
+                    {
+                        new()
+                        {
+                            AnswerText = "A pattern that defines an interface for creating families of related or dependent objects without specifying their concrete classes",
+                            IsCorrect = false
+                        },
+                        new()
+                        {
+                            AnswerText = "A pattern that creates complex objects by using a step-by-step approach",
+                            IsCorrect = true
+                        },
+                        new()
+                        {
+                            AnswerText = "A pattern that defines an interface for object creation but the actual instantiation is done by a subclass",
+                            IsCorrect = false
+                        },
+                        new()
+                        {
+                            AnswerText = "None of the above",
+                            IsCorrect = false
+                        }
+                    }
+                }
+            }
+        };
+        
+        TempData["Test"] = test;
 
-        return View(nameof(GenerateTest));
+        _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
+
+        return View(nameof(GenerateTest), test);
     }
 
     [HttpPost]
@@ -71,7 +180,6 @@ public class TestGeneratorController : Controller
         //TempData["Message"] = "File uploaded successfully";
         // From now on, work with the saved file
 
-
         if (!ModelState.IsValid)
         {
             return View(test);
@@ -79,7 +187,9 @@ public class TestGeneratorController : Controller
 
         await _testRepository.AddTest(test);
 
-        return RedirectToAction(nameof(Index));
+        var tests = await _testRepository.GetTests();
+
+        return View(nameof(Index), tests);
     }
 
     public async Task<IActionResult> DownloadPdf(int id)
