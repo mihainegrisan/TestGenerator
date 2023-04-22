@@ -44,18 +44,15 @@
 
       @for (var j = 0; j < test.NumberOfAnswersPerQuestion; j++)
       {
-          var answerLabel = j == 0 ? $"Correct Answer {j + 1}" : $"Answer {j + 1}";
-
           <div class="row mb-3 align-middle">
-            <label asp-for="@test.Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
-            <div class="col-sm-10">
+            <label asp-for="@test.Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">Answer @(j + 1)</label>
+            <div class="col-sm-10 d-flex">
               <input asp-for="@test.Questions[i].Answers[j].AnswerText" class="form-control" value="@test.Questions[i].Answers[j].AnswerText"/>
               <span asp-validation-for="@test.Questions[i].Answers[j].AnswerText" class="text-danger"></span>
               @{
                   bool isChecked = test.Questions[i].Answers[j].IsCorrect;
               }
               <input asp-for="@test.Questions[i].Answers[j].IsCorrect" type="checkbox" class="form-check-input ms-2" checked="@(isChecked)" />
-
             </div>
           </div>
       }

@@ -43,106 +43,12 @@ public class TestGeneratorController : Controller
 
         var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-        //var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
-        var responseMessage = 
-            "1. What is the Factory Method Pattern?\r\na) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\nb) A pattern that uses an interface for creating families of related objects without specifying their concrete classes\r\nc) A pattern that allows you to build complex objects by using a step-by-step approach\r\nd) None of the above\r\nAnswer: a) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\n\r\n2. What is the purpose of the Abstract Factory Pattern?\r\na) To decouple code\r\nb) To build complex objects by using a step-by-step approach\r\nc) To enforce the use of related objects together\r\nd) None of the above\r\nAnswer: c) To enforce the use of related objects together\r\n\r\n3. How does the Builder pattern help control object creation?\r\na) By using an interface for object creation and leaving the instantiation to a subclass\r\nb) By using an interface for creating families of related objects without specifying their concrete classes\r\nc) By using a step-by-step approach\r\nd) None of the above\r\nAnswer: c) By using a step-by-step approach";
+        var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
 
-        test = new Test
-        {
-            Name = test.Name,
-            Description = test.Description,
-            NumberOfQuestions = 3,
-            NumberOfAnswersPerQuestion = 4,
-            Questions = new List<Question>
-            {
-                new()
-                {
-                    QuestionText = "What is the Factory Method Pattern?",
-                    Answers = new List<Answer>
-                    {
-                        new()
-                        {
-                            AnswerText = "A pattern that defines an interface for creating families of related or dependent objects without specifying their concrete classes",
-                            IsCorrect = false
-                        },
-                        new()
-                        {
-                            AnswerText = "A pattern that creates complex objects by using a step-by-step approach",
-                            IsCorrect = false
-                        },
-                        new()
-                        {
-                            AnswerText = "A pattern that defines an interface for object creation but the actual instantiation is done by a subclass",
-                            IsCorrect = true
-                        },
-                        new()
-                        {
-                            AnswerText = "None of the above",
-                            IsCorrect = false
-                        }
-                    }
-                },
-                new()
-                {
-                    QuestionText = "What is the purpose of the Abstract Factory Pattern?",
-                    Answers = new List<Answer>
-                    {
-                        new()
-                        {
-                            AnswerText = "To create an abstraction to object creation",
-                            IsCorrect = false
-                        },
-                        new()
-                        {
-                            AnswerText = "To build complex objects by using a step-by-step approach",
-                            IsCorrect = false
-                        },
-                        new()
-                        {
-                            AnswerText = "To define an interface for object creation but the actual instantiation is done by a subclass",
-                            IsCorrect = false
-                        },
-                        new()
-                        {
-                            AnswerText = "To provide an interface for creating families of related or dependent objects without specifying their concrete classes",
-                            IsCorrect = true
-                        }
-                    }
-                },
-                new()
-                {
-                    QuestionText = "What is the purpose of the Abstract Factory Pattern?",
-                    Answers = new List<Answer>
-                    {
-                        new()
-                        {
-                            AnswerText = "A pattern that defines an interface for creating families of related or dependent objects without specifying their concrete classes",
-                            IsCorrect = false
-                        },
-                        new()
-                        {
-                            AnswerText = "A pattern that creates complex objects by using a step-by-step approach",
-                            IsCorrect = true
-                        },
-                        new()
-                        {
-                            AnswerText = "A pattern that defines an interface for object creation but the actual instantiation is done by a subclass",
-                            IsCorrect = false
-                        },
-                        new()
-                        {
-                            AnswerText = "None of the above",
-                            IsCorrect = false
-                        }
-                    }
-                }
-            }
-        };
+        _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
 
         TempData["Test"] = test;
 
-        _chatGptClient.UpdateTestWithQuestionsAndAnswersFromApiResponse(test, responseMessage);
-        // test will have the questions and answers populated but not the name and description when it gets to the GenerateTest action
         return View(nameof(GenerateTest), test);
     }
 
