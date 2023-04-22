@@ -8,5 +8,5 @@ public class Question
 
     [Required] public string? QuestionText { get; set; }
 
-    [Required] public List<Answer>? Answers { get; set; }
+    public List<Answer>? Answers { get; set; }
 }

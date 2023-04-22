@@ -1,0 +1,51 @@
+﻿@model List<TestGenerator.DAL.Models.Question>
+@{
+    ViewData["Title"] = "Index";
+    var i = 0;
+}
+
+<h1>Questions</h1>
+
+<a asp-action="Add" asp-controller="Question" class="btn btn-primary btn-sm">Add New Question</a>
+
+<div class="row my-3">
+  <div class="col-md-6">
+    <form asp-action="Search" method="post">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search Tests" name="SearchString"/>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var question in Model)
+      {
+          <tr>
+            <td>@(++i)</td>
+            <td>@question.QuestionText</td>
+            <td>
+              <a class="btn btn-primary btn-sm" href="@Url.Action("Edit", new { id = question.QuestionId })">Edit</a>
+              <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = question.QuestionId })">Delete</a>
+              <a class="btn btn-secondary btn-sm" href="@Url.Action("Details", new { id = question.QuestionId })">Details</a>
+            </td>
+          </tr>
+      }
+      </tbody>
+    </table>
+}
+else
+{
+    <p>No questions found.</p>
+}
