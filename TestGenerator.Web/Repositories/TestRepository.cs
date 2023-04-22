@@ -16,7 +16,9 @@ public class TestRepository : ITestRepository
     public async Task<Test> AddTestAsync(Test test)
     {
         _dbContext.Tests?.Add(test);
+
         await _dbContext.SaveChangesAsync();
+
         return test;
     }
 
@@ -36,7 +38,9 @@ public class TestRepository : ITestRepository
     public async Task<Test> UpdateTestAsync(Test test)
     {
         _dbContext.Entry(test).State = EntityState.Modified;
+
         await _dbContext.SaveChangesAsync();
+
         return test;
     }
 
