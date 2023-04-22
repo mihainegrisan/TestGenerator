@@ -13,11 +13,6 @@ public class TestRepository : ITestRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Test> FindAsync(int? id)
-    {
-        return await _dbContext.Tests.FindAsync(id);
-    }
-
     public async Task<Test> AddTestAsync(Test test)
     {
         _dbContext.Tests?.Add(test);
@@ -59,10 +54,5 @@ public class TestRepository : ITestRepository
         await _dbContext.SaveChangesAsync();
 
         return true;
-    }
-
-    public bool TestExists(int id)
-    {
-        return _dbContext.Tests.Any(e => e.TestId == id);
     }
 }

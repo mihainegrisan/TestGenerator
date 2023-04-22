@@ -197,6 +197,7 @@ public class TestGeneratorController : Controller
         var test = await _testRepository.GetTestAsync(id);
 
         var stream = _fileProcessor.GeneratePdf(test);
+
         stream.Position = 0;
 
         return File(stream, "application/pdf", $"{test.Name}.pdf");
@@ -225,6 +226,7 @@ public class TestGeneratorController : Controller
         existingTest.Description = test.Description;
         existingTest.NumberOfQuestions = test.NumberOfQuestions;
         existingTest.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
+        existingTest.Questions = test.Questions;
 
         await _testRepository.UpdateTestAsync(existingTest);
 
