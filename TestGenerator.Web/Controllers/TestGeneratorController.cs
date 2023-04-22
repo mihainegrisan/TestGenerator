@@ -75,17 +75,17 @@ public class TestGeneratorController : Controller
             NumberOfAnswersPerQuestion = 4,
             Questions = new List<Question>
             {
-                new ()
+                new()
                 {
                     QuestionText = "What is the Factory Method Pattern?",
                     Answers = new List<Answer>
                     {
-                        new ()
+                        new()
                         {
                             AnswerText = "A pattern that defines an interface for creating families of related or dependent objects without specifying their concrete classes",
                             IsCorrect = false
                         },
-                        new ()
+                        new()
                         {
                             AnswerText = "A pattern that creates complex objects by using a step-by-step approach",
                             IsCorrect = false
@@ -158,7 +158,7 @@ public class TestGeneratorController : Controller
                 }
             }
         };
-        
+
         TempData["Test"] = test;
 
         _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
@@ -185,23 +185,52 @@ public class TestGeneratorController : Controller
             return View(test);
         }
 
-        await _testRepository.AddTest(test);
+        await _testRepository.AddTestAsync(test);
 
-        var tests = await _testRepository.GetTests();
+        var tests = await _testRepository.GetTestsAsync();
 
         return View(nameof(Index), tests);
     }
 
     public async Task<IActionResult> DownloadPdf(int id)
     {
-        var test = await _testRepository.GetTest(id);
+        var test = await _testRepository.GetTestAsync(id);
 
         var stream = _fileProcessor.GeneratePdf(test);
         stream.Position = 0;
 
         return File(stream, "application/pdf", $"{test.Name}.pdf");
     }
-    // GET: TestGenerator/Delete/5
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var test = await _testRepository.GetTestAsync(id);
+
+        return View(test);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Test test)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(test);
+        }
+
+        var existingTest = await _testRepository.GetTestAsync(test.TestId);
+
+        existingTest.Name = test.Name;
+        existingTest.Description = test.Description;
+        existingTest.NumberOfQuestions = test.NumberOfQuestions;
+        existingTest.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
+
+        await _testRepository.UpdateTestAsync(existingTest);
+
+        return RedirectToAction(nameof(Index));
+    }
+
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -214,8 +243,8 @@ public class TestGeneratorController : Controller
         return View(test);
     }
 
-    // POST: TestGenerator/Delete/5
-    [HttpPost, ActionName("Delete")]
+    [HttpPost]
+    [ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -224,5 +253,13 @@ public class TestGeneratorController : Controller
         await _testRepository.DeleteTestAsync(test.TestId);
 
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var test = await _testRepository.GetTestAsync(id);
+
+        return View(test);
     }
 }

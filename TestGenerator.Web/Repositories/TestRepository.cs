@@ -33,7 +33,7 @@ public class TestRepository : ITestRepository
             .FirstOrDefaultAsync(test => test.TestId == id);
     }
 
-  public async Task<List<Test>> GetTestsAsync()
+    public async Task<List<Test>> GetTestsAsync()
     {
         return await _dbContext.Tests.ToListAsync();
     }

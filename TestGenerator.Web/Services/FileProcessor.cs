@@ -106,7 +106,7 @@ public class FileProcessor : IFileProcessor
             for (var j = 0; j < test.Questions[i].Answers.Count; j++)
             {
                 // Add the answer text to the PDF
-                page.Canvas.DrawString($"{(char)(97 + j) + ")"}: {test.Questions[i].Answers[j].AnswerText}", font, brush, 70, y);
+                page.Canvas.DrawString($"{(char)(97 + j) + ")"} {test.Questions[i].Answers[j].AnswerText}", font, brush, 70, y);
 
                 // If the answer is correct, mark it as correct in the PDF
                 if (test.Questions[i].Answers[j].IsCorrect)

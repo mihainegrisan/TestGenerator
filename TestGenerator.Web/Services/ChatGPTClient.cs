@@ -77,7 +77,7 @@ public class ChatGptClient : IChatGptClient
 
             // Get answer text and set IsCorrect flag
             var answerParts = questionString.Substring(answerStartIndex).Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-       
+
             var startIndex = answerParts[options.Count].IndexOf(' ') + 1; // +1 to skip the space after "Answer:"
             var length = answerParts[options.Count].IndexOf(')') - startIndex + 1; // +1 to take the ")" after the letter "a)"
             var answerOption = answerParts[options.Count].Substring(startIndex, length).Trim();

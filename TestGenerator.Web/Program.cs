@@ -1,11 +1,6 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using TestGenerator.DAL.Data;
-using TestGenerator.Web.Extensions;
 using TestGenerator.Web.Repositories;
 using TestGenerator.Web.Services;
 
