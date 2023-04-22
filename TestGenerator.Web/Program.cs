@@ -18,6 +18,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IFileProcessor, FileProcessor>();
 builder.Services.AddScoped<ITestRepository, TestRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IChatGptClient, ChatGptClient>();
 builder.Services.AddSingleton<SecretsManager>();
 

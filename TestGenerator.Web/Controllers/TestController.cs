@@ -19,6 +19,7 @@ public class TestController : Controller
     public async Task<IActionResult> Index()
     {
         var tests = await _testRepository.GetTestsAsync();
+
         return View(tests);
     }
 

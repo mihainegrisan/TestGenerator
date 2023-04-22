@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model TestGenerator.DAL.Models.Question
+@{
+    ViewData["Title"] = "Add";
+}
+
+<form asp-action="Add" asp-controller="Question" method="post">
+  <div class="form-floating mb-3 col-sm-6">
+    <input type="number" name="numberOfAnswers" id="numberOfAnswers" class="form-control" placeholder="5" value="@ViewBag.NumberOfAnswersPerQuestion" required/>
+    <label for="numberOfAnswers">Number of Answers</label>
+  </div>
+
+  <div class="row mb-3 mt-5">
+    <label asp-for="@Model.QuestionText" class="col-sm-1 col-form-label fw-bold">Question </label>
+    <div class="col-sm-11">
+      <input asp-for="@Model.QuestionText" class="form-control"/>
+      <span asp-validation-for="@Model.QuestionText" class="text-danger"></span>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Create Question</button>
+</form>
