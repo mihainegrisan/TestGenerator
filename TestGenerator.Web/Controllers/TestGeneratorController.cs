@@ -22,7 +22,7 @@ public class TestGeneratorController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var tests = await _testRepository.GetTests();
+        var tests = await _testRepository.GetTestsAsync();
         return View(tests);
     }
 
@@ -200,5 +200,29 @@ public class TestGeneratorController : Controller
         stream.Position = 0;
 
         return File(stream, "application/pdf", $"{test.Name}.pdf");
+    }
+    // GET: TestGenerator/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var test = await _testRepository.GetTestAsync(id);
+
+        return View(test);
+    }
+
+    // POST: TestGenerator/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var test = await _testRepository.GetTestAsync(id);
+
+        await _testRepository.DeleteTestAsync(test.TestId);
+
+        return RedirectToAction(nameof(Index));
     }
 }

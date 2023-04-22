@@ -18,14 +18,14 @@ public class TestRepository : ITestRepository
         return await _dbContext.Tests.FindAsync(id);
     }
 
-    public async Task<Test> AddTest(Test test)
+    public async Task<Test> AddTestAsync(Test test)
     {
         _dbContext.Tests?.Add(test);
         await _dbContext.SaveChangesAsync();
         return test;
     }
 
-    public async Task<Test> GetTest(int id)
+    public async Task<Test> GetTestAsync(int? id)
     {
         return await _dbContext.Tests
             .Include(test => test.Questions)
@@ -33,7 +33,7 @@ public class TestRepository : ITestRepository
             .FirstOrDefaultAsync(test => test.TestId == id);
     }
 
-  public async Task<List<Test>> GetTests()
+  public async Task<List<Test>> GetTestsAsync()
     {
         return await _dbContext.Tests.ToListAsync();
     }

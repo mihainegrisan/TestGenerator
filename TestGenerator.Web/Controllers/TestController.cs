@@ -16,7 +16,7 @@ public class TestController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var tests = await _testRepository.GetTests();
+        var tests = await _testRepository.GetTestsAsync();
         return View(tests);
     }
 
@@ -50,7 +50,7 @@ public class TestController : Controller
             return View(test);
         }
 
-        await _testRepository.AddTest(test);
+        await _testRepository.AddTestAsync(test);
 
         return RedirectToAction(nameof(Index));
     }
