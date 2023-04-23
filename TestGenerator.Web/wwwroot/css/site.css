@@ -12,3 +12,8 @@ html {
 }
 
 body { margin-bottom: 60px; }
+
+.active {
+  background-color: transparent !important;
+  border-bottom: medium solid #DE411B !important;
+}
