@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      @for (var j = 0; j < Model.NumberOfAnswersPerQuestion; j++)
+      @for (var j = 0; j < Model.Questions[i].Answers.Count; j++)
       {
           var answerLabel = (char)(97 + j) + ")";
           var answerLabelColorClass = Model.Questions[i].Answers[j].IsCorrect ? "text-success" : "text-danger";

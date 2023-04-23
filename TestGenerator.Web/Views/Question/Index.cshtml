@@ -7,12 +7,13 @@
 <h1>Questions</h1>
 
 <a asp-action="Add" asp-controller="Question" class="btn btn-primary btn-sm">Add New Question</a>
+<a asp-action="IndexWithoutPagination" asp-controller="Question" class="btn btn-primary btn-sm">Create Test from Questions</a>
 
 <div class="row my-3">
   <div class="col-md-6">
     <form asp-action="Search" method="post">
       <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search Tests" name="SearchString"/>
+        <input type="text" class="form-control" placeholder="Search Tests" name="SearchString" />
         <button type="submit" class="btn btn-primary">Search</button>
       </div>
     </form>
