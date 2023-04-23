@@ -19,10 +19,12 @@ public class QuestionController : Controller
     {
         var questions = await _questionRepository.GetDistinctQuestionsAsync();
 
+        // TODO: Add Pagination
+
         return View(questions);
     }
 
-    public async Task<IActionResult> IndexWithoutPagination()
+    public async Task<IActionResult> CreateManual()
     {
         var questions = await _questionRepository.GetDistinctQuestionsAsync();
 
@@ -30,19 +32,16 @@ public class QuestionController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTest(List<int>? selectedQuestionIds, string name, string description)
+    public async Task<IActionResult> CreateManual(List<int>? selectedQuestionIds, string name, string description)
     {
         if (selectedQuestionIds?.Count == 0)
         {
             TempData["ErrorMessage"] = "Please select at least one question.";
 
-            return RedirectToAction(nameof(IndexWithoutPagination));
+            return RedirectToAction(nameof(CreateManual));
         }
 
-        var selectedQuestions = await _questionRepository.GetQuestionsByIdsWithoutTestIdAsync(selectedQuestionIds);
-        
-        ViewBag.TestName = name;
-        ViewBag.TestDescription = description;
+        var selectedQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(selectedQuestionIds);
 
         var test = new Test
         {
@@ -56,6 +55,31 @@ public class QuestionController : Controller
         await _testRepository.AddTestAsync(test);
 
         TempData["SuccessMessage"] = "Test created successfully.";
+
+        return RedirectToAction(nameof(Index), nameof(Test));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> CreateAuto()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateAuto(string name, string description, int numberOfQuestions)
+    {
+        var randomQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(numberOfQuestions);
+
+        var test = new Test
+        {
+            Name = name,
+            Description = description,
+            Questions = randomQuestions,
+            NumberOfQuestions = randomQuestions.Count,
+            NumberOfAnswersPerQuestion = randomQuestions.Max(q => q.Answers.Count)
+        };
+
+        await _testRepository.AddTestAsync(test);
 
         return RedirectToAction(nameof(Index), nameof(Test));
     }

@@ -34,7 +34,7 @@ public class QuestionRepository : IQuestionRepository
         return await _dbContext.Questions.Distinct().ToListAsync();
     }
 
-    public async Task<List<Question>> GetQuestionsByIdsWithoutTestIdAsync(List<int> questionIds)
+    public async Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds)
     {
         var questionsWithoutTestId = await _dbContext.Questions
             .Include(question => question.Answers)
@@ -48,6 +48,36 @@ public class QuestionRepository : IQuestionRepository
 
         return questionsWithoutTestId;
     }
+
+    public async Task<List<Question>> GetQuestionsWithoutTestIdAsync(int numberOfQuestions)
+    {
+        var selectedQuestions = await GetRandomQuestions(numberOfQuestions);
+
+        var selectedQuestionsIds = selectedQuestions.Select(q => q.QuestionId).ToList();
+        
+        var duplicatedQuestionsWithoutTestId = await GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(selectedQuestionsIds);
+
+        var questionsWithoutTestId = selectedQuestions.Where(q => q.TestId == null).ToList();
+
+        questionsWithoutTestId.AddRange(duplicatedQuestionsWithoutTestId);
+
+        return questionsWithoutTestId;
+    }
+
+    private async Task<List<Question>> GetRandomQuestions(int numberOfQuestions)
+    {
+        // Get a list of all questions in the database
+        var allQuestions = await _dbContext.Questions
+            .Include(question => question.Answers)
+            .ToListAsync();
+
+        var shuffledQuestions = allQuestions.OrderBy(q => Guid.NewGuid()).ToList();
+
+        var selectedQuestions = shuffledQuestions.Take(numberOfQuestions).ToList();
+
+        return selectedQuestions;
+    }
+
 
     public async Task<Question> UpdateQuestionAsync(Question question)
     {
@@ -96,7 +126,7 @@ public class QuestionRepository : IQuestionRepository
             var duplicatedQuestion = new Question
             {
                 QuestionText = question.QuestionText,
-                TestId = null, // set to null so it's not associated with the original test
+                TestId = null,
                 Answers = new List<Answer>()
             };
 

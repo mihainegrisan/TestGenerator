@@ -1,0 +1,26 @@
+﻿@model List<TestGenerator.DAL.Models.Question>
+@{
+    ViewData["Title"] = "Auto Generate Test";
+    var i = 0;
+}
+
+<a class="btn btn-primary mb-3" href="@Url.Action("Index")">Back</a>
+
+<h1>Auto-Generate Test From Questions</h1>
+
+<form asp-action="CreateAuto" asp-controller="Question" method="post">
+  <div class="form-floating mb-3 col-sm-6">
+    <input name="name" id="name" class="form-control" placeholder="Name" required />
+    <label for="name">Name</label>
+  </div>
+  <div class="form-floating mb-3 col-sm-6">
+    <input name="description" id="description" class="form-control" placeholder="Description" placeholder="Description" required />
+    <label for="description">Description</label>
+  </div>
+  <div class="form-floating mb-3 col-sm-6">
+    <input type="number" name="numberOfQuestions" id="numberOfQuestions" class="form-control" placeholder="5" required />
+    <label for="numberOfQuestions">Number of Questions</label>
+  </div>
+  
+  <button type="submit" class="btn btn-primary">Generate</button>
+</form>
