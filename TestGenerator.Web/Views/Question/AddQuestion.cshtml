@@ -5,6 +5,10 @@
     int numberOfAnswers = ViewBag.NumberOfAnswers;
 }
 
+<div class="text-center mb-3">
+  <h1 class="my-5">Add new Question</h1>
+</div>
+
 @if (TempData.ContainsKey("ErrorMessage"))
 {
   <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
