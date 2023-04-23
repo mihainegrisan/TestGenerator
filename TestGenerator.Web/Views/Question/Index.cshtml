@@ -4,50 +4,78 @@
     var i = 0;
 }
 
-<h1>Questions</h1>
-
-<a asp-action="Add" asp-controller="Question" class="btn btn-primary btn-sm">Add New Question</a>
-<a asp-action="CreateManual" asp-controller="Question" class="btn btn-primary btn-sm">Create Test Manual</a>
-<a asp-action="CreateAuto" asp-controller="Question" class="btn btn-primary btn-sm">Create Test Auto</a>
-
-<div class="row my-3">
-  <div class="col-md-6">
-    <form asp-action="Search" method="post">
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search Tests" name="SearchString" />
-        <button type="submit" class="btn btn-primary">Search</button>
-      </div>
-    </form>
+<div class="container-fluid my-3">
+  <div class="row">
+    <div class="col-6 d-flex align-items-center justify-content-center">
+      <h1>Questions</h1>
+    </div>
+    <div class="col-6 text-center">
+      <img src="~/images/questions.svg" class="rounded img-fluid mx-auto d-block" height="350" width="350" alt="..." />
+    </div>
   </div>
 </div>
 
-@if (Model.Count > 0)
-{
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Nr.</th>
-        <th>Name</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      @foreach (var question in Model)
-      {
-          <tr>
-            <td>@(++i)</td>
-            <td>@question.QuestionText</td>
-            <td>
-              <a class="btn btn-primary btn-sm" href="@Url.Action("Edit", new { id = question.QuestionId })">Edit</a>
-              <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = question.QuestionId })">Delete</a>
-              <a class="btn btn-secondary btn-sm" href="@Url.Action("Details", new { id = question.QuestionId })">Details</a>
-            </td>
-          </tr>
-      }
-      </tbody>
-    </table>
-}
-else
-{
-    <p>No questions found.</p>
-}
+<section class="d-flex flex-column align-items-center justify-content-center bg-light p-2 rounded-3">
+  <div class="navbar navbar-light bg-light p-2 w-75">
+    <div class="container-fluid d-flex flex-column flex-md-row">
+      <ul class="col-md-auto navbar-nav flex-grow-1 order-1">
+        <li class="nav-item">
+          <a class="btn btn-primary" asp-action="Add" asp-controller="Question" role="button">Create Question</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-primary" asp-action="CreateManual" asp-controller="Question" role="button">Create Manual</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-primary" asp-action="CreateAuto" asp-controller="Question" role="button">Create Auto</a>
+        </li>
+      </ul>
+      <form class="d-flex order-3 order-md-2" asp-action="Index" method="get">
+        <input class="form-control me-2" type="search" name="searchString" placeholder="Search by name..." value="@ViewData["CurrentFilter"]"/>
+        <button class="btn btn-success" type="submit">Search</button>
+      </form>
+      <div class="col-md-auto order-2 order-md-3">
+        <a class="btn btn-secondary m-2" asp-action="Index" role="button">Reset Search</a>
+      </div>
+    </div>
+  </div>
+
+  @if (Model.Count > 0)
+  {
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Nr.</th>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var question in Model)
+        {
+            <tr>
+              <td>@(++i)</td>
+              <td>@question.QuestionText</td>
+              <td>
+                <a asp-action="Details" asp-route-id="@question.QuestionId" class="lock text-dark me-2" title="Details">
+                  <i class="bi bi-info-circle icon-unlock"></i>
+                  <i class="bi bi-info-circle-fill icon-lock"></i>
+                </a>
+                <a asp-action="Edit" asp-route-id="@question.QuestionId" class="lock text-dark me-2" title="Edit">
+                  <i class="bi bi-pencil icon-unlock"></i>
+                  <i class="bi bi-pencil-fill icon-lock"></i>
+                </a>
+                <a asp-action="Delete" asp-route-id="@question.QuestionId" class="lock text-dark me-2" style="cursor: pointer" title="Delete">
+                  <i class="bi bi-trash icon-unlock"></i>
+                  <i class="bi bi-trash-fill icon-lock"></i>
+                </a>
+              </td>
+            </tr>
+        }
+        </tbody>
+      </table>
+  }
+  else
+  {
+      <p>No questions found.</p>
+  }
+</section>

@@ -127,24 +127,24 @@ p {
 
 @media (min-width: 500px) {
   .form-width-percent {
-    width: 60%;
+    width: 90%;
   }
 }
 
 @media (min-width: 700px) {
   .form-width-percent {
-    width: 50%;
+    width: 80%;
   }
 }
 
 @media (min-width: 900px) {
   .form-width-percent {
-    width: 40%;
+    width: 65%;
   }
 }
 
 @media (min-width: 1200px) {
   .form-width-percent {
-    width: 35%;
+    width: 45%;
   }
 }
