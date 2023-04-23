@@ -10,7 +10,9 @@ public interface IQuestionRepository
 
     Task<List<Question>> GetDistinctQuestionsAsync();
 
-    Task<List<Question>> GetQuestionsByIdsWithoutTestIdAsync(List<int> questionIds);
+    Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds);
+
+    Task<List<Question>> GetQuestionsWithoutTestIdAsync(int numberOfQuestions);
 
     Task<Question> UpdateQuestionAsync(Question question);
 

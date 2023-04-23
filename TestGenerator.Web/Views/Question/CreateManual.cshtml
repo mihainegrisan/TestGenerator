@@ -13,13 +13,13 @@
 
 <h1>Create Test From Questions</h1>
 
-<form asp-action="CreateTest" asp-controller="Question" method="post">
+<form asp-action="CreateManual" asp-controller="Question" method="post">
   <div class="form-floating mb-3 col-sm-6">
-    <input name="name" id="name" class="form-control" placeholder="Name" value="@ViewBag.TestName" required />
+    <input name="name" id="name" class="form-control" placeholder="Name" required />
     <label for="name">Name</label>
   </div>
   <div class="form-floating mb-3 col-sm-6">
-    <input name="description" id="description" class="form-control" placeholder="Description" value="@ViewBag.TestDescription" placeholder="Description" required />
+    <input name="description" id="description" class="form-control" placeholder="Description" placeholder="Description" required />
     <label for="description">Description</label>
   </div>
   
