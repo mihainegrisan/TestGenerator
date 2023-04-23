@@ -43,17 +43,57 @@
   </nav>
 </header>
 
-<div class="container">
+  <div class="container min-vh-100">
   <main role="main" class="pb-3">
     @RenderBody()
   </main>
 </div>
 
-<footer class="border-top footer text-muted">
-  <div class="container">
-    &copy; 2023 - Test Generator - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-  </div>
-</footer>
+  <footer class="mt-5" style="background-color: #F0F3F3;">
+    <div class="container p-4 pb-0">
+      <div class="row">
+        <div class="col-lg-6 col-md-12">
+          <h5 class="mb-2 text-dark">Test Generator</h5>
+          <span>
+            A web app that will help professors, teachers and educators to create tests for students.
+          </span>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <h5 class="mb-2 text-dark">Links</h5>
+          <ul class="list-unstyled mb-0">
+            <li>
+              <a class="nav-link text-dark" asp-area="" asp-controller="Test" asp-action="Index">Tests</a>
+            </li>
+            <li>
+              <a class="nav-link text-dark" asp-area="" asp-controller="Question" asp-action="Index">Questions</a>
+            </li>
+            <li>
+              <a class="nav-link text-dark" asp-area="" asp-controller="TestGenerator" asp-action="Index">Auto-Generate Test (GPT)</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h5 class="mb-2 text-dark text-center">CONTACT</h5>
+          <ul class="list-unstyled mb-0 text-center">
+            <li class="mb-1">
+              <i class="bi bi-geo-alt"></i> Cluj, Romania
+            </li>
+            <li class="mb-1">
+              <i class="bi bi-telephone"></i> +40 999 999 999
+            </li>
+            <li class="mb-1 text-dark">
+              <i class="bi bi-envelope"></i>
+              <a href="mailto:mihainegrisan1@gmail.com">mihainegrisan1@gmail.com</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2);">
+      &copy; Test Generator 2023
+    </div>
+  </footer>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
