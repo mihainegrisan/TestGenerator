@@ -10,7 +10,7 @@ public interface ITestRepository
 
     Task<List<Test>> GetTestsAsync();
 
-    IQueryable<Test> GetTests(string? sortOrder, string? searchString);
+    IQueryable<Test> GetTests(string? sortOrder, string? searchString, bool isAutoCreatedByChatGpt);
 
     Task<Test> UpdateTestAsync(Test test);
 

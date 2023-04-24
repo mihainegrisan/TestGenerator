@@ -4,72 +4,68 @@
 
 @if (Model.TotalPages > 0)
 {
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-      <li class="page-item">
-        <a asp-action="@actionName" asp-route-pageSize="5" class="page-link">
-          @if (Model.PageSize == 5)
-          {
-              <span class="text-decoration-underline">5</span>
-          }
-          else
-          {
-              <span>5</span>
-          }
-        </a>
-      </li>
-      <li class="page-item">
-        <a asp-action="@actionName" asp-route-pageSize="10" class="page-link">
-          @if (Model.PageSize == 10)
-          {
-            <span class="text-decoration-underline">10</span>
-          }
-          else
-          {
-            <span>10</span>
-          }
-        </a>
-      </li>
-      <li class="page-item">
-        <a asp-action="@actionName" asp-route-pageSize="20" class="page-link">
-          @if (Model.PageSize == 20)
-          {
-            <span class="text-decoration-underline">20</span>
-          }
-          else
-          {
-            <span>20</span>
-          }
-        </a>
-      </li>
-      <li class="page-item">
-        <a asp-action="@actionName" asp-route-pageSize="50" class="page-link">
-          @if (Model.PageSize == 50)
-          {
-            <span class="text-decoration-underline">50</span>
-          }
-          else
-          {
-            <span>50</span>
-          }
-        </a>
-      </li>
-      <li class="page-item">
-        <a asp-action="@actionName" asp-route-pageSize="100" class="page-link">
-          @if (Model.PageSize == 100)
-          {
-            <span class="text-decoration-underline">100</span>
-          }
-          else
-          {
-            <span>100</span>
-          }
-        </a>
-      </li>
-    </ul>
-  </nav>
-}
-else
-{
-  <p class="text-center">No results found!</p>
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        <li class="page-item">
+          <a asp-action="@actionName" asp-route-pageSize="5" class="page-link">
+            @if (Model.PageSize == 5)
+            {
+                <span class="text-decoration-underline">5</span>
+            }
+            else
+            {
+                <span>5</span>
+            }
+          </a>
+        </li>
+        <li class="page-item">
+          <a asp-action="@actionName" asp-route-pageSize="10" class="page-link">
+            @if (Model.PageSize == 10)
+            {
+                <span class="text-decoration-underline">10</span>
+            }
+            else
+            {
+                <span>10</span>
+            }
+          </a>
+        </li>
+        <li class="page-item">
+          <a asp-action="@actionName" asp-route-pageSize="20" class="page-link">
+            @if (Model.PageSize == 20)
+            {
+                <span class="text-decoration-underline">20</span>
+            }
+            else
+            {
+                <span>20</span>
+            }
+          </a>
+        </li>
+        <li class="page-item">
+          <a asp-action="@actionName" asp-route-pageSize="50" class="page-link">
+            @if (Model.PageSize == 50)
+            {
+                <span class="text-decoration-underline">50</span>
+            }
+            else
+            {
+                <span>50</span>
+            }
+          </a>
+        </li>
+        <li class="page-item">
+          <a asp-action="@actionName" asp-route-pageSize="100" class="page-link">
+            @if (Model.PageSize == 100)
+            {
+                <span class="text-decoration-underline">100</span>
+            }
+            else
+            {
+                <span>100</span>
+            }
+          </a>
+        </li>
+      </ul>
+    </nav>
 }

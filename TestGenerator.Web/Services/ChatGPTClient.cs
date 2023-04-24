@@ -104,6 +104,10 @@ public class ChatGptClient : IChatGptClient
             test.NumberOfAnswersPerQuestion = test.Questions[0].Answers.Count;
         }
 
+        test.IsCreatedManually = false;
+        test.IsAutoCreatedFromQuestions = false;
+        test.IsAutoCreatedByChatGpt = true;
+
         return test;
     }
 
