@@ -43,7 +43,7 @@ public class TestGeneratorController : Controller
 
         ViewData["CurrentFilter"] = searchString;
 
-        var tests = _testRepository.GetTests(sortOrder, searchString);
+        var tests = _testRepository.GetTests(sortOrder, searchString, true);
 
         return View(await PaginatedList<Test>.CreateAsync(tests, pageNumber ?? 1, pageSize ?? 10));
     }
@@ -58,20 +58,20 @@ public class TestGeneratorController : Controller
     //[ValidateAntiForgeryToken]
     //public async Task<IActionResult> Generate(Test test, IFormFile file)
     //{
-    //    if (!ModelState.IsValid)
-    //    {
-    //        return View(test);
-    //    }
+    //  if (!ModelState.IsValid)
+    //  {
+    //    return View(test);
+    //  }
 
-    //    var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
+    //  var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-    //    var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
+    //  var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
 
-    //    _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
+    //  _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
 
-    //    TempData["Test"] = test;
+    //  TempData["Test"] = test;
 
-    //    return View(nameof(GenerateTest), test);
+    //  return View(nameof(GenerateTest), test);
     //}
 
     [HttpPost]
@@ -85,7 +85,6 @@ public class TestGeneratorController : Controller
 
         var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-
         var responseMessage =
             "1. What is the Factory Method Pattern?\r\na) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\nb) A pattern that uses an interface for creating families of related objects without specifying their concrete classes\r\nc) A pattern that allows you to build complex objects by using a step-by-step approach\r\nd) None of the above\r\nAnswer: a) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\n\r\n2. What is the purpose of the Abstract Factory Pattern?\r\na) To decouple code\r\nb) To build complex objects by using a step-by-step approach\r\nc) To enforce the use of related objects together\r\nd) None of the above\r\nAnswer: c) To enforce the use of related objects together\r\n\r\n3. How does the Builder pattern help control object creation?\r\na) By using an interface for object creation and leaving the instantiation to a subclass\r\nb) By using an interface for creating families of related objects without specifying their concrete classes\r\nc) By using a step-by-step approach\r\nd) None of the above\r\nAnswer: c) By using a step-by-step approach";
 
@@ -95,6 +94,9 @@ public class TestGeneratorController : Controller
             Description = test.Description,
             NumberOfQuestions = 3,
             NumberOfAnswersPerQuestion = 4,
+            IsCreatedManually = false,
+            IsAutoCreatedFromQuestions = false,
+            IsAutoCreatedByChatGpt = true,
             Questions = new List<Question>
             {
                 new()
@@ -179,6 +181,7 @@ public class TestGeneratorController : Controller
                     }
                 }
             }
+
         };
 
         TempData["Test"] = test;
@@ -207,11 +210,15 @@ public class TestGeneratorController : Controller
             return View(test);
         }
 
+        test.IsCreatedManually = false;
+        test.IsAutoCreatedFromQuestions = false;
+        test.IsAutoCreatedByChatGpt = true;
+
         await _testRepository.AddTestAsync(test);
 
-        var tests = await _testRepository.GetTestsAsync();
+        //var tests = await _testRepository.GetTestsAsync();
 
-        return View(nameof(Index), tests);
+        return View(nameof(Details), test);
     }
 
     public async Task<IActionResult> DownloadPdf(int id)

@@ -8,7 +8,7 @@
 <div class="container-fluid my-3">
   <div class="row">
     <div class="col-6 d-flex align-items-center justify-content-center">
-      <h1>Auto Test Generator</h1>
+      <h1>Test Generator</h1>
     </div>
     <div class="col-6 text-center">
       <img src="~/images/testGenerator.svg" class="rounded img-fluid mx-auto d-block" height="350" width="350" alt="..." />
@@ -21,7 +21,7 @@
     <div class="container-fluid d-flex flex-column flex-md-row">
       <ul class="col-md-auto navbar-nav flex-grow-1 order-1">
         <li class="nav-item">
-          <a class="btn btn-primary" asp-action="Generate" asp-controller="TestGenerator" role="button">Create</a>
+          <a class="btn btn-primary" asp-action="Generate" asp-controller="TestGenerator" role="button">Generate</a>
         </li>
       </ul>
       <form class="d-flex order-3 order-md-2" asp-action="Index" method="get">
@@ -99,7 +99,7 @@
   }
   else
   {
-      <p>No tests found.</p>
+    <p class="text-center">No results found!</p>
   }
   
   <partial name="_ItemsPerPagePartial" />

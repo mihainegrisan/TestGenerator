@@ -39,7 +39,7 @@ public class TestController : Controller
 
         ViewData["CurrentFilter"] = searchString;
 
-        var tests = _testRepository.GetTests(sortOrder, searchString);
+        var tests = _testRepository.GetTests(sortOrder, searchString, false);
 
         return View(await PaginatedList<Test>.CreateAsync(tests, pageNumber ?? 1, pageSize ?? 10));
     }
@@ -73,6 +73,10 @@ public class TestController : Controller
         {
             return View(test);
         }
+
+        test.IsCreatedManually = true;
+        test.IsAutoCreatedFromQuestions = false;
+        test.IsAutoCreatedByChatGpt = false;
 
         await _testRepository.AddTestAsync(test);
 

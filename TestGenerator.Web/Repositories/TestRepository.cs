@@ -35,9 +35,11 @@ public class TestRepository : ITestRepository
         return await _dbContext.Tests.AsNoTracking().ToListAsync();
     }
 
-    public IQueryable<Test> GetTests(string? sortOrder, string? searchString)
+    public IQueryable<Test> GetTests(string? sortOrder, string? searchString, bool isAutoCreatedByChatGpt)
     {
-        var tests = _dbContext.Tests.AsNoTracking().Select(t => t);
+        var tests = isAutoCreatedByChatGpt 
+            ? _dbContext.Tests.AsNoTracking().Where(t => t.IsAutoCreatedByChatGpt).Select(t => t) 
+            : _dbContext.Tests.AsNoTracking().Where(t => !t.IsAutoCreatedByChatGpt).Select(t => t);
 
         if (!string.IsNullOrEmpty(searchString))
         {
