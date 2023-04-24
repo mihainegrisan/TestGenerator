@@ -99,6 +99,13 @@ public class QuestionController : Controller
             return View(question);
         }
 
+        if (numberOfAnswers < 2)
+        {
+            TempData["ErrorMessage"] = "The number of answers per question should be higher than 1.";
+      
+            return View(question);
+        }
+
         ViewBag.NumberOfAnswers = numberOfAnswers;
 
         return View(nameof(AddQuestion), question);

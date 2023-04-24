@@ -1,14 +1,150 @@
-html { font-size: 14px; }
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
 
-@media (min-width: 768px) {
-  html { font-size: 16px; }
+body {
+  height: 100vh;
+  background-color: #FFF;
+  min-width: 320px;
+  font-family: 'Roboto', sans-serif !important;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus { box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb; }
-
-html {
-  min-height: 100%;
-  position: relative;
+textarea {
+  height: 200px !important;
 }
 
-body { margin-bottom: 60px; }
+.login-header {
+  font-size: 450%;
+}
+
+h1 {
+  font-size: 250%;
+}
+
+p {
+  font-size: 150%;
+}
+
+.homepage-content-section {
+  height: 60%;
+}
+
+.lock:hover .icon-unlock,
+.lock .icon-lock {
+  display: none;
+}
+
+.lock:hover .icon-lock {
+  display: inline;
+}
+
+.lock {
+  text-decoration: none !important;
+}
+
+
+/* ========= Overriding bootstrapp ========= */
+
+.active {
+  background-color: transparent !important;
+  border-bottom: medium solid #DE411B !important;
+}
+
+.btn-primary {
+  background-color: #DE411B !important;
+  border-color: #DE411B !important;
+}
+
+  .btn-primary:hover {
+    background-color: #C31900 !important;
+    border-color: #C31900 !important;
+  }
+
+.btn-check:focus + .btn, .btn:focus {
+  box-shadow: 0 0 0.25rem rgb(222 65 27 / 25%) !important;
+}
+
+.btn-check:focus + .btn-primary,
+.btn-primary:focus {
+  color: #fff !important;
+  background-color: #DE411B !important;
+  border-color: #C31900 !important;
+  box-shadow: 0 0 0.25rem rgb(222 65 27 / 50%) !important;
+}
+
+
+
+.btn-secondary {
+  background-color: #9BB4BE !important;
+  border-color: #9BB4BE !important;
+}
+
+  .btn-secondary:hover {
+    background-color: #48545B !important;
+    border-color: #48545B !important;
+  }
+
+.btn-check:focus + .btn, .btn:focus {
+  box-shadow: 0 0 0.25rem rgb(222 65 27 / 25%) !important;
+}
+
+.btn-check:focus + .btn-secondary,
+.btn-secondary:focus {
+  color: #fff !important;
+  background-color: #9BB4BE !important;
+  border-color: #48545B !important;
+  box-shadow: 0 0 0.25rem rgb(222 65 27 / 50%) !important;
+}
+
+
+
+.btn-success {
+  background-color: #379BD7 !important;
+  border-color: #379BD7 !important;
+}
+
+  .btn-success:hover {
+    background-color: #285078 !important;
+    border-color: #285078 !important;
+  }
+
+.btn-check:focus + .btn, .btn:focus {
+  box-shadow: 0 0 0.25rem rgb(222 65 27 / 25%) !important;
+}
+
+.btn-check:focus + .btn-success,
+.btn-success:focus {
+  color: #fff !important;
+  background-color: #379BD7 !important;
+  border-color: #285078 !important;
+  box-shadow: 0 0 0.25rem rgb(222 65 27 / 50%) !important;
+}
+
+
+/* ===================================================== */
+.form-width-percent {
+  width: 80%;
+}
+
+@media (min-width: 500px) {
+  .form-width-percent {
+    width: 90%;
+  }
+}
+
+@media (min-width: 700px) {
+  .form-width-percent {
+    width: 80%;
+  }
+}
+
+@media (min-width: 900px) {
+  .form-width-percent {
+    width: 65%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .form-width-percent {
+    width: 45%;
+  }
+}
