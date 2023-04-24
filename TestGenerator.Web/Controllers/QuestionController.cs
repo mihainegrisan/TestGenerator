@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
 using TestGenerator.Web.Repositories;
+using TestGenerator.Web.Utility;
 
 namespace TestGenerator.Web.Controllers;
 
@@ -15,18 +16,36 @@ public class QuestionController : Controller
         _testRepository = testRepository;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(
+        string? sortOrder,
+        string? currentFilter,
+        string? searchString,
+        int? pageNumber,
+        int? pageSize)
     {
-        var questions = await _questionRepository.GetDistinctQuestionsAsync();
+        ViewData["CurrentSort"] = sortOrder;
+        ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+        ViewData["PageSize"] = pageSize;
 
-        // TODO: Add Pagination
+        if (searchString != null)
+        {
+            pageNumber = 1;
+        }
+        else
+        {
+            searchString = currentFilter;
+        }
 
-        return View(questions);
+        ViewData["CurrentFilter"] = searchString;
+
+        var questions = _questionRepository.GetQuestions(sortOrder, searchString);
+
+        return View(await PaginatedList<Question>.CreateAsync(questions, pageNumber ?? 1, pageSize ?? 10));
     }
 
     public async Task<IActionResult> CreateManual()
     {
-        var questions = await _questionRepository.GetDistinctQuestionsAsync();
+        var questions = await _questionRepository.GetQuestionsAsync();
 
         return View(questions);
     }

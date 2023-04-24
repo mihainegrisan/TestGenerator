@@ -2,6 +2,7 @@
 using TestGenerator.DAL.Models;
 using TestGenerator.Web.Repositories;
 using TestGenerator.Web.Services;
+using TestGenerator.Web.Utility;
 
 namespace TestGenerator.Web.Controllers;
 
@@ -16,11 +17,31 @@ public class TestController : Controller
         _fileProcessor = fileProcessor;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(
+        string? sortOrder,
+        string? currentFilter,
+        string? searchString,
+        int? pageNumber,
+        int? pageSize)
     {
-        var tests = await _testRepository.GetTestsAsync();
+        ViewData["CurrentSort"] = sortOrder;
+        ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+        ViewData["PageSize"] = pageSize;
 
-        return View(tests);
+        if (searchString != null)
+        {
+            pageNumber = 1;
+        }
+        else
+        {
+            searchString = currentFilter;
+        }
+
+        ViewData["CurrentFilter"] = searchString;
+
+        var tests = _testRepository.GetTests(sortOrder, searchString);
+
+        return View(await PaginatedList<Test>.CreateAsync(tests, pageNumber ?? 1, pageSize ?? 10));
     }
 
     [HttpGet]

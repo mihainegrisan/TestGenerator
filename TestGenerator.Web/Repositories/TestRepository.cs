@@ -32,7 +32,25 @@ public class TestRepository : ITestRepository
 
     public async Task<List<Test>> GetTestsAsync()
     {
-        return await _dbContext.Tests.ToListAsync();
+        return await _dbContext.Tests.AsNoTracking().ToListAsync();
+    }
+
+    public IQueryable<Test> GetTests(string? sortOrder, string? searchString)
+    {
+        var tests = _dbContext.Tests.AsNoTracking().Select(t => t);
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            tests = tests.Where(t => t.Name.Contains(searchString));
+        }
+
+        tests = sortOrder switch
+        {
+            "name_desc" => tests.OrderByDescending(t => t.Name),
+            _ => tests.OrderBy(t => t.Name)
+        };
+
+        return tests.AsNoTracking();
     }
 
     public async Task<Test> UpdateTestAsync(Test test)
