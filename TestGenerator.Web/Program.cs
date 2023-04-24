@@ -1,3 +1,5 @@
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TestGenerator.DAL.Data;
@@ -21,6 +23,15 @@ builder.Services.AddScoped<ITestRepository, TestRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IChatGptClient, ChatGptClient>();
 builder.Services.AddSingleton<SecretsManager>();
+
+builder.Services.AddNotyf(config =>
+{
+    config.DurationInSeconds = 3; 
+    config.IsDismissable = true; 
+    config.Position = NotyfPosition.BottomRight;
+    config.HasRippleEffect = true;
+});
+
 
 var app = builder.Build();
 
@@ -47,5 +58,7 @@ app.MapControllerRoute(
     "default",
     "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.UseNotyf();
 
 app.Run();

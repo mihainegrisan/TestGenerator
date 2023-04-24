@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
 using TestGenerator.Web.Repositories;
 using TestGenerator.Web.Services;
@@ -11,13 +12,14 @@ public class TestGeneratorController : Controller
     private readonly IChatGptClient _chatGptClient;
     private readonly IFileProcessor _fileProcessor;
     private readonly ITestRepository _testRepository;
+    private readonly INotyfService _notifyService;
 
-    public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor,
-        IChatGptClient chatGptClient)
+    public TestGeneratorController(ITestRepository testRepository, IFileProcessor fileProcessor, IChatGptClient chatGptClient, INotyfService notifyService)
     {
         _testRepository = testRepository;
         _fileProcessor = fileProcessor;
         _chatGptClient = chatGptClient;
+        _notifyService = notifyService;
     }
 
     [HttpGet]
@@ -54,27 +56,33 @@ public class TestGeneratorController : Controller
         return View();
     }
 
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Generate(Test test, IFormFile file)
-    //{
-    //  if (!ModelState.IsValid)
-    //  {
-    //    return View(test);
-    //  }
+  //[HttpPost]
+  //[ValidateAntiForgeryToken]
+  //public async Task<IActionResult> Generate(Test test, IFormFile file)
+  //{
+  //  if (!ModelState.IsValid)
+  //  {
+  //    return View(test);
+  //  }
 
-    //  var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
+  //  var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-    //  var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
+  //  _notifyService.Information("Text extracted from file!");
 
-    //  _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
+  //  var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
 
-    //  TempData["Test"] = test;
+  //  _notifyService.Information("Received response from ChatGPT!");
 
-    //  return View(nameof(GenerateTest), test);
-    //}
+  //  _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
 
-    [HttpPost]
+  //  _notifyService.Information("Populated test with ChatGPT response!");
+
+  //  TempData["Test"] = test;
+
+  //  return View(nameof(GenerateTest), test);
+  //}
+
+  [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Generate(Test test, IFormFile file)
     {
@@ -216,7 +224,10 @@ public class TestGeneratorController : Controller
 
         await _testRepository.AddTestAsync(test);
 
-        //var tests = await _testRepository.GetTestsAsync();
+        _notifyService.Information("Just to test it - information");
+        _notifyService.Warning("Just to test it - warning");
+        _notifyService.Error("Just to test it - error");
+        _notifyService.Success("Test Created!");
 
         return View(nameof(Details), test);
     }
@@ -271,6 +282,8 @@ public class TestGeneratorController : Controller
 
         await _testRepository.UpdateTestAsync(existingTest);
 
+        _notifyService.Success("Test Updated!");
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -294,6 +307,8 @@ public class TestGeneratorController : Controller
         var test = await _testRepository.GetTestAsync(id);
 
         await _testRepository.DeleteTestAsync(test.TestId);
+
+        _notifyService.Success("Test Deleted!");
 
         return RedirectToAction(nameof(Index));
     }

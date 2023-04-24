@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
 using TestGenerator.Web.Repositories;
 using TestGenerator.Web.Services;
@@ -10,11 +11,13 @@ public class TestController : Controller
 {
     private readonly IFileProcessor _fileProcessor;
     private readonly ITestRepository _testRepository;
+    private readonly INotyfService _notifyService;
 
-    public TestController(ITestRepository testRepository, IFileProcessor fileProcessor)
+    public TestController(ITestRepository testRepository, IFileProcessor fileProcessor, INotyfService notifyService)
     {
         _testRepository = testRepository;
         _fileProcessor = fileProcessor;
+        _notifyService = notifyService;
     }
 
     public async Task<IActionResult> Index(
@@ -80,7 +83,9 @@ public class TestController : Controller
 
         await _testRepository.AddTestAsync(test);
 
-        return RedirectToAction(nameof(Index));
+        _notifyService.Success("Test Created!");
+
+        return RedirectToAction(nameof(Details));
     }
 
     public async Task<IActionResult> DownloadPdf(int id)
@@ -132,6 +137,8 @@ public class TestController : Controller
 
         await _testRepository.UpdateTestAsync(existingTest);
 
+        _notifyService.Success("Test Updated!");
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -155,6 +162,8 @@ public class TestController : Controller
         var test = await _testRepository.GetTestAsync(id);
 
         await _testRepository.DeleteTestAsync(test.TestId);
+
+        _notifyService.Success("Test Deleted!");
 
         return RedirectToAction(nameof(Index));
     }
