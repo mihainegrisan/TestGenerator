@@ -43,7 +43,7 @@ public class QuestionController : Controller
         return View(await PaginatedList<Question>.CreateAsync(questions, pageNumber ?? 1, pageSize ?? 10));
     }
 
-    public async Task<IActionResult> CreateManual()
+    public async Task<IActionResult> CreateManualTestBySelectingQuestions()
     {
         var questions = await _questionRepository.GetQuestionsAsync();
 
@@ -51,13 +51,13 @@ public class QuestionController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateManual(List<int>? selectedQuestionIds, string name, string description)
+    public async Task<IActionResult> CreateManualTestBySelectingQuestions(List<int>? selectedQuestionIds, string name, string description)
     {
         if (selectedQuestionIds?.Count == 0)
         {
             TempData["ErrorMessage"] = "Please select at least one question.";
 
-            return RedirectToAction(nameof(CreateManual));
+            return RedirectToAction(nameof(CreateManualTestBySelectingQuestions));
         }
 
         var selectedQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(selectedQuestionIds);
@@ -68,7 +68,10 @@ public class QuestionController : Controller
             Description = description,
             Questions = selectedQuestions,
             NumberOfQuestions = selectedQuestions.Count,
-            NumberOfAnswersPerQuestion = selectedQuestions.Max(q => q.Answers.Count)
+            NumberOfAnswersPerQuestion = selectedQuestions.Max(q => q.Answers.Count),
+            IsCreatedManually = false,
+            IsAutoCreatedFromQuestions = true,
+            IsAutoCreatedByChatGpt = false
         };
 
         await _testRepository.AddTestAsync(test);
@@ -79,13 +82,13 @@ public class QuestionController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> CreateAuto()
+    public async Task<IActionResult> CreateTestAutomatically()
     {
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAuto(string name, string description, int numberOfQuestions)
+    public async Task<IActionResult> CreateTestAutomatically(string name, string description, int numberOfQuestions)
     {
         var randomQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(numberOfQuestions);
 
@@ -95,7 +98,10 @@ public class QuestionController : Controller
             Description = description,
             Questions = randomQuestions,
             NumberOfQuestions = randomQuestions.Count,
-            NumberOfAnswersPerQuestion = randomQuestions.Max(q => q.Answers.Count)
+            NumberOfAnswersPerQuestion = randomQuestions.Max(q => q.Answers.Count),
+            IsCreatedManually = false,
+            IsAutoCreatedFromQuestions = true,
+            IsAutoCreatedByChatGpt = false
         };
 
         await _testRepository.AddTestAsync(test);
