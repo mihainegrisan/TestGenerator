@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
 using TestGenerator.Web.Repositories;
 using TestGenerator.Web.Utility;
@@ -9,11 +10,13 @@ public class QuestionController : Controller
 {
     private readonly IQuestionRepository _questionRepository;
     private readonly ITestRepository _testRepository;
+    private readonly INotyfService _notifyService;
 
-    public QuestionController(IQuestionRepository questionRepository, ITestRepository testRepository)
+    public QuestionController(IQuestionRepository questionRepository, ITestRepository testRepository, INotyfService notifyService)
     {
         _questionRepository = questionRepository;
         _testRepository = testRepository;
+        _notifyService = notifyService;
     }
 
     public async Task<IActionResult> Index(
@@ -76,7 +79,7 @@ public class QuestionController : Controller
 
         await _testRepository.AddTestAsync(test);
 
-        TempData["SuccessMessage"] = "Test created successfully.";
+        _notifyService.Success("Test Created!");
 
         return RedirectToAction(nameof(Index), nameof(Test));
     }
@@ -105,6 +108,8 @@ public class QuestionController : Controller
         };
 
         await _testRepository.AddTestAsync(test);
+
+        _notifyService.Success("Test Created!");
 
         return RedirectToAction(nameof(Index), nameof(Test));
     }
@@ -156,7 +161,9 @@ public class QuestionController : Controller
 
         await _questionRepository.AddQuestionAsync(question);
 
-        return RedirectToAction(nameof(Index));
+        _notifyService.Success("Question Created!");
+
+        return RedirectToAction(nameof(Details));
     }
 
     [HttpGet]
@@ -183,6 +190,8 @@ public class QuestionController : Controller
 
         await _questionRepository.UpdateQuestionAsync(existingQuestion);
 
+        _notifyService.Success("Question Updated!");
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -206,6 +215,8 @@ public class QuestionController : Controller
         var question = await _questionRepository.GetQuestionAsync(id);
 
         await _questionRepository.DeleteQuestionAsync(question.QuestionId);
+
+        _notifyService.Success("Question Deleted!");
 
         return RedirectToAction(nameof(Index));
     }

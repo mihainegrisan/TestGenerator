@@ -8,7 +8,7 @@
 
 <h1>Create Test From Questions</h1>
 
-<form asp-action="CreateManual" asp-controller="Question" method="post">
+<form asp-action="CreateManualTestBySelectingQuestions" asp-controller="Question" method="post">
   @if (TempData.ContainsKey("ErrorMessage"))
   {
       <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
