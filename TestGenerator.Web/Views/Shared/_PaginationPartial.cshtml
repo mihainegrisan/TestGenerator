@@ -1,0 +1,77 @@
+﻿@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var actionName = ViewContext.RouteData.Values["action"].ToString();
+}
+
+@if (Model.TotalPages > 0)
+{
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        <li class="page-item @prevDisabled">
+          <a asp-action="@actionName"
+             asp-route-sortOrder="@ViewData["CurrentSort"]"
+             asp-route-pageNumber="@(Model.PageIndex - 1)"
+             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+             asp-route-pageSize="@ViewData["PageSize"]"
+             class="page-link">
+            Previous
+          </a>
+        </li>
+
+        @if (Model.PageIndex != 1)
+        {
+            <li class="page-item">
+              <a asp-action="@actionName"
+                 asp-route-sortOrder="@ViewData["CurrentSort"]"
+                 asp-route-pageNumber="1"
+                 asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                 asp-route-pageSize="@ViewData["PageSize"]"
+                 class="page-link">
+                1
+              </a>
+            </li>
+        }
+        
+        <li class="page-item">
+          <a asp-action="@actionName"
+             asp-route-sortOrder="@ViewData["CurrentSort"]"
+             asp-route-pageNumber="@(Model.PageIndex)"
+             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+             asp-route-pageSize="@ViewData["PageSize"]"
+             class="page-link">
+            <span class="text-decoration-underline">@(Model.PageIndex)</span>
+          </a>
+        </li>
+
+        @if (Model.PageIndex != Model.TotalPages)
+        {
+            <li class="page-item">
+              <a asp-action="@actionName"
+                 asp-route-sortOrder="@ViewData["CurrentSort"]"
+                 asp-route-pageNumber="@(Model.TotalPages)"
+                 asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                 asp-route-pageSize="@ViewData["PageSize"]"
+                 class="page-link">
+                @(Model.TotalPages)
+              </a>
+            </li>
+        }
+
+        <li class="page-item @nextDisabled">
+          <a asp-action="@actionName"
+             asp-route-sortOrder="@ViewData["CurrentSort"]"
+             asp-route-pageNumber="@(Model.PageIndex + 1)"
+             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+             asp-route-pageSize="@ViewData["PageSize"]"
+             class="page-link">
+            Next
+          </a>
+        </li>
+      </ul>
+    </nav>
+}
+else
+{
+    <p class="text-center">No results found!</p>
+}

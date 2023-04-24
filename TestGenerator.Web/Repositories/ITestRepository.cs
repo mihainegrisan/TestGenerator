@@ -10,6 +10,8 @@ public interface ITestRepository
 
     Task<List<Test>> GetTestsAsync();
 
+    IQueryable<Test> GetTests(string? sortOrder, string? searchString);
+
     Task<Test> UpdateTestAsync(Test test);
 
     Task<bool> DeleteTestAsync(int id);

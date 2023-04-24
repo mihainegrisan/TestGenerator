@@ -53,7 +53,7 @@
         @foreach (var question in Model)
         {
             <tr>
-              <td>@(++i)</td>
+              <td>@(++i).</td>
             <td class="text-truncate" style="max-width: 200px;">@question.QuestionText</td>
             <td class="text-center">
                 <a asp-action="Details" asp-route-id="@question.QuestionId" class="lock text-dark me-2" title="Details">

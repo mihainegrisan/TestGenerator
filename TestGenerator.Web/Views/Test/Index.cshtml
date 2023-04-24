@@ -39,7 +39,18 @@
         <thead>
         <tr>
           <th>Nr.</th>
-          <th>Name</th>
+          <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
+            @switch ((string)ViewData["NameSortParam"])
+            {
+                case "":
+                    <i class="bi bi-sort-alpha-down-alt"></i>
+                    break;
+                case "name_desc":
+                    <i class="bi bi-sort-alpha-down"></i>
+                    break;
+            }
+          </th>
           <th>Description</th>
           <th class="text-center">Actions</th>
           <th class="text-center">Download</th>
@@ -49,7 +60,7 @@
         @foreach (var test in Model)
         {
             <tr>
-              <td>@(++i)</td>
+              <td>@(++i).</td>
             <td class="text-truncate" style="max-width: 200px;">@test.Name</td>
             <td class="text-truncate" style="max-width: 200px;">@test.Description</td>
             <td class="text-center">
@@ -85,4 +96,7 @@
   {
       <p>No tests found.</p>
   }
+  
+  <partial name="_ItemsPerPagePartial" />
+  <partial name="_PaginationPartial" />
 </section>
