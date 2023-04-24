@@ -8,35 +8,40 @@
   <h1 class="display-4">Word Upload</h1>
 </div>
 
-<form asp-action="Generate" asp-controller="TestGenerator" method="post" enctype="multipart/form-data">
-  <div class="form-floating mb-3 col-sm-6">
+<div class="d-flex justify-content-center row">
+<form class="form-width-percent" asp-action="Generate" asp-controller="TestGenerator" method="post" enctype="multipart/form-data">
+  <div class="form-floating mb-3">
     <input asp-for="Name" class="form-control" placeholder="Name"/>
     <label asp-for="Name">Name</label>
     <span asp-validation-for="Name" class="text-danger"></span>
   </div>
-  <div class="form-floating mb-3 col-sm-6">
+  <div class="form-floating mb-3">
     <input asp-for="Description" class="form-control" placeholder="Description"/>
     <label asp-for="Description">Description</label>
     <span asp-validation-for="Description" class="text-danger"></span>
   </div>
-  <div class="form-floating mb-3 col-sm-6">
+  <div class="form-floating mb-3">
     <input asp-for="NumberOfQuestions" class="form-control" placeholder="5"/>
     <label asp-for="NumberOfQuestions">Number of Questions</label>
     <span asp-validation-for="NumberOfQuestions" class="text-danger"></span>
   </div>
-  <div class="form-floating mb-3 col-sm-6">
+  <div class="form-floating mb-3">
     <input asp-for="NumberOfAnswersPerQuestion" class="form-control" placeholder="5"/>
     <label asp-for="NumberOfAnswersPerQuestion">Number of Answers per Question</label>
     <span asp-validation-for="NumberOfAnswersPerQuestion" class="text-danger"></span>
   </div>
-  <div class="col-md-6 mb-3">
-    <label for="file">Upload File</label>
-    <input type="file" name="file" id="file" accept=".doc,.docx" required/>
+  <div class="col-md-12 mb-3">
+    <input class="form-control" type="file" id="file" accept=".doc,.docx" required>
+    </div>
+
+  <div class="row mb-3">
+    <div class="col">
+      <input class="btn btn-primary form-control" type="submit" value="Create">
+    </div>
+    <div class="col">
+      <a class="btn btn-secondary form-control" asp-action="Index" role="button">Back to list</a>
+    </div>
   </div>
-  <div class="col-md-6 mb-3">
-    <button type="submit" class="btn btn-primary">Create Test</button>
-  </div>
-  <div>
-    <span>@TempData["Message"]</span>
-  </div>
+
 </form>
+</div>
