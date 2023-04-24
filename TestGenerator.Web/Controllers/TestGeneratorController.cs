@@ -203,7 +203,19 @@ public class TestGeneratorController : Controller
         return File(stream, "application/pdf", $"{test.Name}.pdf");
     }
 
-    [HttpGet]
+    public async Task<IActionResult> DownloadWord(int id)
+    {
+        var test = await _testRepository.GetTestAsync(id);
+
+        var stream = _fileProcessor.GenerateWord(test);
+
+        stream.Position = 0;
+
+        return File(stream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"{test.Name}.docx");
+    }
+
+
+  [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var test = await _testRepository.GetTestAsync(id);

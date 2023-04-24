@@ -1,5 +1,7 @@
 ﻿using System.Drawing;
 using Spire.Doc;
+using Spire.Doc.Documents;
+using Spire.Doc.Formatting;
 using Spire.Pdf;
 using Spire.Pdf.Graphics;
 using TestGenerator.DAL.Models;
@@ -134,7 +136,66 @@ public class FileProcessor : IFileProcessor
         return stream;
     }
 
-    private string GetTextFromSavedFile(IFormFile file)
+  public MemoryStream GenerateWord(Test test)
+  {
+    // Create a new Word document
+    var doc = new Document();
+
+    // Add a new section to the document
+    var section = doc.AddSection();
+    section.AddParagraph();
+
+    // Create a new paragraph for the test name and add it to the section
+    var testNamePara = section.AddParagraph();
+    testNamePara.AppendText("Test Name: ");
+    testNamePara.AppendText(test.Name);
+
+    // Create a new paragraph for the test description and add it to the section
+    var testDescPara = section.AddParagraph();
+    testDescPara.AppendText("Test Description: ");
+    testDescPara.AppendText(test.Description + "\n");
+
+    // Loop through each question in the test
+    for (var i = 0; i < test.Questions.Count; i++)
+    {
+      // Create a new paragraph for the question text and add it to the section
+      var questionPara = section.AddParagraph();
+      questionPara.AppendText($"{i + 1}. ");
+      questionPara.AppendText(test.Questions[i].QuestionText);
+
+      // Loop through each answer in the question
+      for (var j = 0; j < test.Questions[i].Answers.Count; j++)
+      {
+        // Create a new paragraph for the answer text and add it to the section
+        var answerPara = section.AddParagraph();
+        answerPara.AppendText($"\t{(char)(97 + j)}) ");
+        answerPara.AppendText(test.Questions[i].Answers[j].AnswerText);
+
+        // If the answer is correct, mark it as correct in the paragraph
+        //if (test.Questions[i].Answers[j].IsCorrect)
+        //{
+        //  answerPara.AppendText(" ✔");
+        //}
+      }
+
+      // Add some space between questions
+      section.AddParagraph();
+    }
+
+    // Save the Word document to a memory stream
+    var stream = new MemoryStream();
+    doc.SaveToStream(stream, FileFormat.Docx);
+
+    // Dispose of the Word document
+    doc.Dispose();
+
+    // Reset the memory stream position to the beginning
+    stream.Position = 0;
+
+    return stream;
+  }
+
+  private string GetTextFromSavedFile(IFormFile file)
     {
         string cleanedText;
 
