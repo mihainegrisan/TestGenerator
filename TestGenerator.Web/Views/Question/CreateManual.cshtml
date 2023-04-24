@@ -6,23 +6,23 @@
 
 <a class="btn btn-success mb-3" href="@Url.Action("Index")">Back</a>
 
-@if (TempData.ContainsKey("ErrorMessage"))
-{
-  <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
-}
-
 <h1>Create Test From Questions</h1>
 
 <form asp-action="CreateManual" asp-controller="Question" method="post">
+  @if (TempData.ContainsKey("ErrorMessage"))
+  {
+      <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+  }
+
   <div class="form-floating mb-3 col-sm-6">
-    <input name="name" id="name" class="form-control" placeholder="Name" required />
+    <input name="name" id="name" class="form-control" placeholder="Name" required/>
     <label for="name">Name</label>
   </div>
   <div class="form-floating mb-3 col-sm-6">
-    <input name="description" id="description" class="form-control" placeholder="Description" placeholder="Description" required />
+    <input name="description" id="description" class="form-control" placeholder="Description" placeholder="Description" required/>
     <label for="description">Description</label>
   </div>
-  
+
   <h3 class="my-3">Questions:</h3>
 
   @if (Model.Count > 0)

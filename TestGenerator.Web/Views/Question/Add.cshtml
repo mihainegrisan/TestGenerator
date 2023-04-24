@@ -10,8 +10,13 @@
 
 <div class="d-flex justify-content-center row">
   <form class="form-width-percent" asp-action="Add" asp-controller="Question" method="post">
+    @if (TempData.ContainsKey("ErrorMessage"))
+    {
+        <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+    }
+
     <div class="form-floating mb-3">
-      <input type="number" name="numberOfAnswers" id="numberOfAnswers" class="form-control" placeholder="5" value="@ViewBag.NumberOfAnswersPerQuestion" required/>
+      <input type="number" name="numberOfAnswers" id="numberOfAnswers" class="form-control" placeholder="5" required/>
       <label for="numberOfAnswers">Number of Answers</label>
     </div>
 
