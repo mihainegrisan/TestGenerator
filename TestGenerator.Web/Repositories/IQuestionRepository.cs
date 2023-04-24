@@ -8,7 +8,9 @@ public interface IQuestionRepository
 
     Task<Question> GetQuestionAsync(int? id);
 
-    Task<List<Question>> GetDistinctQuestionsAsync();
+    Task<List<Question>> GetQuestionsAsync();
+
+    IQueryable<Question> GetQuestions(string? sortOrder, string? searchString);
 
     Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds);
 

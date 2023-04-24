@@ -10,7 +10,7 @@
       <h1>Tests</h1>
     </div>
     <div class="col-6 text-center">
-      <img src="~/images/tests.svg" class="rounded img-fluid mx-auto d-block" height="350" width="350" alt="..."/>
+      <img src="~/images/tests.svg" class="rounded img-fluid mx-auto d-block" height="300" width="300" alt="..."/>
     </div>
   </div>
 </div>
@@ -40,7 +40,10 @@
         <tr>
           <th>Nr.</th>
           <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
+            <a asp-action="Index"
+             asp-route-sortOrder="@ViewData["NameSortParam"]"
+             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+             asp-route-pageSize="@ViewData["PageSize"]">Name</a>
             @switch ((string)ViewData["NameSortParam"])
             {
                 case "":

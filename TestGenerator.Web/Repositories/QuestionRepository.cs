@@ -29,9 +29,27 @@ public class QuestionRepository : IQuestionRepository
             .FirstOrDefaultAsync(question => question.QuestionId == id);
     }
 
-    public async Task<List<Question>> GetDistinctQuestionsAsync()
+    public IQueryable<Question> GetQuestions(string? sortOrder, string? searchString)
     {
-        return await _dbContext.Questions.Distinct().ToListAsync();
+        var questions = _dbContext.Questions.AsNoTracking().Select(q => q);
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            questions = questions.Where(q => q.QuestionText.Contains(searchString));
+        }
+
+        questions = sortOrder switch
+        {
+            "name_desc" => questions.OrderByDescending(q=> q.QuestionText),
+            _ => questions.OrderBy(q => q.QuestionText)
+        };
+
+        return questions.AsNoTracking();
+    }
+
+    public async Task<List<Question>> GetQuestionsAsync()
+    {
+        return await _dbContext.Questions.ToListAsync();
     }
 
     public async Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds)
