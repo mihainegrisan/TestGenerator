@@ -34,7 +34,7 @@
         <button class="btn btn-success" type="submit">Search</button>
       </form>
       <div class="col-md-auto order-2 order-md-3">
-        <a class="btn btn-secondary m-2" asp-action="Index" role="button">Reset Search</a>
+        <a class="btn btn-secondary m-2" asp-route-pageSize="@ViewData["PageSize"]" asp-action="Index" role="button">Reset Search</a>
       </div>
     </div>
   </div>
