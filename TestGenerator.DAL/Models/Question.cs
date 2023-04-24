@@ -8,7 +8,9 @@ public class Question
 
     [Key] public int QuestionId { get; set; }
 
-    [Required] public string? QuestionText { get; set; }
+    [Required]
+    [StringLength(1000, ErrorMessage = "{0} length can't be more than {1}.")]
+    public string? QuestionText { get; set; }
 
     public List<Answer>? Answers { get; set; }
 }
