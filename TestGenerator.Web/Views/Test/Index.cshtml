@@ -16,7 +16,6 @@
 </div>
 
 <section class="d-flex flex-column align-items-center justify-content-center bg-light p-2 rounded-3">
-
   <div class="navbar navbar-light bg-light p-2 w-75">
     <div class="container-fluid d-flex flex-column flex-md-row">
       <ul class="col-md-auto navbar-nav flex-grow-1 order-1">
@@ -42,7 +41,8 @@
           <th>Nr.</th>
           <th>Name</th>
           <th>Description</th>
-          <th>Actions</th>
+          <th class="text-center">Actions</th>
+          <th class="text-center">Download</th>
         </tr>
         </thead>
         <tbody>
@@ -52,7 +52,7 @@
               <td>@(++i)</td>
               <td>@test.Name</td>
               <td>@test.Description</td>
-              <td>
+            <td class="text-center">
                 <a asp-action="Details" asp-route-id="@test.TestId" class="lock text-dark me-2" title="Details">
                   <i class="bi bi-info-circle icon-unlock"></i>
                   <i class="bi bi-info-circle-fill icon-lock"></i>
@@ -61,14 +61,20 @@
                   <i class="bi bi-pencil icon-unlock"></i>
                   <i class="bi bi-pencil-fill icon-lock"></i>
                 </a>
-                <a asp-action="Delete" asp-route-id="@test.TestId" class="lock text-dark me-2" style="cursor: pointer" title="Delete">
-                  <i class="bi bi-trash icon-unlock"></i>
-                  <i class="bi bi-trash-fill icon-lock"></i>
-                </a>
+              <a asp-action="Delete" asp-route-id="@test.TestId" class="lock text-dark me-2" style="cursor: pointer" title="Delete">
+                <i class="bi bi-trash icon-unlock"></i>
+                <i class="bi bi-trash-fill icon-lock"></i>
+              </a>
+            </td>
+            <td class="text-center">
                 <a asp-action="DownloadPdf" asp-route-id="@test.TestId" class="lock text-dark me-2" title="Download PDF">
                   <i class="bi bi-file-earmark-pdf icon-unlock"></i>
                   <i class="bi bi-file-earmark-pdf-fill icon-lock"></i>
                 </a>
+              <a asp-action="DownloadPdf" asp-route-id="@test.TestId" class="lock text-dark me-2" title="Download Word">
+                <i class="bi bi-file-word icon-unlock"></i>
+                <i class="bi bi-file-word-fill icon-lock"></i>
+              </a>
               </td>
             </tr>
         }

@@ -41,12 +41,12 @@
 
   @if (Model.Count > 0)
   {
-      <table class="table">
+    <table class="table w-75">
         <thead>
         <tr>
           <th>Nr.</th>
           <th>Name</th>
-          <th>Actions</th>
+          <th class="text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -55,7 +55,7 @@
             <tr>
               <td>@(++i)</td>
               <td>@question.QuestionText</td>
-              <td>
+            <td class="text-center">
                 <a asp-action="Details" asp-route-id="@question.QuestionId" class="lock text-dark me-2" title="Details">
                   <i class="bi bi-info-circle icon-unlock"></i>
                   <i class="bi bi-info-circle-fill icon-lock"></i>
