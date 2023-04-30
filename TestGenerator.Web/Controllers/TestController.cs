@@ -72,8 +72,23 @@ public class TestController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddTest(Test test)
     {
+        ViewBag.NumberOfQuestions = test.NumberOfQuestions;
+        ViewBag.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
+
         if (!ModelState.IsValid)
         {
+            return View(test);
+        }
+
+        foreach (var question in test.Questions)
+        {
+            if (question.Answers.Any(a => a.IsCorrect))
+            {
+                continue;
+            }
+
+            TempData["ErrorMessage"] = "Please select at least one correct answer per each question.";
+
             return View(test);
         }
 
@@ -85,7 +100,7 @@ public class TestController : Controller
 
         _notifyService.Success("Test Created!");
 
-        return RedirectToAction(nameof(Details));
+        return View(nameof(Details), test);
     }
 
     public async Task<IActionResult> DownloadPdf(int id)

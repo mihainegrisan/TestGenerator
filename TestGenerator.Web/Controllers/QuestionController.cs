@@ -163,7 +163,7 @@ public class QuestionController : Controller
 
         _notifyService.Success("Question Created!");
 
-        return RedirectToAction(nameof(Details));
+        return View(nameof(Details), question);
     }
 
     [HttpGet]

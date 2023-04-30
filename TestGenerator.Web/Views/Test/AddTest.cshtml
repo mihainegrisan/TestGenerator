@@ -7,6 +7,10 @@
 }
 
 <form asp-action="AddTest" asp-controller="Test" method="post">
+  @if (TempData.ContainsKey("ErrorMessage"))
+  {
+      <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+  }
   <div class="form-floating mb-3 col-sm-6">
     <input asp-for="Name" class="form-control"/>
     <label asp-for="Name">Name</label>
@@ -36,7 +40,7 @@
       <div class="row mb-3">
         <label asp-for="Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
         <div class="col-sm-11">
-          <input asp-for="Questions[i].QuestionText" class="form-control"/>
+          <input asp-for="Questions[i].QuestionText" class="form-control" required/>
           <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
         </div>
       </div>
@@ -48,7 +52,7 @@
           <div class="row mb-3 align-middle">
             <label asp-for="Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
             <div class="col-sm-10">
-              <input asp-for="Questions[i].Answers[j].AnswerText" class="form-control"/>
+              <input asp-for="Questions[i].Answers[j].AnswerText" class="form-control" required/>
               <span asp-validation-for="Questions[i].Answers[j].AnswerText" class="text-danger"></span>
               <input asp-for="Questions[i].Answers[j].IsCorrect" type="checkbox" class="form-check-input ms-2"/>
             </div>

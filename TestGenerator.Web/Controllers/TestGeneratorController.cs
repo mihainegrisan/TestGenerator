@@ -224,9 +224,6 @@ public class TestGeneratorController : Controller
 
         await _testRepository.AddTestAsync(test);
 
-        _notifyService.Information("Just to test it - information");
-        _notifyService.Warning("Just to test it - warning");
-        _notifyService.Error("Just to test it - error");
         _notifyService.Success("Test Created!");
 
         return View(nameof(Details), test);
