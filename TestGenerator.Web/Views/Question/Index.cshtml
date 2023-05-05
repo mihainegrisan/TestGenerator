@@ -18,15 +18,15 @@
 <section class="d-flex flex-column align-items-center justify-content-center bg-light p-2 rounded-3">
   <div class="navbar navbar-light bg-light p-2 w-75">
     <div class="container-fluid d-flex flex-column flex-md-row">
-      <ul class="col-md-auto navbar-nav flex-grow-1 order-1">
+      <ul class="flex-row col-md-auto navbar-nav flex-grow-1 order-1">
         <li class="nav-item">
-          <a class="btn btn-primary" asp-action="Add" asp-controller="Question" role="button">Create Question</a>
+          <a class="btn btn-primary" asp-action="Add" asp-controller="Question" role="button">Q</a>
+        </li>
+        <li class="nav-item mx-3">
+          <a class="btn btn-primary" asp-action="CreateManualTestBySelectingQuestions" asp-controller="Question" role="button">M</a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-primary" asp-action="CreateManualTestBySelectingQuestions" asp-controller="Question" role="button">Create Manual</a>
-        </li>
-        <li class="nav-item">
-          <a class="btn btn-primary" asp-action="CreateTestAutomatically" asp-controller="Question" role="button">Create Auto</a>
+          <a class="btn btn-primary" asp-action="CreateTestAutomatically" asp-controller="Question" role="button">A</a>
         </li>
       </ul>
       <form class="d-flex order-3 order-md-2" asp-action="Index" method="get">
