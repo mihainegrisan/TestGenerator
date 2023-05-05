@@ -20,13 +20,13 @@
     <div class="container-fluid d-flex flex-column flex-md-row">
       <ul class="flex-row col-md-auto navbar-nav flex-grow-1 order-1">
         <li class="nav-item">
-          <a class="btn btn-primary" asp-action="Add" asp-controller="Question" role="button">Q</a>
+          <a class="btn btn-primary" asp-action="Add" asp-controller="Question" role="button" data-toggle="tooltip" data-placement="top" title="Create Question">Q</a>
         </li>
         <li class="nav-item mx-3">
-          <a class="btn btn-primary" asp-action="CreateManualTestBySelectingQuestions" asp-controller="Question" role="button">M</a>
+          <a class="btn btn-primary" asp-action="CreateManualTestBySelectingQuestions" asp-controller="Question" role="button" data-toggle="tooltip" data-placement="top" title="Create Manual Test from Questions">M</a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-primary" asp-action="CreateTestAutomatically" asp-controller="Question" role="button">A</a>
+          <a class="btn btn-primary" asp-action="CreateTestAutomatically" asp-controller="Question" role="button" data-toggle="tooltip" data-placement="top" title="Create Automated Test from Randomized Questions">A</a>
         </li>
       </ul>
       <form class="d-flex order-3 order-md-2" asp-action="Index" method="get">
@@ -71,17 +71,17 @@
               <td>@(++i).</td>
             <td class="text-truncate" style="max-width: 200px;">@question.QuestionText</td>
             <td class="text-center">
-                <a asp-action="Details" asp-route-id="@question.QuestionId" class="lock text-dark me-2" title="Details">
+              <a asp-action="Details" asp-route-id="@question.QuestionId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Details">
                   <i class="bi bi-info-circle icon-unlock"></i>
                   <i class="bi bi-info-circle-fill icon-lock"></i>
                 </a>
-              <a asp-action="Edit" asp-route-id="@question.QuestionId" class="lock text-dark me-2" title="Edit">
+              <a asp-action="Edit" asp-route-id="@question.QuestionId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Edit">
                 <i class="bi bi-pencil icon-unlock"></i>
                 <i class="bi bi-pencil-fill icon-lock"></i>
               </a>
               @if (question.TestId != null)
               {
-                  <span class="me-2 disabled" title="Not able to delete because the question belongs to a test">
+                <span data-toggle="tooltip" data-placement="top"  class="me-2 disabled" title="Not able to delete because the question belongs to a test">
                     <i class="bi bi-question-lg icon-unlock"></i>
                   </span>
               }
