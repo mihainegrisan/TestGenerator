@@ -15,7 +15,7 @@
 <header class="sticky-top">
   <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow mb-3">
     <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Test" asp-action="Index">
+      <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
         <img src="~/images/Logo.svg" alt="" width="55" height="40" class="d-inline-block align-text-top">
         <p class="m-0">Test Generator App</p>
       </a>
@@ -24,9 +24,6 @@
       </button>
       <div class="collapse navbar-collapse collapse d-sm-inline-flex justify-content-end" id="navbarSupportedContent">
         <ul class="nav nav-pills">
-          <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Test" asp-action="Index">Hi, @User.Identity.Name!</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link text-dark @Html.ActiveClass("Test", "Index")" asp-area="" asp-controller="Test" asp-action="Index">Tests</a>
           </li>

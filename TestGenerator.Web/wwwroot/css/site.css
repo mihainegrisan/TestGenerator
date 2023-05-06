@@ -41,9 +41,15 @@ p {
   text-decoration: none !important;
 }
 
+.verticalLine {
+  height: 24px;
+  align-self: center;
+  border-left: medium solid #585959;
+  border-top-left-radius: 80px 80px;
+  border-top-right-radius: 80px 80px;
+}
 
 /* ========= Overriding bootstrapp ========= */
-
 .active {
   background-color: transparent !important;
   border-bottom: medium solid #DE411B !important;
