@@ -17,6 +17,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IFileProcessor, FileProcessor>();
 builder.Services.AddScoped<ITestRepository, TestRepository>();
@@ -30,6 +31,15 @@ builder.Services.AddNotyf(config =>
     config.IsDismissable = true; 
     config.Position = NotyfPosition.BottomRight;
     config.HasRippleEffect = true;
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
 });
 
 
