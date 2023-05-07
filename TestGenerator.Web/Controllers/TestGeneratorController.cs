@@ -1,7 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
-using TestGenerator.Web.Repositories;
+using TestGenerator.DAL.Repositories;
 using TestGenerator.Web.Services;
 using TestGenerator.Web.Utility;
 

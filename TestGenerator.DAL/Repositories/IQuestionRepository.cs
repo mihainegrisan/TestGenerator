@@ -1,6 +1,6 @@
 ﻿using TestGenerator.DAL.Models;
 
-namespace TestGenerator.Web.Repositories;
+namespace TestGenerator.DAL.Repositories;
 
 public interface IQuestionRepository
 {

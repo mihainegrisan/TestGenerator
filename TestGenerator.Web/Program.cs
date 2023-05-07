@@ -3,7 +3,7 @@ using AspNetCoreHero.ToastNotification.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TestGenerator.DAL.Data;
-using TestGenerator.Web.Repositories;
+using TestGenerator.DAL.Repositories;
 using TestGenerator.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
