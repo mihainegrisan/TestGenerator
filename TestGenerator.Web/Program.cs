@@ -33,6 +33,15 @@ builder.Services.AddNotyf(config =>
     config.HasRippleEffect = true;
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
+});
+
 
 var app = builder.Build();
 
