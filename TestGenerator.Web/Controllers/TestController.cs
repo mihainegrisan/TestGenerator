@@ -116,6 +116,13 @@ public class TestController : Controller
             throw new Exception("User not found.");
         }
 
+        foreach (var question in test.Questions)
+        {
+            question.CreatedAt = DateTime.Now;
+            question.Author = currentUser;
+            question.AuthorId = currentUser.Id;
+        }
+
         await _testRepository.AddTestAsync(test);
 
         _notifyService.Success("Test Created!");
