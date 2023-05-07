@@ -154,3 +154,51 @@ p {
     width: 45%;
   }
 }
+
+/* ===================================================== */
+.login-header {
+  font-size: 3rem;
+}
+
+p {
+  font-size: 1rem;
+}
+
+/*@media (min-width: 500px) {
+  .login-header {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 0.7rem;
+  }
+}*/
+
+@media (min-width: 700px) {
+  .login-header {
+    font-size: 3rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .login-header {
+    font-size: 4rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .login-header {
+    font-size: 5rem;
+  }
+  p {
+    font-size: 1.5rem;
+  }
+}
