@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
 using TestGenerator.DAL.Repositories;
@@ -9,12 +10,18 @@ namespace TestGenerator.Web.Controllers;
 
 public class TestController : Controller
 {
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly IFileProcessor _fileProcessor;
     private readonly ITestRepository _testRepository;
     private readonly INotyfService _notifyService;
 
-    public TestController(ITestRepository testRepository, IFileProcessor fileProcessor, INotyfService notifyService)
+    public TestController(
+        UserManager<IdentityUser> userManager,
+        ITestRepository testRepository,
+        IFileProcessor fileProcessor,
+        INotyfService notifyService)
     {
+        _userManager = userManager;
         _testRepository = testRepository;
         _fileProcessor = fileProcessor;
         _notifyService = notifyService;
@@ -91,10 +98,22 @@ public class TestController : Controller
 
             return View(test);
         }
-
+        
         test.IsCreatedManually = true;
         test.IsAutoCreatedFromQuestions = false;
         test.IsAutoCreatedByChatGpt = false;
+
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            test.Author = currentUser;
+            test.AuthorId = currentUser.Id;
+            test.CreatedAt = DateTime.Now;
+        }
+        else
+        {
+            throw new Exception("User not found.");
+        }
 
         await _testRepository.AddTestAsync(test);
 
