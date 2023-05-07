@@ -2,8 +2,6 @@
 
 <h1>Edit Test</h1>
 
-<a class="btn btn-success mb-3" href="@Url.Action("Index")">Back to List</a>
-
 @using (Html.BeginForm("Edit", "TestGenerator"))
 {
     @Html.AntiForgeryToken()
@@ -30,9 +28,7 @@
       @Html.LabelFor(model => model.NumberOfAnswersPerQuestion, new { @class = "form-label" })
     </div>
 
-    <h3 class="mt-3">
-      <u>Questions:</u>
-    </h3>
+    <h3 class="mt-3 text-decoration-underline">Questions:</h3>
 
     @for (var i = 0; i < Model.NumberOfQuestions; i++)
     {
@@ -63,4 +59,6 @@
     }
 
     <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Back to List</a>
+
 }

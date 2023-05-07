@@ -4,8 +4,6 @@
     var i = 0;
 }
 
-<a class="btn btn-success mb-3" href="@Url.Action("Index")">Back</a>
-
 <h1>Auto-Generate Test From Questions</h1>
 
 <form asp-action="CreateTestAutomatically" asp-controller="Question" method="post">
@@ -23,4 +21,5 @@
   </div>
   
   <button type="submit" class="btn btn-primary">Generate</button>
+  <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
 </form>

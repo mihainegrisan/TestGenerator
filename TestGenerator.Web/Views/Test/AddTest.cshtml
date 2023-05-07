@@ -6,6 +6,8 @@
     int numberOfAnswersPerQuestion = ViewBag.NumberOfAnswersPerQuestion;
 }
 
+<h1 class="my-5">Add new Test</h1>
+
 <form asp-action="AddTest" asp-controller="Test" method="post">
   @if (TempData.ContainsKey("ErrorMessage"))
   {
@@ -33,7 +35,7 @@
     <span asp-validation-for="NumberOfAnswersPerQuestion" class="text-danger"></span>
   </div>
 
-  <h3 class="my-3">Questions:</h3>
+  <h3 class="my-3 text-decoration-underline">Questions:</h3>
 
   @for (var i = 0; i < numberOfQuestions; i++)
   {
@@ -61,4 +63,5 @@
   }
 
   <button type="submit" class="btn btn-primary">Create</button>
+  <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
 </form>

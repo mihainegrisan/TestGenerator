@@ -5,7 +5,7 @@
     var test = TempData["Test"] as Test;
 }
 
-<h2>Generate Test</h2>
+<h1 class="my-5">Generate Test with Chat GPT</h1>
 
 <form asp-action="GenerateTest" asp-controller="TestGenerator" method="post">
   <div class="form-floating mb-3 col-sm-6">
@@ -30,9 +30,7 @@
     <span asp-validation-for="@test.NumberOfAnswersPerQuestion" class="text-danger"></span>
   </div>
 
-  <h3 class="my-3">
-    <u>Questions:</u>
-  </h3>
+  <h3 class="my-3 text-decoration-underline">Questions:</h3>
 
   @for (var i = 0; i < test.NumberOfQuestions; i++)
   {
@@ -63,4 +61,5 @@
   }
 
   <button type="submit" class="btn btn-primary">Create</button>
+  <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
 </form>

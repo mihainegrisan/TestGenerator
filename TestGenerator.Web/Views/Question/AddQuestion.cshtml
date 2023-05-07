@@ -5,9 +5,7 @@
     int numberOfAnswers = ViewBag.NumberOfAnswers;
 }
 
-<div class="text-center mb-3">
-  <h1 class="my-5">Add new Question</h1>
-</div>
+<h1 class="my-5">Add new Question</h1>
 
 <form asp-action="AddQuestion" asp-controller="Question" method="post">
   @if (TempData.ContainsKey("ErrorMessage"))
@@ -38,4 +36,5 @@
   }
 
   <button type="submit" class="btn btn-primary">Submit</button>
+  <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
 </form>
