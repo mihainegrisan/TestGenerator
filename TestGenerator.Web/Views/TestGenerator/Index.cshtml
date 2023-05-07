@@ -66,7 +66,11 @@
         {
             <tr>
               <td>@(++i).</td>
-            <td class="text-truncate" style="max-width: 200px;">@test.Name</td>
+              <td>
+                <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@test.Description">
+                  <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@test.TestId">@Html.DisplayFor(modelItem => test.Name)</a>
+                </span>
+              </td>
             <td class="text-truncate" style="max-width: 200px;">@test.Description</td>
               <td class="text-center">
               <a asp-action="Details" asp-route-id="@test.TestId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Details">
