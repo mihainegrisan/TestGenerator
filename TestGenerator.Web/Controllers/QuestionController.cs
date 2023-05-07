@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
 using TestGenerator.DAL.Repositories;
@@ -8,12 +9,18 @@ namespace TestGenerator.Web.Controllers;
 
 public class QuestionController : Controller
 {
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly IQuestionRepository _questionRepository;
     private readonly ITestRepository _testRepository;
     private readonly INotyfService _notifyService;
 
-    public QuestionController(IQuestionRepository questionRepository, ITestRepository testRepository, INotyfService notifyService)
+    public QuestionController(
+        UserManager<IdentityUser> userManager,
+        IQuestionRepository questionRepository,
+        ITestRepository testRepository,
+        INotyfService notifyService)
     {
+        _userManager = userManager;
         _questionRepository = questionRepository;
         _testRepository = testRepository;
         _notifyService = notifyService;
@@ -64,6 +71,12 @@ public class QuestionController : Controller
         }
 
         var selectedQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(selectedQuestionIds);
+        
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser == null)
+        {
+            throw new Exception("User not found.");
+        }
 
         var test = new Test
         {
@@ -74,7 +87,10 @@ public class QuestionController : Controller
             NumberOfAnswersPerQuestion = selectedQuestions.Max(q => q.Answers.Count),
             IsCreatedManually = false,
             IsAutoCreatedFromQuestions = true,
-            IsAutoCreatedByChatGpt = false
+            IsAutoCreatedByChatGpt = false,
+            CreatedAt = DateTime.Now,
+            Author = currentUser,
+            AuthorId = currentUser.Id,
         };
 
         await _testRepository.AddTestAsync(test);
@@ -95,6 +111,12 @@ public class QuestionController : Controller
     {
         var randomQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(numberOfQuestions);
 
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser == null)
+        {
+            throw new Exception("User not found.");
+        }
+
         var test = new Test
         {
             Name = name,
@@ -104,7 +126,10 @@ public class QuestionController : Controller
             NumberOfAnswersPerQuestion = randomQuestions.Max(q => q.Answers.Count),
             IsCreatedManually = false,
             IsAutoCreatedFromQuestions = true,
-            IsAutoCreatedByChatGpt = false
+            IsAutoCreatedByChatGpt = false,
+            CreatedAt = DateTime.Now,
+            Author = currentUser,
+            AuthorId = currentUser.Id,
         };
 
         await _testRepository.AddTestAsync(test);
@@ -158,6 +183,16 @@ public class QuestionController : Controller
 
             return View(nameof(AddQuestion), question);
         }
+
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser == null)
+        {
+            throw new Exception("User not found.");
+        }
+
+        question.CreatedAt = DateTime.Now;
+        question.Author = currentUser;
+        question.AuthorId = currentUser.Id;
 
         await _questionRepository.AddQuestionAsync(question);
 

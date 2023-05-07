@@ -1,4 +1,5 @@
-﻿using OpenAI_API;
+﻿using Microsoft.AspNetCore.Identity;
+using OpenAI_API;
 using TestGenerator.DAL.Models;
 
 namespace TestGenerator.Web.Services;
@@ -95,6 +96,7 @@ public class ChatGptClient : IChatGptClient
             }
 
             question.QuestionText = questionText.Substring(0, questionText.IndexOf("\r\n", StringComparison.Ordinal)).Trim();
+
             test.Questions.Add(question);
         }
 
