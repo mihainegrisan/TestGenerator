@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestGenerator.DAL.Data;
 
@@ -11,9 +12,11 @@ using TestGenerator.DAL.Data;
 namespace TestGenerator.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230507144352_Removed the required attribute from the Author and AuthorId properties on the Test model")]
+    partial class RemovedtherequiredattributefromtheAuthorandAuthorIdpropertiesontheTestmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,9 +285,6 @@ namespace TestGenerator.DAL.Migrations
 
                     b.Property<string>("AuthorId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
