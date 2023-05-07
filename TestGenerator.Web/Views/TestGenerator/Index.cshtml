@@ -57,6 +57,20 @@
             }
           </th>
           <th>Description</th>
+          <th>
+            <a asp-action="Index"
+             asp-route-sortOrder="@ViewData["DateSortParam"]"
+             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+             asp-route-pageSize="@ViewData["PageSize"]">Created On</a>
+            @if ((string)ViewData["DateSortParam"] != "date")
+            {
+              <i class="bi bi-sort-down-alt"></i>
+            }
+            else if ((string)ViewData["DateSortParam"] != "date_desc")
+            {
+              <i class="bi bi-sort-down"></i>
+            }
+          </th>
           <th class="text-center">Actions</th>
           <th class="text-center">Download</th>
         </tr>
@@ -71,7 +85,10 @@
                   <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@test.TestId">@Html.DisplayFor(modelItem => test.Name)</a>
                 </span>
               </td>
-            <td class="text-truncate" style="max-width: 200px;">@test.Description</td>
+              <td class="text-truncate" style="max-width: 200px;">@test.Description</td>
+            <td>
+              @Html.DisplayFor(modelItem => test.CreatedAt)
+            </td>
               <td class="text-center">
               <a asp-action="Details" asp-route-id="@test.TestId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Details">
                   <i class="bi bi-info-circle icon-unlock"></i>

@@ -53,12 +53,26 @@
                asp-route-pageSize="@ViewData["PageSize"]">Question</a>
             @switch ((string)ViewData["NameSortParam"])
             {
-              case "":
-                <i class="bi bi-sort-alpha-down-alt"></i>
-                break;
-              case "name_desc":
-                <i class="bi bi-sort-alpha-down"></i>
-                break;
+                case "":
+                    <i class="bi bi-sort-alpha-down-alt"></i>
+                    break;
+                case "name_desc":
+                    <i class="bi bi-sort-alpha-down"></i>
+                    break;
+            }
+          </th>
+          <th>
+            <a asp-action="Index" 
+               asp-route-sortOrder="@ViewData["DateSortParam"]" 
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               asp-route-pageSize="@ViewData["PageSize"]">Created On</a>
+            @if ((string)ViewData["DateSortParam"] != "date")
+            {
+                <i class="bi bi-sort-down-alt"></i>
+            }
+            else if ((string)ViewData["DateSortParam"] != "date_desc")
+            {
+                <i class="bi bi-sort-down"></i>
             }
           </th>
           <th class="text-center">Actions</th>
@@ -70,11 +84,14 @@
             <tr>
               <td>@(++i).</td>
               <td>
-              <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@question.QuestionText">
-                <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@question.QuestionId">@Html.DisplayFor(modelItem => question.QuestionText)</a>
+                <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@question.QuestionText">
+                  <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@question.QuestionId">@Html.DisplayFor(modelItem => question.QuestionText)</a>
                 </span>
               </td>
-            <td class="text-center">
+              <td>
+                @Html.DisplayFor(modelItem => question.CreatedAt)
+              </td>
+              <td class="text-center">
               <a asp-action="Details" asp-route-id="@question.QuestionId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Details">
                   <i class="bi bi-info-circle icon-unlock"></i>
                   <i class="bi bi-info-circle-fill icon-lock"></i>

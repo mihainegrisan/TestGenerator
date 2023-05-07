@@ -49,7 +49,9 @@ public class TestRepository : ITestRepository
         tests = sortOrder switch
         {
             "name_desc" => tests.OrderByDescending(t => t.Name),
-            _ => tests.OrderBy(t => t.Name)
+            "date" => tests = tests.OrderBy(t => t.CreatedAt),
+            "date_desc" => tests = tests.OrderByDescending(t => t.CreatedAt),
+          _ => tests.OrderBy(t => t.Name)
         };
 
         return tests.AsNoTracking();

@@ -41,6 +41,8 @@ public class QuestionRepository : IQuestionRepository
         questions = sortOrder switch
         {
             "name_desc" => questions.OrderByDescending(q=> q.QuestionText),
+            "date" => questions = questions.OrderBy(t => t.CreatedAt),
+            "date_desc" => questions = questions.OrderByDescending(t => t.CreatedAt),
             _ => questions.OrderBy(q => q.QuestionText)
         };
 
