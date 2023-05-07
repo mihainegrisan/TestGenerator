@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace TestGenerator.DAL.Models;
 
@@ -13,4 +14,13 @@ public class Question
     public string? QuestionText { get; set; }
 
     public List<Answer>? Answers { get; set; }
+
+    //public bool IsCreatedManually { get; set; }
+    //public bool IsAutoCreatedFromQuestions { get; set; }
+    //public bool IsAutoCreatedByChatGpt { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public IdentityUser? Author { get; set; }
+    public string? AuthorId { get; set; }
 }
