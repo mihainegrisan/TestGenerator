@@ -9,36 +9,45 @@
 
     <div class="col-4 p-3">
       <a href="@Url.Action("Index", "Test")">
-        <div class="col-4" style="width: 20rem;">
-          <img src="~/images/tests.svg" class="img-fluid mx-auto d-block" height="700" width="700" alt="tests">
-          <div class="card-body">
-            <h4 class="text-center mt-3">Manual Tests</h4>
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="~/images/tests.svg" class="img-fluid mx-auto d-block" height="700" width="700" alt="tests">
+            </div>
+            <div class="flip-card-back">
+              <h4 class="title text-center mt-3">Manual Tests</h4>
+            </div>
           </div>
         </div>
       </a>
     </div>
-
     <div class="col-4 p-3">
       <a href="@Url.Action("Index", "Question")">
-        <div class="col-4" style="width: 20rem;">
-          <img src="~/images/questions.svg" class="img-fluid mx-auto d-block" height="500" width="500" alt="questions">
-          <div class="card-body">
-            <h4 class="text-center mt-3">Questions</h4>
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="~/images/questions.svg" class="img-fluid mx-auto d-block" height="700" width="700" alt="tests">
+            </div>
+            <div class="flip-card-back">
+              <h4 class="title text-center mt-3">Questions</h4>
+            </div>
           </div>
         </div>
       </a>
     </div>
-
     <div class="col-4 p-3">
       <a href="@Url.Action("Index", "TestGenerator")">
-        <div class="col-4" style="width: 20rem;">
-          <img src="~/images/testGenerator.svg" class="img-fluid mx-auto d-block" height="500" width="500" alt="auto test generator">
-          <div class="card-body">
-            <h4 class="text-center mt-3">Auto Generate Test</h4>
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="~/images/testGenerator.svg" class="img-fluid mx-auto d-block" height="700" width="700" alt="tests">
+            </div>
+            <div class="flip-card-back">
+              <h4 class="title text-center mt-3">Auto Generate Tests</h4>
+            </div>
           </div>
         </div>
       </a>
     </div>
-
   </div>
 </section>
