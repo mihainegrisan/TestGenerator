@@ -65,35 +65,41 @@ public class TestGeneratorController : Controller
         return View();
     }
 
-  //[HttpPost]
-  //[ValidateAntiForgeryToken]
-  //public async Task<IActionResult> Generate(Test test, IFormFile file)
-  //{
-  //  if (!ModelState.IsValid)
-  //  {
-  //    return View(test);
-  //  }
-
-  //  var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
-
-  //  _notifyService.Information("Text extracted from file!");
-
-  //  var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
-
-  //  _notifyService.Information("Received response from ChatGPT!");
-
-  //  _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
-
-  //  _notifyService.Information("Populated test with ChatGPT response!");
-
-  //  TempData["Test"] = test;
-
-  //  return View(nameof(GenerateTest), test);
-  //}
-
-  [HttpPost]
+    [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Generate(Test test, IFormFile file)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(test);
+        }
+
+        var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
+
+        _notifyService.Information("Text extracted from file!");
+
+        var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
+
+        _notifyService.Information("Received response from ChatGPT!");
+
+        _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
+
+        _notifyService.Information("Populated test with ChatGPT response!");
+
+        TempData["Test"] = test;
+
+        return View(nameof(GenerateTest), test);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GenerateMock()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GenerateMock(Test test, IFormFile file)
     {
         if (!ModelState.IsValid)
         {
@@ -226,10 +232,6 @@ public class TestGeneratorController : Controller
         {
             return View(test);
         }
-
-        test.IsCreatedManually = false;
-        test.IsAutoCreatedFromQuestions = false;
-        test.IsAutoCreatedByChatGpt = true;
 
         var currentUser = await _userManager.GetUserAsync(User);
         if (currentUser != null)
