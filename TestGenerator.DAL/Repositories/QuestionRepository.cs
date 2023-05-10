@@ -147,6 +147,9 @@ public class QuestionRepository : IQuestionRepository
             {
                 QuestionText = question.QuestionText,
                 TestId = null,
+                CreatedAt = DateTime.Now,
+                Author = question.Author,
+                AuthorId = question.AuthorId,
                 Answers = new List<Answer>()
             };
 
