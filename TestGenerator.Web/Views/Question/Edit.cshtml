@@ -8,6 +8,16 @@
 
     <input type="hidden" asp-for="QuestionId"/>
 
+    <div class="form-floating mb-3">
+      @Html.EditorFor(model => model.CreatedAt, new { htmlAttributes = new { @class = "form-control", placeholder = "Created At", @readonly = "readonly" } })
+      @Html.LabelFor(model => model.CreatedAt, new { @class = "form-label" })
+    </div>
+
+    <div class="form-floating mb-3">
+      @Html.EditorFor(model => model.EditedAt, new { htmlAttributes = new { @class = "form-control", placeholder = "Edited At", @readonly = "readonly" } })
+      @Html.LabelFor(model => model.EditedAt, new { @class = "form-label" })
+    </div>
+
     <div class="row mb-3 mt-5">
       <label asp-for="@Model.QuestionText" class="col-sm-1 col-form-label fw-bold">Question </label>
       <div class="col-sm-11">
