@@ -117,9 +117,6 @@ public class TestGeneratorController : Controller
             Description = test.Description,
             NumberOfQuestions = 3,
             NumberOfAnswersPerQuestion = 4,
-            IsCreatedManually = false,
-            IsAutoCreatedFromQuestions = false,
-            IsAutoCreatedByChatGpt = true,
             Questions = new List<Question>
             {
                 new()
@@ -239,6 +236,7 @@ public class TestGeneratorController : Controller
             test.Author = currentUser;
             test.AuthorId = currentUser.Id;
             test.CreatedAt = DateTime.Now;
+            test.EditedAt = DateTime.Now;
         }
         else
         {
@@ -248,9 +246,14 @@ public class TestGeneratorController : Controller
         foreach (var question in test.Questions)
         {
             question.CreatedAt = DateTime.Now;
+            question.EditedAt = DateTime.Now;
             question.Author = currentUser;
             question.AuthorId = currentUser.Id;
         }
+
+        test.IsCreatedManually = false;
+        test.IsAutoCreatedFromQuestions = false;
+        test.IsAutoCreatedByChatGpt = true;
 
         await _testRepository.AddTestAsync(test);
 
@@ -306,6 +309,7 @@ public class TestGeneratorController : Controller
         existingTest.NumberOfQuestions = test.NumberOfQuestions;
         existingTest.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
         existingTest.Questions = test.Questions;
+        existingTest.EditedAt = DateTime.Now;
 
         await _testRepository.UpdateTestAsync(existingTest);
 

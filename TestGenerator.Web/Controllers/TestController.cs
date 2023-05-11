@@ -110,6 +110,7 @@ public class TestController : Controller
             test.Author = currentUser;
             test.AuthorId = currentUser.Id;
             test.CreatedAt = DateTime.Now;
+            test.EditedAt = DateTime.Now;
         }
         else
         {
@@ -119,6 +120,7 @@ public class TestController : Controller
         foreach (var question in test.Questions)
         {
             question.CreatedAt = DateTime.Now;
+            question.EditedAt = DateTime.Now;
             question.Author = currentUser;
             question.AuthorId = currentUser.Id;
         }
@@ -176,6 +178,7 @@ public class TestController : Controller
         existingTest.NumberOfQuestions = test.NumberOfQuestions;
         existingTest.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
         existingTest.Questions = test.Questions;
+        existingTest.EditedAt = DateTime.Now;
 
         await _testRepository.UpdateTestAsync(existingTest);
 

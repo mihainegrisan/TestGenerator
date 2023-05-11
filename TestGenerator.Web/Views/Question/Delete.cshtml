@@ -8,7 +8,15 @@
 
 <form method="post" action="@Url.Action("Delete", "Question")">
   @Html.AntiForgeryToken()
-
+  
+  <div class="form-floating mb-3 col-sm-6">
+    <input class="form-control" id="created" placeholder="Created On" value="@Model.CreatedAt" readonly />
+    <label class="form-label" for="created">Created On</label>
+  </div>
+  <div class="form-floating mb-3 col-sm-6">
+    <input class="form-control" id="edited" placeholder="Edited On" value="@Model.EditedAt" readonly />
+    <label class="form-label" for="edited">Edited On</label>
+  </div>
   <div class="row mb-3 mt-5">
     <label asp-for="@Model.QuestionText" class="col-sm-1 col-form-label fw-bold">Question </label>
     <div class="col-sm-11">

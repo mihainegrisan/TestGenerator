@@ -26,6 +26,7 @@ public class Test
     public bool IsAutoCreatedByChatGpt { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+    public DateTime? EditedAt { get; set; }
 
     public IdentityUser? Author { get; set; }
     public string? AuthorId { get; set; }

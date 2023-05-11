@@ -90,6 +90,7 @@ public class QuestionController : Controller
             IsAutoCreatedFromQuestions = true,
             IsAutoCreatedByChatGpt = false,
             CreatedAt = DateTime.Now,
+            EditedAt = DateTime.Now,
             Author = currentUser,
             AuthorId = currentUser.Id,
         };
@@ -129,6 +130,7 @@ public class QuestionController : Controller
             IsAutoCreatedFromQuestions = true,
             IsAutoCreatedByChatGpt = false,
             CreatedAt = DateTime.Now,
+            EditedAt = DateTime.Now,
             Author = currentUser,
             AuthorId = currentUser.Id,
         };
@@ -192,6 +194,7 @@ public class QuestionController : Controller
         }
 
         question.CreatedAt = DateTime.Now;
+        question.EditedAt = DateTime.Now;
         question.Author = currentUser;
         question.AuthorId = currentUser.Id;
 
@@ -223,6 +226,7 @@ public class QuestionController : Controller
 
         existingQuestion.QuestionText = question.QuestionText;
         existingQuestion.Answers = question.Answers;
+        existingQuestion.EditedAt = DateTime.Now;
 
         await _questionRepository.UpdateQuestionAsync(existingQuestion);
 
