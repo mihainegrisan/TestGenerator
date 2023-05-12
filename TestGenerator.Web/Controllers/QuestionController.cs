@@ -225,8 +225,27 @@ public class QuestionController : Controller
         var existingQuestion = await _questionRepository.GetQuestionAsync(question.QuestionId);
 
         existingQuestion.QuestionText = question.QuestionText;
-        existingQuestion.Answers = question.Answers;
         existingQuestion.EditedAt = DateTime.Now;
+
+        foreach (var answer in existingQuestion.Answers)
+        {
+            var updatedAnswer = question.Answers.FirstOrDefault(a => a.AnswerId == answer.AnswerId);
+
+            if (updatedAnswer == null)
+            {
+                continue;
+            }
+
+            answer.AnswerText = updatedAnswer.AnswerText;
+            answer.IsCorrect = updatedAnswer.IsCorrect;
+        }
+
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            existingQuestion.Author = currentUser;
+            existingQuestion.AuthorId = currentUser.Id;
+        }
 
         await _questionRepository.UpdateQuestionAsync(existingQuestion);
 

@@ -57,13 +57,45 @@ public class TestRepository : ITestRepository
         return tests.AsNoTracking();
     }
 
-    public async Task<Test> UpdateTestAsync(Test test)
+    public async Task<bool> UpdateTestAsync(Test updatedTest)
     {
-        _dbContext.Entry(test).State = EntityState.Modified;
+        var oldTest = await _dbContext.Tests
+            .Include(t => t.Questions)
+            //.ThenInclude(q => q.Answers)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.TestId == updatedTest.TestId);
 
-        await _dbContext.SaveChangesAsync();
+        if (oldTest != null)
+        {
+            updatedTest.EditedAt = DateTime.Now;
 
-        return test;
+            foreach (var question in updatedTest.Questions)
+            {
+                var oldQuestion = oldTest.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
+
+                if (oldQuestion != null)
+                {
+                    question.TestId = oldQuestion.TestId;
+                    question.AuthorId = oldQuestion.AuthorId;
+                    question.Author = oldQuestion.Author;
+                    question.CreatedAt = oldQuestion.CreatedAt;
+                    question.EditedAt = DateTime.Now;
+                }
+            }
+
+            try
+            {
+                _dbContext.Tests.Update(updatedTest);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     public async Task<bool> DeleteTestAsync(int id)

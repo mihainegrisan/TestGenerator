@@ -302,16 +302,14 @@ public class TestGeneratorController : Controller
             return View(test);
         }
 
-        var existingTest = await _testRepository.GetTestAsync(test.TestId);
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            test.Author = currentUser;
+            test.AuthorId = currentUser.Id;
+        }
 
-        existingTest.Name = test.Name;
-        existingTest.Description = test.Description;
-        existingTest.NumberOfQuestions = test.NumberOfQuestions;
-        existingTest.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
-        existingTest.Questions = test.Questions;
-        existingTest.EditedAt = DateTime.Now;
-
-        await _testRepository.UpdateTestAsync(existingTest);
+        await _testRepository.UpdateTestAsync(test);
 
         _notifyService.Success("Test Updated!");
 

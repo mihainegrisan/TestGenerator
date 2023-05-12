@@ -177,8 +177,28 @@ public class TestController : Controller
         existingTest.Description = test.Description;
         existingTest.NumberOfQuestions = test.NumberOfQuestions;
         existingTest.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
-        existingTest.Questions = test.Questions;
+        existingTest.IsCreatedManually = true;
+        existingTest.IsAutoCreatedFromQuestions = false;
+        existingTest.IsAutoCreatedByChatGpt = false;
+        existingTest.CreatedAt = test.CreatedAt;
         existingTest.EditedAt = DateTime.Now;
+
+        foreach (var question in existingTest.Questions)
+        {
+            var updatedQuestion = test.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
+
+            if (updatedQuestion != null)
+            {
+                question.QuestionText = updatedQuestion.QuestionText;
+            }
+        }
+
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            test.Author = currentUser;
+            test.AuthorId = currentUser.Id;
+        }
 
         await _testRepository.UpdateTestAsync(existingTest);
 

@@ -12,7 +12,7 @@ public interface ITestRepository
 
     IQueryable<Test> GetTests(string? sortOrder, string? searchString, bool isAutoCreatedByChatGpt);
 
-    Task<Test> UpdateTestAsync(Test test);
+    Task<bool> UpdateTestAsync(Test updatedTest);
 
     Task<bool> DeleteTestAsync(int id);
 }
