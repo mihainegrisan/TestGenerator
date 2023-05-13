@@ -6,19 +6,19 @@ public interface IQuestionRepository
 {
     Task<Question> AddQuestionAsync(Question question);
 
-    Task<Question> GetQuestionAsync(int? id);
+    Task<Question> GetQuestionAsync(int? id, string currentUserId);
 
-    Task<List<Question>> GetQuestionsAsync();
+    Task<List<Question>> GetQuestionsAsync(string currentUserId);
 
-    IQueryable<QuestionTestViewModel> GetQuestions(string? sortOrder, string? searchString);
+    IQueryable<QuestionTestViewModel> GetQuestions(string? sortOrder, string? searchString, string currentUserId);
 
-    Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds);
+    Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds, string currentUserId);
 
-    Task<List<Question>> GetQuestionsWithoutTestIdAsync(int numberOfQuestions);
+    Task<List<Question>> GetQuestionsWithoutTestIdAsync(int numberOfQuestions, string currentUserId);
 
-    Task<bool> UpdateQuestionAsync(Question question);
+    Task<bool> UpdateQuestionAsync(Question question, string currentUserId);
 
-    Task<bool> DeleteQuestionAsync(int id);
+    Task<bool> DeleteQuestionAsync(int id, string currentUserId);
 
-    Task<int?> GetNumberOfQuestionsInTheDatabase();
+    Task<int?> GetNumberOfQuestionsInTheDatabase(string currentUserId);
 }

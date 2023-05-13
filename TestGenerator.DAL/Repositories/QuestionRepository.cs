@@ -22,26 +22,34 @@ public class QuestionRepository : IQuestionRepository
         return question;
     }
 
-    public async Task<Question> GetQuestionAsync(int? id)
+    public async Task<Question> GetQuestionAsync(int? id, string currentUserId)
     {
         return await _dbContext.Questions
             .Include(question => question.Answers)
+            .Where(q => q.AuthorId == currentUserId)
+            .AsNoTracking()
             .FirstOrDefaultAsync(question => question.QuestionId == id);
     }
 
-    public async Task<int?> GetNumberOfQuestionsInTheDatabase()
+    public async Task<int?> GetNumberOfQuestionsInTheDatabase(string currentUserId)
     {
-        return await _dbContext.Questions.CountAsync();
+        return await _dbContext.Questions
+            .Where(q => q.AuthorId == currentUserId)
+            .AsNoTracking()
+            .CountAsync();
     }
 
-    public IQueryable<QuestionTestViewModel> GetQuestions(string? sortOrder, string? searchString)
+    public IQueryable<QuestionTestViewModel> GetQuestions(string? sortOrder, string? searchString, string currentUserId)
     {
-        var questions = _dbContext.Questions.AsNoTracking().Select(q => q);
+        var questions = _dbContext.Questions
+            .Where(q => q.AuthorId == currentUserId)
+            .AsNoTracking()
+            .Select(q => q);
 
         var questionViewModels = questions.Select(question => new QuestionTestViewModel
         {
             Question = question,
-            Test = _dbContext.Tests.FirstOrDefault(test => test.TestId == question.TestId)
+            Test = _dbContext.Tests.AsNoTracking().FirstOrDefault(test => test.TestId == question.TestId)
         });
 
         questionViewModels = sortOrder switch
@@ -68,33 +76,36 @@ public class QuestionRepository : IQuestionRepository
         return questionViewModels;
     }
 
-    public async Task<List<Question>> GetQuestionsAsync()
+    public async Task<List<Question>> GetQuestionsAsync(string currentUserId)
     {
-        return await _dbContext.Questions.ToListAsync();
+        return await _dbContext.Questions
+            .Where(q => q.AuthorId == currentUserId)
+            .ToListAsync();
     }
 
-    public async Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds)
+    public async Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds, string currentUserId)
     {
         var questionsWithoutTestId = await _dbContext.Questions
             .Include(question => question.Answers)
+            .Where(q => q.AuthorId == currentUserId)
             .Where(q => questionIds.Contains(q.QuestionId))
             .Where(q => q.TestId == null)
             .ToListAsync();
 
-        var duplicatedQuestionsWithoutTestId = await GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(questionIds);
+        var duplicatedQuestionsWithoutTestId = await GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(questionIds, currentUserId);
 
         questionsWithoutTestId.AddRange(duplicatedQuestionsWithoutTestId);
 
         return questionsWithoutTestId;
     }
 
-    public async Task<List<Question>> GetQuestionsWithoutTestIdAsync(int numberOfQuestions)
+    public async Task<List<Question>> GetQuestionsWithoutTestIdAsync(int numberOfQuestions, string currentUserId)
     {
-        var selectedQuestions = await GetRandomQuestions(numberOfQuestions);
+        var selectedQuestions = await GetRandomQuestions(numberOfQuestions, currentUserId);
 
         var selectedQuestionsIds = selectedQuestions.Select(q => q.QuestionId).ToList();
 
-        var duplicatedQuestionsWithoutTestId = await GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(selectedQuestionsIds);
+        var duplicatedQuestionsWithoutTestId = await GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(selectedQuestionsIds, currentUserId);
 
         var questionsWithoutTestId = selectedQuestions.Where(q => q.TestId == null).ToList();
 
@@ -104,12 +115,12 @@ public class QuestionRepository : IQuestionRepository
     }
 
 
-    public async Task<bool> UpdateQuestionAsync(Question updatedQuestion)
+    public async Task<bool> UpdateQuestionAsync(Question updatedQuestion, string currentUserId)
     {
         var oldQuestion = await _dbContext.Questions
             .Include(q => q.Answers)
             .AsNoTracking()
-            .FirstOrDefaultAsync(q => q.QuestionId == updatedQuestion.QuestionId);
+            .FirstOrDefaultAsync(q => q.QuestionId == updatedQuestion.QuestionId && q.AuthorId == currentUserId);
 
         if (oldQuestion == null)
         {
@@ -131,9 +142,11 @@ public class QuestionRepository : IQuestionRepository
         }
     }
 
-    public async Task<bool> DeleteQuestionAsync(int id)
+    public async Task<bool> DeleteQuestionAsync(int id, string currentUserId)
     {
-        var question = await _dbContext.Questions.FindAsync(id);
+        var question = await _dbContext.Questions
+            .Where(q => q.AuthorId == currentUserId)
+            .SingleOrDefaultAsync(t => t.TestId == id);
 
         if (question == null)
         {
@@ -154,11 +167,12 @@ public class QuestionRepository : IQuestionRepository
         return true;
     }
 
-    private async Task<List<Question>> GetRandomQuestions(int numberOfQuestions)
+    private async Task<List<Question>> GetRandomQuestions(int numberOfQuestions, string currentUserId)
     {
         // Get a list of all questions in the database
         var allQuestions = await _dbContext.Questions
             .Include(question => question.Answers)
+            .Where(q => q.AuthorId == currentUserId)
             .ToListAsync();
 
         var shuffledQuestions = allQuestions.OrderBy(q => Guid.NewGuid()).ToList();
@@ -168,12 +182,13 @@ public class QuestionRepository : IQuestionRepository
         return selectedQuestions;
     }
 
-    private async Task<List<Question>> GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(List<int> questionIds)
+    private async Task<List<Question>> GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(List<int> questionIds, string currentUserId)
     {
         var questionsToDuplicate = await _dbContext.Questions
             .Include(q => q.Answers)
             .Where(q => questionIds.Contains(q.QuestionId))
             .Where(q => q.TestId != null)
+            .Where(q => q.AuthorId == currentUserId)
             .ToListAsync();
 
         var duplicatedQuestions = new List<Question>();

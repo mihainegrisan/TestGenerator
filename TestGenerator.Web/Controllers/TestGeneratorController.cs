@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
@@ -8,6 +9,7 @@ using TestGenerator.Web.Utility;
 
 namespace TestGenerator.Web.Controllers;
 
+[Authorize]
 public class TestGeneratorController : Controller
 {
     private readonly IChatGptClient _chatGptClient;

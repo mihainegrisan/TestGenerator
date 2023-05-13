@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TestGenerator.DAL.Models;
@@ -7,6 +8,7 @@ using TestGenerator.Web.Utility;
 
 namespace TestGenerator.Web.Controllers;
 
+[Authorize]
 public class QuestionController : Controller
 {
     private readonly INotyfService _notifyService;
@@ -50,14 +52,18 @@ public class QuestionController : Controller
 
         ViewData["CurrentFilter"] = searchString;
 
-        var questionViewModels = _questionRepository.GetQuestions(sortOrder, searchString);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var questionViewModels = _questionRepository.GetQuestions(sortOrder, searchString, currentUser.Id);
 
         return View(await PaginatedList<QuestionTestViewModel>.CreateAsync(questionViewModels, pageNumber ?? 1, pageSize ?? 10));
     }
 
     public async Task<IActionResult> CreateManualTestBySelectingQuestions()
     {
-        var questions = await _questionRepository.GetQuestionsAsync();
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var questions = await _questionRepository.GetQuestionsAsync(currentUser.Id);
 
         return View(questions);
     }
@@ -72,9 +78,10 @@ public class QuestionController : Controller
             return RedirectToAction(nameof(CreateManualTestBySelectingQuestions));
         }
 
-        var selectedQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(selectedQuestionIds);
-
         var currentUser = await _userManager.GetUserAsync(User);
+
+        var selectedQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(selectedQuestionIds, currentUser.Id);
+
         if (currentUser == null)
         {
             throw new Exception("User not found.");
@@ -106,7 +113,9 @@ public class QuestionController : Controller
     [HttpGet]
     public async Task<IActionResult> CreateTestAutomatically()
     {
-        int totalQuestionsInDatabase = _questionRepository.GetNumberOfQuestionsInTheDatabase().Result.Value;
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var totalQuestionsInDatabase = await _questionRepository.GetNumberOfQuestionsInTheDatabase(currentUser.Id);
 
         ViewBag.TotalQuestionsInDatabase = totalQuestionsInDatabase;
 
@@ -116,21 +125,20 @@ public class QuestionController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateTestAutomatically(string name, string description, int numberOfQuestions)
     {
-        int totalQuestionsInDatabase = _questionRepository.GetNumberOfQuestionsInTheDatabase().Result.Value;
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var totalQuestionsInDatabase = await _questionRepository.GetNumberOfQuestionsInTheDatabase(currentUser.Id);
 
         if (totalQuestionsInDatabase < numberOfQuestions)
         {
             TempData["ErrorMessage"] = $"You don't have {numberOfQuestions} questions in the database!";
+
+            ViewBag.TotalQuestionsInDatabase = totalQuestionsInDatabase;
+
             return View();
         }
 
-        var randomQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(numberOfQuestions);
-
-        var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
-            throw new Exception("User not found.");
-        }
+        var randomQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(numberOfQuestions, currentUser.Id);
 
         var test = new Test
         {
@@ -221,7 +229,9 @@ public class QuestionController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
-        var question = await _questionRepository.GetQuestionAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var question = await _questionRepository.GetQuestionAsync(id, currentUser.Id);
 
         return View(question);
     }
@@ -242,7 +252,7 @@ public class QuestionController : Controller
             question.AuthorId = currentUser.Id;
         }
 
-        await _questionRepository.UpdateQuestionAsync(question);
+        await _questionRepository.UpdateQuestionAsync(question, currentUser.Id);
 
         _notifyService.Success("Question Updated!");
 
@@ -256,7 +266,9 @@ public class QuestionController : Controller
             return NotFound();
         }
 
-        var question = await _questionRepository.GetQuestionAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var question = await _questionRepository.GetQuestionAsync(id, currentUser.Id);
 
         return View(question);
     }
@@ -266,9 +278,11 @@ public class QuestionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var question = await _questionRepository.GetQuestionAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
 
-        await _questionRepository.DeleteQuestionAsync(question.QuestionId);
+        var question = await _questionRepository.GetQuestionAsync(id, currentUser.Id);
+
+        await _questionRepository.DeleteQuestionAsync(question.QuestionId, currentUser.Id);
 
         _notifyService.Success("Question Deleted!");
 
@@ -278,7 +292,9 @@ public class QuestionController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
-        var question = await _questionRepository.GetQuestionAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var question = await _questionRepository.GetQuestionAsync(id, currentUser.Id);
 
         return View(question);
     }
