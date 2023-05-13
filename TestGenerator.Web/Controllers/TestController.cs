@@ -200,11 +200,11 @@ public class TestController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id, bool? deleteQuestions)
     {
         var test = await _testRepository.GetTestAsync(id);
 
-        await _testRepository.DeleteTestAsync(test.TestId);
+        await _testRepository.DeleteTestAsync(test.TestId, deleteQuestions);
 
         _notifyService.Success("Test Deleted!");
 

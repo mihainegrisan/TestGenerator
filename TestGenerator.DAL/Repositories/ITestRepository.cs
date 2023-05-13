@@ -14,5 +14,5 @@ public interface ITestRepository
 
     Task<bool> UpdateTestAsync(Test updatedTest);
 
-    Task<bool> DeleteTestAsync(int id);
+    Task<bool> DeleteTestAsync(int id, bool? deleteQuestions);
 }

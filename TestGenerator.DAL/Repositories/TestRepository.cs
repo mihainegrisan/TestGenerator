@@ -100,13 +100,37 @@ public class TestRepository : ITestRepository
         }
     }
 
-    public async Task<bool> DeleteTestAsync(int id)
+    public async Task<bool> DeleteTestAsync(int id, bool? deleteQuestions)
     {
-        var test = await _dbContext.Tests.FindAsync(id);
+        Test test;
 
-        if (test == null)
+        if (deleteQuestions == true)
         {
-            return false;
+            test = await _dbContext.Tests
+                .Include(t => t.Questions)
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(t => t.TestId == id);
+            
+            if (test == null)
+            {
+                return false;
+            }
+
+            foreach (var question in test.Questions)
+            {
+                _dbContext.Answers.RemoveRange(question.Answers);
+            }
+
+            _dbContext.Questions.RemoveRange(test.Questions);
+        }
+        else
+        {
+            test = await _dbContext.Tests.FindAsync(id);
+
+            if (test == null)
+            {
+                return false;
+            }
         }
 
         _dbContext.Tests.Remove(test);
