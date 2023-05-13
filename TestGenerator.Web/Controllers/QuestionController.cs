@@ -106,12 +106,24 @@ public class QuestionController : Controller
     [HttpGet]
     public async Task<IActionResult> CreateTestAutomatically()
     {
+        int totalQuestionsInDatabase = _questionRepository.GetNumberOfQuestionsInTheDatabase().Result.Value;
+
+        ViewBag.TotalQuestionsInDatabase = totalQuestionsInDatabase;
+
         return View();
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateTestAutomatically(string name, string description, int numberOfQuestions)
     {
+        int totalQuestionsInDatabase = _questionRepository.GetNumberOfQuestionsInTheDatabase().Result.Value;
+
+        if (totalQuestionsInDatabase < numberOfQuestions)
+        {
+            TempData["ErrorMessage"] = $"You don't have {numberOfQuestions} questions in the database!";
+            return View();
+        }
+
         var randomQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(numberOfQuestions);
 
         var currentUser = await _userManager.GetUserAsync(User);

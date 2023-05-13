@@ -21,7 +21,7 @@
     <label for="description">Description</label>
   </div>
 
-  <h3 class="my-3 text-decoration-underline">Questions:</h3>
+  <h3 class="mt-5 text-decoration-underline">Questions:</h3>
 
   @if (Model.Count > 0)
   {
@@ -48,11 +48,12 @@
     </table>
 
     <button type="submit" class="btn btn-primary">Create</button>
-    <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
   }
   else
   {
     <p>No questions found.</p>
-    <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
   }
+
+  <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
+
 </form>

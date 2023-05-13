@@ -2,11 +2,17 @@
 @{
   ViewData["Title"] = "Auto Generate Test";
   var i = 0;
+  int totalQuestionsInDatabase = ViewBag.TotalQuestionsInDatabase ?? 0;
 }
 
 <h1>Auto-Generate Test From Questions</h1>
 
 <form asp-action="CreateTestAutomatically" asp-controller="Question" method="post">
+  @if (TempData.ContainsKey("ErrorMessage"))
+  {
+    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+  }
+
   <div class="form-floating mb-3 col-sm-6">
     <input name="name" id="name" class="form-control" placeholder="Name" required/>
     <label for="name">Name</label>
@@ -19,6 +25,10 @@
     <input type="number" name="numberOfQuestions" id="numberOfQuestions" class="form-control" placeholder="5" required/>
     <label for="numberOfQuestions">Number of Questions</label>
   </div>
+
+  @{ var colorClass = (totalQuestionsInDatabase == 0) ? "text-danger" : "text-success"; }
+
+  <div class="form-floating mb-3 @colorClass">Total Questions in the Database: @totalQuestionsInDatabase</div>
 
   <button type="submit" class="btn btn-primary">Generate</button>
   <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>

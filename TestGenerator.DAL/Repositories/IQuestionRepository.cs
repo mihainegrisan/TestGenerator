@@ -19,4 +19,6 @@ public interface IQuestionRepository
     Task<bool> UpdateQuestionAsync(Question question);
 
     Task<bool> DeleteQuestionAsync(int id);
+
+    Task<int?> GetNumberOfQuestionsInTheDatabase();
 }

@@ -29,6 +29,11 @@ public class QuestionRepository : IQuestionRepository
             .FirstOrDefaultAsync(question => question.QuestionId == id);
     }
 
+    public async Task<int?> GetNumberOfQuestionsInTheDatabase()
+    {
+        return await _dbContext.Questions.CountAsync();
+    }
+
     public IQueryable<QuestionTestViewModel> GetQuestions(string? sortOrder, string? searchString)
     {
         var questions = _dbContext.Questions.AsNoTracking().Select(q => q);
