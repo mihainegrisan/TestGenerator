@@ -76,11 +76,7 @@ public class TestGeneratorController : Controller
 
         var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-        _notifyService.Information("Text extracted from file!");
-
         var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
-
-        _notifyService.Information("Received response from ChatGPT!");
 
         _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
 

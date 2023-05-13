@@ -10,7 +10,7 @@ public interface IQuestionRepository
 
     Task<List<Question>> GetQuestionsAsync();
 
-    IQueryable<Question> GetQuestions(string? sortOrder, string? searchString);
+    IQueryable<QuestionTestViewModel> GetQuestions(string? sortOrder, string? searchString);
 
     Task<List<Question>> GetQuestionsWithoutTestIdAsync(List<int> questionIds);
 

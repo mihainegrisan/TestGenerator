@@ -29,7 +29,7 @@ public class QuestionRepository : IQuestionRepository
             .FirstOrDefaultAsync(question => question.QuestionId == id);
     }
 
-    public IQueryable<Question> GetQuestions(string? sortOrder, string? searchString)
+    public IQueryable<QuestionTestViewModel> GetQuestions(string? sortOrder, string? searchString)
     {
         var questions = _dbContext.Questions.AsNoTracking().Select(q => q);
 
@@ -46,7 +46,13 @@ public class QuestionRepository : IQuestionRepository
             _ => questions.OrderBy(q => q.QuestionText)
         };
 
-        return questions.AsNoTracking();
+        var questionViewModels = questions.Select(question => new QuestionTestViewModel
+        {
+            Question = question,
+            Test = _dbContext.Tests.FirstOrDefault(test => test.TestId == question.TestId),
+        });
+
+        return questionViewModels;
     }
 
     public async Task<List<Question>> GetQuestionsAsync()

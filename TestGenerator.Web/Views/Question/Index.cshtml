@@ -1,4 +1,4 @@
-﻿@model List<TestGenerator.DAL.Models.Question>
+﻿@model TestGenerator.Web.Utility.PaginatedList<TestGenerator.DAL.Models.QuestionTestViewModel>
 @{
     ViewData["Title"] = "Index";
     var i = 0;
@@ -45,7 +45,7 @@
     <table class="table w-75">
         <thead>
         <tr>
-          <th>Nr.</th>
+          <th>Test Name</th>
           <th>
             <a asp-action="Index" 
                asp-route-sortOrder="@ViewData["NameSortParam"]" 
@@ -79,28 +79,34 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (var question in Model)
+        @foreach (var questionTestVM in Model)
         {
+          var controllerName = questionTestVM.Test.IsAutoCreatedByChatGpt ? "TestGenerator" : "Test";
+
             <tr>
-              <td>@(++i).</td>
               <td>
-                <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@question.QuestionText">
-                  <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@question.QuestionId">@Html.DisplayFor(modelItem => question.QuestionText)</a>
+                <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@questionTestVM.Test.Name">
+                <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-controller="@controllerName" asp-route-id="@questionTestVM.Test.TestId">@Html.DisplayFor(modelItem => questionTestVM.Test.Name)</a>
                 </span>
               </td>
               <td>
-                @Html.DisplayFor(modelItem => question.CreatedAt)
+                <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@questionTestVM.Question.QuestionText">
+                <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@questionTestVM.Question.QuestionId">@Html.DisplayFor(modelItem => questionTestVM.Question.QuestionText)</a>
+                </span>
+              </td>
+              <td>
+              @Html.DisplayFor(modelItem => questionTestVM.Question.CreatedAt)
               </td>
               <td class="text-center">
-              <a asp-action="Details" asp-route-id="@question.QuestionId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Details">
+              <a asp-action="Details" asp-route-id="@questionTestVM.Question.QuestionId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Details">
                   <i class="bi bi-info-circle icon-unlock"></i>
                   <i class="bi bi-info-circle-fill icon-lock"></i>
                 </a>
-              <a asp-action="Edit" asp-route-id="@question.QuestionId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Edit">
+              <a asp-action="Edit" asp-route-id="@questionTestVM.Question.QuestionId" class="lock text-dark me-2" data-toggle="tooltip" data-placement="top" title="Edit">
                 <i class="bi bi-pencil icon-unlock"></i>
                 <i class="bi bi-pencil-fill icon-lock"></i>
               </a>
-              @if (question.TestId != null)
+              @if (questionTestVM.Test.TestId != null)
               {
                 <span data-toggle="tooltip" data-placement="top"  class="me-2 disabled" title="Not able to delete because the question belongs to a test">
                     <i class="bi bi-question-lg icon-unlock"></i>
@@ -108,7 +114,7 @@
               }
               else
               {
-                  <a asp-action="Delete" asp-route-id="@question.QuestionId" class="lock text-dark me-2" style="cursor: pointer" title="Delete">
+                  <a asp-action="Delete" asp-route-id="@questionTestVM.Question.QuestionId" class="lock text-dark me-2" style="cursor: pointer" title="Delete">
                     <i class="bi bi-trash icon-unlock"></i>
                     <i class="bi bi-trash-fill icon-lock"></i>
                   </a>

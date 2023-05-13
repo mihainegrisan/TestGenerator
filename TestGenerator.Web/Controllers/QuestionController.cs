@@ -49,9 +49,9 @@ public class QuestionController : Controller
 
         ViewData["CurrentFilter"] = searchString;
 
-        var questions = _questionRepository.GetQuestions(sortOrder, searchString);
+        var questionViewModels = _questionRepository.GetQuestions(sortOrder, searchString);
 
-        return View(await PaginatedList<Question>.CreateAsync(questions, pageNumber ?? 1, pageSize ?? 10));
+        return View(await PaginatedList<QuestionTestViewModel>.CreateAsync(questionViewModels, pageNumber ?? 1, pageSize ?? 10));
     }
 
     public async Task<IActionResult> CreateManualTestBySelectingQuestions()
@@ -221,24 +221,6 @@ public class QuestionController : Controller
         {
             return View(question);
         }
-
-        //var existingQuestion = await _questionRepository.GetQuestionAsync(question.QuestionId);
-
-        //existingQuestion.QuestionText = question.QuestionText;
-        //existingQuestion.EditedAt = DateTime.Now;
-
-        //foreach (var answer in existingQuestion.Answers)
-        //{
-        //    var updatedAnswer = question.Answers.FirstOrDefault(a => a.AnswerId == answer.AnswerId);
-
-        //    if (updatedAnswer == null)
-        //    {
-        //        continue;
-        //    }
-
-        //    answer.AnswerText = updatedAnswer.AnswerText;
-        //    answer.IsCorrect = updatedAnswer.IsCorrect;
-        //}
 
         var currentUser = await _userManager.GetUserAsync(User);
         if (currentUser != null)
