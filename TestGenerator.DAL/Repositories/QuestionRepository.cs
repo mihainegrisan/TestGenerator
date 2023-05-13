@@ -33,24 +33,32 @@ public class QuestionRepository : IQuestionRepository
     {
         var questions = _dbContext.Questions.AsNoTracking().Select(q => q);
 
-        if (!string.IsNullOrEmpty(searchString))
-        {
-            questions = questions.Where(q => q.QuestionText.Contains(searchString));
-        }
-
-        questions = sortOrder switch
-        {
-            "name_desc" => questions.OrderByDescending(q=> q.QuestionText),
-            "date" => questions = questions.OrderBy(t => t.CreatedAt),
-            "date_desc" => questions = questions.OrderByDescending(t => t.CreatedAt),
-            _ => questions.OrderBy(q => q.QuestionText)
-        };
-
         var questionViewModels = questions.Select(question => new QuestionTestViewModel
         {
             Question = question,
             Test = _dbContext.Tests.FirstOrDefault(test => test.TestId == question.TestId),
         });
+
+        questionViewModels = sortOrder switch
+        {
+            "question_name_desc" => questionViewModels.OrderByDescending(q => q.Question.QuestionText),
+            "test_name_desc" => questionViewModels.OrderByDescending(t => t.Test.Name),
+            "test_name" => questionViewModels.OrderBy(t => t.Test.Name),
+            "date" => questionViewModels.OrderBy(t => t.Question.CreatedAt),
+            "date_desc" => questionViewModels.OrderByDescending(q => q.Question.CreatedAt),
+            _ => questionViewModels.OrderBy(q => q.Question.QuestionText)
+        };
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            questionViewModels = questionViewModels.Where(q => q.Question.QuestionText.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+
+            // search by test name
+            //if (!questionViewModels.Any())
+            //{
+            //    questionViewModels = questionViewModels.Where(q => q.Test.Name.Contains(searchString));
+            //}
+        }
 
         return questionViewModels;
     }

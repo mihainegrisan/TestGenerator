@@ -45,25 +45,41 @@
     <table class="table w-75">
         <thead>
         <tr>
-          <th>Test Name</th>
           <th>
-            <a asp-action="Index" 
-               asp-route-sortOrder="@ViewData["NameSortParam"]" 
+            <a asp-action="Index"
+               asp-route-sortOrder="@ViewData["TestNameSortParam"]"
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
-               asp-route-pageSize="@ViewData["PageSize"]">Question</a>
-            @switch ((string)ViewData["NameSortParam"])
+               asp-route-pageSize="@ViewData["PageSize"]">Test</a>
+            @switch ((string)ViewData["TestNameSortParam"])
+            {
+              case "test_name":
+                <i class="bi bi-sort-alpha-down-alt"></i>
+                break;
+              case "test_name_desc":
+                <i class="bi bi-sort-alpha-down"></i>
+                break;
+              case "":
+                  break;
+            }
+          </th>
+          <th>
+            <a asp-action="Index"
+             asp-route-sortOrder="@ViewData["QuestionNameSortParam"]"
+             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+             asp-route-pageSize="@ViewData["PageSize"]">Question</a>
+            @switch ((string)ViewData["QuestionNameSortParam"])
             {
                 case "":
                     <i class="bi bi-sort-alpha-down-alt"></i>
                     break;
-                case "name_desc":
+              case "question_name_desc":
                     <i class="bi bi-sort-alpha-down"></i>
                     break;
             }
           </th>
           <th>
             <a asp-action="Index" 
-               asp-route-sortOrder="@ViewData["DateSortParam"]" 
+               asp-route-sortOrder="@ViewData["DateSortParam"]"
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
                asp-route-pageSize="@ViewData["PageSize"]">Created On</a>
             @if ((string)ViewData["DateSortParam"] != "date")
@@ -81,13 +97,16 @@
         <tbody>
         @foreach (var questionTestVM in Model)
         {
-          var controllerName = questionTestVM.Test.IsAutoCreatedByChatGpt ? "TestGenerator" : "Test";
-
-            <tr>
+          <tr>
               <td>
-                <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@questionTestVM.Test.Name">
-                <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-controller="@controllerName" asp-route-id="@questionTestVM.Test.TestId">@Html.DisplayFor(modelItem => questionTestVM.Test.Name)</a>
-                </span>
+                @if (questionTestVM.Test != null)
+                {
+                  var controllerName = questionTestVM.Test.IsAutoCreatedByChatGpt ? "TestGenerator" : "Test";
+
+                  <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@questionTestVM.Test.Name">
+                    <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-controller="@controllerName" asp-route-id="@questionTestVM.Test.TestId">@Html.DisplayFor(modelItem => questionTestVM.Test.Name)</a>
+                  </span>
+                }
               </td>
               <td>
                 <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@questionTestVM.Question.QuestionText">
@@ -106,7 +125,7 @@
                 <i class="bi bi-pencil icon-unlock"></i>
                 <i class="bi bi-pencil-fill icon-lock"></i>
               </a>
-              @if (questionTestVM.Test.TestId != null)
+              @if (questionTestVM.Test != null)
               {
                 <span data-toggle="tooltip" data-placement="top"  class="me-2 disabled" title="Not able to delete because the question belongs to a test">
                     <i class="bi bi-question-lg icon-unlock"></i>

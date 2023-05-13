@@ -34,7 +34,8 @@ public class QuestionController : Controller
         int? pageSize)
     {
         ViewData["CurrentSort"] = sortOrder;
-        ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+        ViewData["QuestionNameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "question_name_desc" : "";
+        ViewData["TestNameSortParam"] = sortOrder == "test_name" ? "test_name_desc" : "test_name";
         ViewData["DateSortParam"] = sortOrder == "date" ? "date_desc" : "date";
         ViewData["PageSize"] = pageSize;
 
