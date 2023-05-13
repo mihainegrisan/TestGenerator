@@ -35,11 +35,11 @@
     <span asp-validation-for="NumberOfAnswersPerQuestion" class="text-danger"></span>
   </div>
 
-  <h3 class="my-3 text-decoration-underline">Questions:</h3>
+  <h3 class="mt-5 text-decoration-underline">Questions:</h3>
 
   @for (var i = 0; i < numberOfQuestions; i++)
   {
-    <div class="row mb-3">
+    <div class="row mb-3 mt-4">
       <label asp-for="Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
       <div class="col-sm-11">
         <input asp-for="Questions[i].QuestionText" class="form-control" required/>

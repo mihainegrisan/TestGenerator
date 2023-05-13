@@ -81,7 +81,7 @@
               break;
           }
         </th>
-        <th>
+        <th class="text-center">
           <a asp-action="Index"
              asp-route-sortOrder="@ViewData["DateSortParam"]"
              asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -119,7 +119,7 @@
               <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@questionTestVM.Question.QuestionId">@Html.DisplayFor(modelItem => questionTestVM.Question.QuestionText)</a>
             </span>
           </td>
-          <td>
+          <td class="text-center">
             @Html.DisplayFor(modelItem => questionTestVM.Question.CreatedAt)
           </td>
           <td class="text-center">

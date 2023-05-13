@@ -39,7 +39,6 @@
     <table class="table w-75">
       <thead>
       <tr>
-        <th>Nr.</th>
         <th>
           <a asp-action="Index"
              asp-route-sortOrder="@ViewData["NameSortParam"]"
@@ -58,7 +57,7 @@
           }
         </th>
         <th>Description</th>
-        <th>
+        <th class="text-center">
           <a asp-action="Index"
              asp-route-sortOrder="@ViewData["DateSortParam"]"
              asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -82,14 +81,13 @@
       @foreach (var test in Model)
       {
         <tr>
-          <td>@(++i).</td>
           <td>
             <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@test.Description">
               <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@test.TestId">@Html.DisplayFor(modelItem => test.Name)</a>
             </span>
           </td>
           <td class="text-truncate" style="max-width: 200px;">@test.Description</td>
-          <td>
+          <td class="text-center">
             @Html.DisplayFor(modelItem => test.CreatedAt)
           </td>
           <td class="text-center">
