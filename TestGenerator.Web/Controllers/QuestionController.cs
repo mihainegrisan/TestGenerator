@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using TestGenerator.DAL.Data;
 using TestGenerator.DAL.Models;
 using TestGenerator.DAL.Repositories;
 using TestGenerator.Web.Utility;
@@ -15,17 +18,19 @@ public class QuestionController : Controller
     private readonly IQuestionRepository _questionRepository;
     private readonly ITestRepository _testRepository;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly ApplicationDbContext _context;
 
     public QuestionController(
         UserManager<IdentityUser> userManager,
         IQuestionRepository questionRepository,
         ITestRepository testRepository,
-        INotyfService notifyService)
+        INotyfService notifyService, ApplicationDbContext context)
     {
         _userManager = userManager;
         _questionRepository = questionRepository;
         _testRepository = testRepository;
         _notifyService = notifyService;
+        _context = context;
     }
 
     public async Task<IActionResult> Index(
@@ -168,6 +173,9 @@ public class QuestionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Add(Question question, int numberOfAnswers)
     {
+        var tags = _context.Tags.ToList();
+        ViewBag.Tags = new SelectList(tags, "Id", "Name");
+
         if (!ModelState.IsValid)
         {
             return View(question);
@@ -189,6 +197,9 @@ public class QuestionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddQuestion(Question question)
     {
+        var tags = _context.Tags.ToList();
+        ViewBag.Tags = new SelectList(tags, "Id", "Name");
+
         if (!ModelState.IsValid)
         {
             return View(question);
@@ -210,7 +221,15 @@ public class QuestionController : Controller
         question.Author = currentUser;
         question.AuthorId = currentUser.Id;
 
+        var tag = await _context.Tags
+            .Where(t => t.Id == question.Tag.Id)
+            .SingleOrDefaultAsync();
+        question.Tag = tag;
+
         await _questionRepository.AddQuestionAsync(question);
+
+        //var tags = await _tagRepository.GetAllTags();
+        //ViewBag.Tags = tags;
 
         _notifyService.Success("Question Created!");
 

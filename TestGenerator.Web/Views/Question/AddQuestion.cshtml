@@ -3,7 +3,6 @@
 @{
   ViewData["Title"] = "Add Question";
   int numberOfAnswers = ViewBag.NumberOfAnswers;
-  List<TestGenerator.DAL.Models.Tag> tags = ViewBag.Tags;
 }
 
 <h1 class="my-5">Add new Question</h1>
@@ -37,14 +36,15 @@
   }
   
   <div class="row mb-3">
-    <label asp-for="@Model.QuestionTags" class="col-sm-1 col-form-label fw-bold">Tags</label>
+    <label asp-for="@Model.Tag" class="col-sm-1 col-form-label fw-bold">Tag</label>
     <div class="col-sm-11">
-      <select asp-for="@Model.QuestionTags" asp-items="@(new SelectList(tags, "Id", "Name"))" class="form-control" multiple>
-        <option value="">Select tags</option>
+      <select asp-for="@Model.Tag.Id" asp-items="@ViewBag.Tags" class="form-control">
+        <option value="">Select a tag</option>
       </select>
-      <span asp-validation-for="@Model.QuestionTags" class="text-danger"></span>
+      <span asp-validation-for="@Model.Tag.Id" class="text-danger"></span>
     </div>
   </div>
+
 
   <button type="submit" class="btn btn-primary">Create</button>
   <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
