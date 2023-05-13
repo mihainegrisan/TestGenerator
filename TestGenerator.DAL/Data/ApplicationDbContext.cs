@@ -25,18 +25,5 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<Question>().ToTable("Question");
         modelBuilder.Entity<Answer>().ToTable("Answer");
         modelBuilder.Entity<Tag>().ToTable("Tag");
-
-        modelBuilder.Entity<QuestionTag>()
-            .HasKey(qt => new { qt.QuestionId, qt.TagId });
-
-        modelBuilder.Entity<QuestionTag>()
-            .HasOne(qt => qt.Question)
-            .WithMany(q => q.QuestionTags)
-            .HasForeignKey(qt => qt.QuestionId);
-
-        modelBuilder.Entity<QuestionTag>()
-            .HasOne(qt => qt.Tag)
-            .WithMany(t => t.QuestionTags)
-            .HasForeignKey(qt => qt.TagId);
     }
 }
