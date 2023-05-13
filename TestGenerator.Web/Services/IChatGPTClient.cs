@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using TestGenerator.DAL.Models;
+﻿using TestGenerator.DAL.Models;
 
 namespace TestGenerator.Web.Services;
 

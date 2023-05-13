@@ -3,11 +3,11 @@
 <h1>Question Details</h1>
 
 <div class="form-floating mb-3 col-sm-6">
-  <input class="form-control" id="created" placeholder="Created On" value="@Model.CreatedAt" readonly />
+  <input class="form-control" id="created" placeholder="Created On" value="@Model.CreatedAt" readonly/>
   <label class="form-label" for="created">Created On</label>
 </div>
 <div class="form-floating mb-3 col-sm-6">
-  <input class="form-control" id="edited" placeholder="Edited On" value="@Model.EditedAt" readonly />
+  <input class="form-control" id="edited" placeholder="Edited On" value="@Model.EditedAt" readonly/>
   <label class="form-label" for="edited">Edited On</label>
 </div>
 <div class="row mb-3 mt-5">
@@ -20,15 +20,15 @@
 
 @for (var i = 0; i < Model.Answers.Count; i++)
 {
-    var answerLabel = (char)(97 + i) + ")";
-    var answerLabelColorClass = Model.Answers[i].IsCorrect ? "text-success" : "text-danger";
+  var answerLabel = (char)(97 + i) + ")";
+  var answerLabelColorClass = Model.Answers[i].IsCorrect ? "text-success" : "text-danger";
 
-    <div class="row mb-3 align-middle">
-      <label asp-for="@Model.Answers[i].AnswerText" class="col-sm-2 col-form-label text-end @answerLabelColorClass">@answerLabel</label>
-      <div class="col-sm-10 d-flex align-items-center">
-        <p class="form-control">@Model.Answers[i].AnswerText</p>
-      </div>
+  <div class="row mb-3 align-middle">
+    <label asp-for="@Model.Answers[i].AnswerText" class="col-sm-2 col-form-label text-end @answerLabelColorClass">@answerLabel</label>
+    <div class="col-sm-10 d-flex align-items-center">
+      <p class="form-control">@Model.Answers[i].AnswerText</p>
     </div>
+  </div>
 }
 
 <a class="btn btn-success mb-3" href="@Url.Action("Index")">Back to List</a>

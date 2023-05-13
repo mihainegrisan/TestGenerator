@@ -36,7 +36,7 @@ public class QuestionRepository : IQuestionRepository
         var questionViewModels = questions.Select(question => new QuestionTestViewModel
         {
             Question = question,
-            Test = _dbContext.Tests.FirstOrDefault(test => test.TestId == question.TestId),
+            Test = _dbContext.Tests.FirstOrDefault(test => test.TestId == question.TestId)
         });
 
         questionViewModels = sortOrder switch
@@ -88,7 +88,7 @@ public class QuestionRepository : IQuestionRepository
         var selectedQuestions = await GetRandomQuestions(numberOfQuestions);
 
         var selectedQuestionsIds = selectedQuestions.Select(q => q.QuestionId).ToList();
-        
+
         var duplicatedQuestionsWithoutTestId = await GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(selectedQuestionsIds);
 
         var questionsWithoutTestId = selectedQuestions.Where(q => q.TestId == null).ToList();
@@ -96,20 +96,6 @@ public class QuestionRepository : IQuestionRepository
         questionsWithoutTestId.AddRange(duplicatedQuestionsWithoutTestId);
 
         return questionsWithoutTestId;
-    }
-
-    private async Task<List<Question>> GetRandomQuestions(int numberOfQuestions)
-    {
-        // Get a list of all questions in the database
-        var allQuestions = await _dbContext.Questions
-            .Include(question => question.Answers)
-            .ToListAsync();
-
-        var shuffledQuestions = allQuestions.OrderBy(q => Guid.NewGuid()).ToList();
-
-        var selectedQuestions = shuffledQuestions.Take(numberOfQuestions).ToList();
-
-        return selectedQuestions;
     }
 
 
@@ -161,6 +147,20 @@ public class QuestionRepository : IQuestionRepository
         await _dbContext.SaveChangesAsync();
 
         return true;
+    }
+
+    private async Task<List<Question>> GetRandomQuestions(int numberOfQuestions)
+    {
+        // Get a list of all questions in the database
+        var allQuestions = await _dbContext.Questions
+            .Include(question => question.Answers)
+            .ToListAsync();
+
+        var shuffledQuestions = allQuestions.OrderBy(q => Guid.NewGuid()).ToList();
+
+        var selectedQuestions = shuffledQuestions.Take(numberOfQuestions).ToList();
+
+        return selectedQuestions;
     }
 
     private async Task<List<Question>> GetDuplicatedQuestionsWithoutTestIdFromQuestionsWithTestIdAsync(List<int> questionIds)

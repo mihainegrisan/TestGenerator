@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model TestGenerator.DAL.Models.Question
 @{
-    ViewData["Title"] = "Add";
+  ViewData["Title"] = "Add";
 }
 
 <div class="text-center mb-3">
@@ -12,7 +12,7 @@
   <form class="form-width-percent" asp-action="Add" asp-controller="Question" method="post">
     @if (TempData.ContainsKey("ErrorMessage"))
     {
-        <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+      <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
     }
 
     <div class="form-floating mb-3">

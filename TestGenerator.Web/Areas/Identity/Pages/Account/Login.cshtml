@@ -2,7 +2,7 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+  ViewData["Title"] = "Log in";
 }
 
 <div class="d-flex flex-column align-items-center justify-content-center text-center my-5">
@@ -15,7 +15,7 @@
 
     <div class="col-6 order-md-1 order-2 p-3">
       <div class="text-center">
-        <img src="~/images/home-page-image.svg" class="rounded img-fluid mx-auto d-block" height="500" width="500" alt="..." />
+        <img src="~/images/home-page-image.svg" class="rounded img-fluid mx-auto d-block" height="500" width="500" alt="..."/>
 
       </div>
     </div>
@@ -25,19 +25,19 @@
         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
         <div class="form-floating mb-3">
-          <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+          <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
           <label asp-for="Input.Email" class="form-label">Email</label>
           <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
           <span asp-validation-for="Input.Email" class="text-danger"></span>
         </div>
         <div class="form-floating mb-3">
-          <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+          <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password"/>
           <label asp-for="Input.Password" class="form-label">Password</label>
           <span asp-validation-for="Input.Password" class="text-danger"></span>
         </div>
         <div class="checkbox mb-3">
           <label asp-for="Input.RememberMe" class="form-label">
-            <input class="form-check-input" asp-for="Input.RememberMe" />
+            <input class="form-check-input" asp-for="Input.RememberMe"/>
             @Html.DisplayNameFor(m => m.Input.RememberMe)
           </label>
         </div>
@@ -68,5 +68,5 @@
 </section>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+  <partial name="_ValidationScriptsPartial"/>
 }

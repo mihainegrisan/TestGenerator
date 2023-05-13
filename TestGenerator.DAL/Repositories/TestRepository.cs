@@ -37,8 +37,8 @@ public class TestRepository : ITestRepository
 
     public IQueryable<Test> GetTests(string? sortOrder, string? searchString, bool isAutoCreatedByChatGpt)
     {
-        var tests = isAutoCreatedByChatGpt 
-            ? _dbContext.Tests.AsNoTracking().Where(t => t.IsAutoCreatedByChatGpt).Select(t => t) 
+        var tests = isAutoCreatedByChatGpt
+            ? _dbContext.Tests.AsNoTracking().Where(t => t.IsAutoCreatedByChatGpt).Select(t => t)
             : _dbContext.Tests.AsNoTracking().Where(t => !t.IsAutoCreatedByChatGpt).Select(t => t);
 
         if (!string.IsNullOrEmpty(searchString))
@@ -51,7 +51,7 @@ public class TestRepository : ITestRepository
             "name_desc" => tests.OrderByDescending(t => t.Name),
             "date" => tests = tests.OrderBy(t => t.CreatedAt),
             "date_desc" => tests = tests.OrderByDescending(t => t.CreatedAt),
-          _ => tests.OrderBy(t => t.Name)
+            _ => tests.OrderBy(t => t.Name)
         };
 
         return tests.AsNoTracking();

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TestGenerator.DAL.Models;
+﻿using TestGenerator.DAL.Models;
 
 namespace TestGenerator.Web.Services;
 

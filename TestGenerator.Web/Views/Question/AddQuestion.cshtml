@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model TestGenerator.DAL.Models.Question
 @{
-    ViewData["Title"] = "Add Question";
-    int numberOfAnswers = ViewBag.NumberOfAnswers;
+  ViewData["Title"] = "Add Question";
+  int numberOfAnswers = ViewBag.NumberOfAnswers;
 }
 
 <h1 class="my-5">Add new Question</h1>
@@ -10,7 +10,7 @@
 <form asp-action="AddQuestion" asp-controller="Question" method="post">
   @if (TempData.ContainsKey("ErrorMessage"))
   {
-      <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
   }
 
   <div class="row mb-3 mt-5">
@@ -23,16 +23,16 @@
 
   @for (var i = 0; i < numberOfAnswers; i++)
   {
-      var answerLabel = (char)(97 + i) + ")";
+    var answerLabel = (char)(97 + i) + ")";
 
-      <div class="row mb-3 align-middle">
-        <label asp-for="@Model.Answers[i].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
-        <div class="col-sm-10 d-flex align-items-center">
-          <input asp-for="@Model.Answers[i].AnswerText" class="form-control" required/>
-          <span asp-validation-for="@Model.Answers[i].AnswerText" class="text-danger"></span>
-          <input asp-for="@Model.Answers[i].IsCorrect" type="checkbox" class="form-check-input ms-2"/>
-        </div>
+    <div class="row mb-3 align-middle">
+      <label asp-for="@Model.Answers[i].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <input asp-for="@Model.Answers[i].AnswerText" class="form-control" required/>
+        <span asp-validation-for="@Model.Answers[i].AnswerText" class="text-danger"></span>
+        <input asp-for="@Model.Answers[i].IsCorrect" type="checkbox" class="form-check-input ms-2"/>
       </div>
+    </div>
   }
 
   <button type="submit" class="btn btn-primary">Create</button>

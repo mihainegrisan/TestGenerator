@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using OpenAI_API;
+﻿using OpenAI_API;
 using TestGenerator.DAL.Models;
 
 namespace TestGenerator.Web.Services;

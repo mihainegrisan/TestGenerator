@@ -2,7 +2,7 @@
 @using TestGenerator.DAL.Models
 @model TestGenerator.DAL.Models.Test
 @{
-    var test = TempData["Test"] as Test;
+  var test = TempData["Test"] as Test;
 }
 
 <h1 class="my-5">Generate Test with Chat GPT</h1>
@@ -34,30 +34,30 @@
 
   @for (var i = 0; i < test.NumberOfQuestions; i++)
   {
-      <div class="row mb-3">
-        <label asp-for="@test.Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
-        <div class="col-sm-11">
-          <input asp-for="@test.Questions[i].QuestionText" class="form-control" value="@test.Questions[i].QuestionText"/>
-          <span asp-validation-for="@test.Questions[i].QuestionText" class="text-danger"></span>
+    <div class="row mb-3">
+      <label asp-for="@test.Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
+      <div class="col-sm-11">
+        <input asp-for="@test.Questions[i].QuestionText" class="form-control" value="@test.Questions[i].QuestionText"/>
+        <span asp-validation-for="@test.Questions[i].QuestionText" class="text-danger"></span>
+      </div>
+    </div>
+
+    @for (var j = 0; j < test.NumberOfAnswersPerQuestion; j++)
+    {
+      var answerLabel = (char)(97 + j) + ")";
+
+      <div class="row mb-3 align-middle">
+        <label asp-for="@test.Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <input asp-for="@test.Questions[i].Answers[j].AnswerText" class="form-control" value="@test.Questions[i].Answers[j].AnswerText"/>
+          <span asp-validation-for="@test.Questions[i].Answers[j].AnswerText" class="text-danger"></span>
+          @{
+            var isChecked = test.Questions[i].Answers[j].IsCorrect;
+          }
+          <input asp-for="@test.Questions[i].Answers[j].IsCorrect" type="checkbox" class="form-check-input ms-2" checked="@(isChecked)"/>
         </div>
       </div>
-
-      @for (var j = 0; j < test.NumberOfAnswersPerQuestion; j++)
-      {
-          var answerLabel = (char)(97 + j) + ")";
-
-          <div class="row mb-3 align-middle">
-            <label asp-for="@test.Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>
-            <div class="col-sm-10 d-flex align-items-center">
-              <input asp-for="@test.Questions[i].Answers[j].AnswerText" class="form-control" value="@test.Questions[i].Answers[j].AnswerText"/>
-              <span asp-validation-for="@test.Questions[i].Answers[j].AnswerText" class="text-danger"></span>
-              @{
-                  var isChecked = test.Questions[i].Answers[j].IsCorrect;
-              }
-              <input asp-for="@test.Questions[i].Answers[j].IsCorrect" type="checkbox" class="form-check-input ms-2" checked="@(isChecked)"/>
-            </div>
-          </div>
-      }
+    }
   }
 
   <button type="submit" class="btn btn-primary">Create</button>

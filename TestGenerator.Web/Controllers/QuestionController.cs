@@ -9,10 +9,10 @@ namespace TestGenerator.Web.Controllers;
 
 public class QuestionController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly INotyfService _notifyService;
     private readonly IQuestionRepository _questionRepository;
     private readonly ITestRepository _testRepository;
-    private readonly INotyfService _notifyService;
+    private readonly UserManager<IdentityUser> _userManager;
 
     public QuestionController(
         UserManager<IdentityUser> userManager,
@@ -73,7 +73,7 @@ public class QuestionController : Controller
         }
 
         var selectedQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(selectedQuestionIds);
-        
+
         var currentUser = await _userManager.GetUserAsync(User);
         if (currentUser == null)
         {
@@ -93,7 +93,7 @@ public class QuestionController : Controller
             CreatedAt = DateTime.Now,
             EditedAt = DateTime.Now,
             Author = currentUser,
-            AuthorId = currentUser.Id,
+            AuthorId = currentUser.Id
         };
 
         await _testRepository.AddTestAsync(test);
@@ -133,7 +133,7 @@ public class QuestionController : Controller
             CreatedAt = DateTime.Now,
             EditedAt = DateTime.Now,
             Author = currentUser,
-            AuthorId = currentUser.Id,
+            AuthorId = currentUser.Id
         };
 
         await _testRepository.AddTestAsync(test);
@@ -161,7 +161,7 @@ public class QuestionController : Controller
         if (numberOfAnswers < 2)
         {
             TempData["ErrorMessage"] = "The number of answers per question should be higher than 1.";
-      
+
             return View(question);
         }
 

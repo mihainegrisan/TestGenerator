@@ -9,7 +9,7 @@
 <form asp-action="CreateManualTestBySelectingQuestions" asp-controller="Question" method="post">
   @if (TempData.ContainsKey("ErrorMessage"))
   {
-      <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
   }
 
   <div class="form-floating mb-3 col-sm-6">
@@ -25,35 +25,34 @@
 
   @if (Model.Count > 0)
   {
-      <table class="table">
-        <thead>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>Add</th>
+        <th>Name</th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var question in Model)
+      {
         <tr>
-          <th>Nr.</th>
-          <th>Add</th>
-          <th>Name</th>
+          <td>@(++i)</td>
+          <td>
+            <input type="checkbox" name="selectedQuestionIds" value="@question.QuestionId"/>
+          </td>
+          <td>@question.QuestionText</td>
         </tr>
-        </thead>
-        <tbody>
-        @foreach (var question in Model)
-        {
-            <tr>
-              <td>@(++i)</td>
-              <td>
-                <input type="checkbox" name="selectedQuestionIds" value="@question.QuestionId"/>
-              </td>
-              <td>@question.QuestionText</td>
-            </tr>
-        }
-        </tbody>
-      </table>
+      }
+      </tbody>
+    </table>
 
-      <button type="submit" class="btn btn-primary">Create</button>
-      <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
   }
   else
   {
-      <p>No questions found.</p>
+    <p>No questions found.</p>
     <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
   }
 </form>
-

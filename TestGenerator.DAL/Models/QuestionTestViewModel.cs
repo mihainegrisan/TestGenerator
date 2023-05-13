@@ -6,4 +6,3 @@ public class QuestionTestViewModel
 
     public Question Question { get; set; }
 }
-

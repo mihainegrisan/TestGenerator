@@ -10,10 +10,10 @@ namespace TestGenerator.Web.Controllers;
 
 public class TestController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
     private readonly IFileProcessor _fileProcessor;
-    private readonly ITestRepository _testRepository;
     private readonly INotyfService _notifyService;
+    private readonly ITestRepository _testRepository;
+    private readonly UserManager<IdentityUser> _userManager;
 
     public TestController(
         UserManager<IdentityUser> userManager,
@@ -99,7 +99,7 @@ public class TestController : Controller
 
             return View(test);
         }
-        
+
         test.IsCreatedManually = true;
         test.IsAutoCreatedFromQuestions = false;
         test.IsAutoCreatedByChatGpt = false;
@@ -154,7 +154,7 @@ public class TestController : Controller
         return File(stream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"{test.Name}.docx");
     }
 
-  [HttpGet]
+    [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var test = await _testRepository.GetTestAsync(id);

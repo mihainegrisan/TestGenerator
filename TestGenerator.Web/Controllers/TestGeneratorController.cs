@@ -10,11 +10,11 @@ namespace TestGenerator.Web.Controllers;
 
 public class TestGeneratorController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
     private readonly IChatGptClient _chatGptClient;
     private readonly IFileProcessor _fileProcessor;
-    private readonly ITestRepository _testRepository;
     private readonly INotyfService _notifyService;
+    private readonly ITestRepository _testRepository;
+    private readonly UserManager<IdentityUser> _userManager;
 
     public TestGeneratorController(
         UserManager<IdentityUser> userManager,
@@ -197,7 +197,6 @@ public class TestGeneratorController : Controller
                     }
                 }
             }
-
         };
 
         TempData["Test"] = test;
@@ -281,7 +280,7 @@ public class TestGeneratorController : Controller
     }
 
 
-  [HttpGet]
+    [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var test = await _testRepository.GetTestAsync(id);

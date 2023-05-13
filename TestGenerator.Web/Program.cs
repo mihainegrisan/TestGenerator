@@ -27,8 +27,8 @@ builder.Services.AddSingleton<SecretsManager>();
 
 builder.Services.AddNotyf(config =>
 {
-    config.DurationInSeconds = 3; 
-    config.IsDismissable = true; 
+    config.DurationInSeconds = 3;
+    config.IsDismissable = true;
     config.Position = NotyfPosition.BottomRight;
     config.HasRippleEffect = true;
 });
