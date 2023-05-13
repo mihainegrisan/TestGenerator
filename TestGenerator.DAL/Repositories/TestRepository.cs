@@ -22,28 +22,32 @@ public class TestRepository : ITestRepository
         return test;
     }
 
-    public async Task<Test> GetTestAsync(int? id)
+    public async Task<Test> GetTestAsync(int? id, string currentUserId)
     {
         return await _dbContext.Tests
             .Include(test => test.Questions)
             .ThenInclude(question => question.Answers)
+            .Where(t => t.AuthorId == currentUserId)
             .FirstOrDefaultAsync(test => test.TestId == id);
     }
 
-    public async Task<List<Test>> GetTestsAsync()
+    public async Task<List<Test>> GetTestsAsync(string currentUserId)
     {
-        return await _dbContext.Tests.AsNoTracking().ToListAsync();
+        return await _dbContext.Tests
+            .Where(t => t.AuthorId == currentUserId)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
-    public IQueryable<Test> GetTests(string? sortOrder, string? searchString, bool isAutoCreatedByChatGpt)
+    public IQueryable<Test> GetTests(string? sortOrder, string? searchString, bool isAutoCreatedByChatGpt, string currentUserId)
     {
         var tests = isAutoCreatedByChatGpt
-            ? _dbContext.Tests.AsNoTracking().Where(t => t.IsAutoCreatedByChatGpt).Select(t => t)
-            : _dbContext.Tests.AsNoTracking().Where(t => !t.IsAutoCreatedByChatGpt).Select(t => t);
+            ? _dbContext.Tests.AsNoTracking().Where(t => t.IsAutoCreatedByChatGpt && t.AuthorId == currentUserId).Select(t => t)
+            : _dbContext.Tests.AsNoTracking().Where(t => !t.IsAutoCreatedByChatGpt && t.AuthorId == currentUserId).Select(t => t);
 
         if (!string.IsNullOrEmpty(searchString))
         {
-            tests = tests.Where(t => t.Name.Contains(searchString));
+            tests = tests.Where(t => t.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
         }
 
         tests = sortOrder switch
@@ -57,11 +61,12 @@ public class TestRepository : ITestRepository
         return tests.AsNoTracking();
     }
 
-    public async Task<bool> UpdateTestAsync(Test updatedTest)
+    public async Task<bool> UpdateTestAsync(Test updatedTest, string currentUserId)
     {
         var oldTest = await _dbContext.Tests
             .Include(t => t.Questions)
             //.ThenInclude(q => q.Answers)
+            .Where(t => t.AuthorId == currentUserId)
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.TestId == updatedTest.TestId);
 
@@ -100,7 +105,7 @@ public class TestRepository : ITestRepository
         }
     }
 
-    public async Task<bool> DeleteTestAsync(int id, bool? deleteQuestions)
+    public async Task<bool> DeleteTestAsync(int id, bool? deleteQuestions, string currentUserId)
     {
         Test test;
 
@@ -109,6 +114,7 @@ public class TestRepository : ITestRepository
             test = await _dbContext.Tests
                 .Include(t => t.Questions)
                 .ThenInclude(q => q.Answers)
+                .Where(t => t.AuthorId == currentUserId)
                 .FirstOrDefaultAsync(t => t.TestId == id);
             
             if (test == null)

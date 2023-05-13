@@ -52,7 +52,9 @@ public class TestController : Controller
 
         ViewData["CurrentFilter"] = searchString;
 
-        var tests = _testRepository.GetTests(sortOrder, searchString, false);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var tests = _testRepository.GetTests(sortOrder, searchString, false, currentUser.Id);
 
         return View(await PaginatedList<Test>.CreateAsync(tests, pageNumber ?? 1, pageSize ?? 10));
     }
@@ -136,7 +138,9 @@ public class TestController : Controller
 
     public async Task<IActionResult> DownloadPdf(int id)
     {
-        var test = await _testRepository.GetTestAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var test = await _testRepository.GetTestAsync(id, currentUser.Id);
 
         var stream = _fileProcessor.GeneratePdf(test);
 
@@ -147,7 +151,9 @@ public class TestController : Controller
 
     public async Task<IActionResult> DownloadWord(int id)
     {
-        var test = await _testRepository.GetTestAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var test = await _testRepository.GetTestAsync(id, currentUser.Id);
 
         var stream = _fileProcessor.GenerateWord(test);
 
@@ -159,7 +165,9 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
-        var test = await _testRepository.GetTestAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var test = await _testRepository.GetTestAsync(id, currentUser.Id);
 
         return View(test);
     }
@@ -174,13 +182,11 @@ public class TestController : Controller
         }
 
         var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser != null)
-        {
-            test.Author = currentUser;
-            test.AuthorId = currentUser.Id;
-        }
 
-        await _testRepository.UpdateTestAsync(test);
+        test.Author = currentUser;
+        test.AuthorId = currentUser.Id;
+        
+        await _testRepository.UpdateTestAsync(test, currentUser.Id);
 
         _notifyService.Success("Test Updated!");
 
@@ -194,7 +200,9 @@ public class TestController : Controller
             return NotFound();
         }
 
-        var test = await _testRepository.GetTestAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var test = await _testRepository.GetTestAsync(id, currentUser.Id);
 
         return View(test);
     }
@@ -204,9 +212,11 @@ public class TestController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id, bool? deleteQuestions)
     {
-        var test = await _testRepository.GetTestAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
 
-        await _testRepository.DeleteTestAsync(test.TestId, deleteQuestions);
+        var test = await _testRepository.GetTestAsync(id, currentUser.Id);
+
+        await _testRepository.DeleteTestAsync(test.TestId, deleteQuestions, currentUser.Id);
 
         _notifyService.Success("Test Deleted!");
 
@@ -216,7 +226,9 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
-        var test = await _testRepository.GetTestAsync(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var test = await _testRepository.GetTestAsync(id, currentUser.Id);
 
         return View(test);
     }

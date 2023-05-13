@@ -82,11 +82,6 @@ public class QuestionController : Controller
 
         var selectedQuestions = await _questionRepository.GetQuestionsWithoutTestIdAsync(selectedQuestionIds, currentUser.Id);
 
-        if (currentUser == null)
-        {
-            throw new Exception("User not found.");
-        }
-
         var test = new Test
         {
             Name = name,
@@ -209,10 +204,6 @@ public class QuestionController : Controller
         }
 
         var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
-            throw new Exception("User not found.");
-        }
 
         question.CreatedAt = DateTime.Now;
         question.EditedAt = DateTime.Now;
@@ -246,11 +237,9 @@ public class QuestionController : Controller
         }
 
         var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser != null)
-        {
-            question.Author = currentUser;
-            question.AuthorId = currentUser.Id;
-        }
+        
+        question.Author = currentUser;
+        question.AuthorId = currentUser.Id;
 
         await _questionRepository.UpdateQuestionAsync(question, currentUser.Id);
 
