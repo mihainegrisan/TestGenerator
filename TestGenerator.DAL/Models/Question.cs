@@ -23,4 +23,6 @@ public class Question
 
     public IdentityUser? Author { get; set; }
     public string? AuthorId { get; set; }
+
+    public List<QuestionTag>? QuestionTags { get; set; }
 }
