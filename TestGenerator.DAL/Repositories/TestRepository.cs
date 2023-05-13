@@ -65,37 +65,39 @@ public class TestRepository : ITestRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.TestId == updatedTest.TestId);
 
-        if (oldTest != null)
+        if (oldTest == null)
         {
-            updatedTest.EditedAt = DateTime.Now;
-
-            foreach (var question in updatedTest.Questions)
-            {
-                var oldQuestion = oldTest.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
-
-                if (oldQuestion != null)
-                {
-                    question.TestId = oldQuestion.TestId;
-                    question.AuthorId = oldQuestion.AuthorId;
-                    question.Author = oldQuestion.Author;
-                    question.CreatedAt = oldQuestion.CreatedAt;
-                    question.EditedAt = DateTime.Now;
-                }
-            }
-
-            try
-            {
-                _dbContext.Tests.Update(updatedTest);
-                await _dbContext.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return false;
         }
 
-        return false;
+        updatedTest.EditedAt = DateTime.Now;
+
+        foreach (var question in updatedTest.Questions)
+        {
+            var oldQuestion = oldTest.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
+
+            if (oldQuestion == null)
+            {
+                continue;
+            }
+
+            question.TestId = oldQuestion.TestId;
+            question.AuthorId = oldQuestion.AuthorId;
+            question.Author = oldQuestion.Author;
+            question.CreatedAt = oldQuestion.CreatedAt;
+            question.EditedAt = DateTime.Now;
+        }
+
+        try
+        {
+            _dbContext.Tests.Update(updatedTest);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
     }
 
     public async Task<bool> DeleteTestAsync(int id)

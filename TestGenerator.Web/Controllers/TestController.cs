@@ -171,28 +171,6 @@ public class TestController : Controller
             return View(test);
         }
 
-        var existingTest = await _testRepository.GetTestAsync(test.TestId);
-
-        existingTest.Name = test.Name;
-        existingTest.Description = test.Description;
-        existingTest.NumberOfQuestions = test.NumberOfQuestions;
-        existingTest.NumberOfAnswersPerQuestion = test.NumberOfAnswersPerQuestion;
-        existingTest.IsCreatedManually = true;
-        existingTest.IsAutoCreatedFromQuestions = false;
-        existingTest.IsAutoCreatedByChatGpt = false;
-        existingTest.CreatedAt = test.CreatedAt;
-        existingTest.EditedAt = DateTime.Now;
-
-        foreach (var question in existingTest.Questions)
-        {
-            var updatedQuestion = test.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
-
-            if (updatedQuestion != null)
-            {
-                question.QuestionText = updatedQuestion.QuestionText;
-            }
-        }
-
         var currentUser = await _userManager.GetUserAsync(User);
         if (currentUser != null)
         {
@@ -200,7 +178,7 @@ public class TestController : Controller
             test.AuthorId = currentUser.Id;
         }
 
-        await _testRepository.UpdateTestAsync(existingTest);
+        await _testRepository.UpdateTestAsync(test);
 
         _notifyService.Success("Test Updated!");
 

@@ -222,32 +222,32 @@ public class QuestionController : Controller
             return View(question);
         }
 
-        var existingQuestion = await _questionRepository.GetQuestionAsync(question.QuestionId);
+        //var existingQuestion = await _questionRepository.GetQuestionAsync(question.QuestionId);
 
-        existingQuestion.QuestionText = question.QuestionText;
-        existingQuestion.EditedAt = DateTime.Now;
+        //existingQuestion.QuestionText = question.QuestionText;
+        //existingQuestion.EditedAt = DateTime.Now;
 
-        foreach (var answer in existingQuestion.Answers)
-        {
-            var updatedAnswer = question.Answers.FirstOrDefault(a => a.AnswerId == answer.AnswerId);
+        //foreach (var answer in existingQuestion.Answers)
+        //{
+        //    var updatedAnswer = question.Answers.FirstOrDefault(a => a.AnswerId == answer.AnswerId);
 
-            if (updatedAnswer == null)
-            {
-                continue;
-            }
+        //    if (updatedAnswer == null)
+        //    {
+        //        continue;
+        //    }
 
-            answer.AnswerText = updatedAnswer.AnswerText;
-            answer.IsCorrect = updatedAnswer.IsCorrect;
-        }
+        //    answer.AnswerText = updatedAnswer.AnswerText;
+        //    answer.IsCorrect = updatedAnswer.IsCorrect;
+        //}
 
         var currentUser = await _userManager.GetUserAsync(User);
         if (currentUser != null)
         {
-            existingQuestion.Author = currentUser;
-            existingQuestion.AuthorId = currentUser.Id;
+            question.Author = currentUser;
+            question.AuthorId = currentUser.Id;
         }
 
-        await _questionRepository.UpdateQuestionAsync(existingQuestion);
+        await _questionRepository.UpdateQuestionAsync(question);
 
         _notifyService.Success("Question Updated!");
 

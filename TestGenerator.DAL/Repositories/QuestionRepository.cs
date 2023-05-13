@@ -99,13 +99,31 @@ public class QuestionRepository : IQuestionRepository
     }
 
 
-    public async Task<Question> UpdateQuestionAsync(Question question)
+    public async Task<bool> UpdateQuestionAsync(Question updatedQuestion)
     {
-        _dbContext.Entry(question).State = EntityState.Modified;
+        var oldQuestion = await _dbContext.Questions
+            .Include(q => q.Answers)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(q => q.QuestionId == updatedQuestion.QuestionId);
 
-        await _dbContext.SaveChangesAsync();
+        if (oldQuestion == null)
+        {
+            return false;
+        }
 
-        return question;
+        updatedQuestion.TestId = oldQuestion.TestId;
+        updatedQuestion.EditedAt = DateTime.Now;
+
+        try
+        {
+            _dbContext.Questions.Update(updatedQuestion);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
     }
 
     public async Task<bool> DeleteQuestionAsync(int id)

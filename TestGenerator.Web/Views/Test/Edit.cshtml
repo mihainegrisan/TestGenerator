@@ -6,7 +6,12 @@
 {
     @Html.AntiForgeryToken()
 
-    <input type="hidden" asp-for="TestId"/>
+    @Html.HiddenFor(model => model.TestId)
+    @Html.HiddenFor(model => model.IsCreatedManually)
+    @Html.HiddenFor(model => model.IsAutoCreatedFromQuestions)
+    @Html.HiddenFor(model => model.IsAutoCreatedByChatGpt)
+    @Html.HiddenFor(model => model.Author)
+    @Html.HiddenFor(model => model.AuthorId)
 
     <div class="form-floating mb-3">
       @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Name" } })
@@ -42,6 +47,9 @@
 
     @for (var i = 0; i < Model.NumberOfQuestions; i++)
     {
+      @Html.HiddenFor(model => model.Questions[i].QuestionId)
+      @Html.HiddenFor(model => model.AuthorId)
+
         <div class="row mb-3 mt-5">
           <label asp-for="@Model.Questions[i].QuestionText" class="col-sm-1 col-form-label fw-bold">Question @(i + 1)</label>
           <div class="col-sm-11">
@@ -52,6 +60,8 @@
 
         @for (var j = 0; j < Model.Questions[i].Answers.Count; j++)
         {
+          @Html.HiddenFor(model => model.Questions[i].Answers[j].AnswerId)
+
             var answerLabel = (char)(97 + j) + ")";
 
             <div class="row mb-3 align-middle">

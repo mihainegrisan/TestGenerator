@@ -16,7 +16,7 @@ public interface IQuestionRepository
 
     Task<List<Question>> GetQuestionsWithoutTestIdAsync(int numberOfQuestions);
 
-    Task<Question> UpdateQuestionAsync(Question question);
+    Task<bool> UpdateQuestionAsync(Question question);
 
     Task<bool> DeleteQuestionAsync(int id);
 }
