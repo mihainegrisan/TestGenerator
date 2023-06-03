@@ -42,11 +42,11 @@ public class ChatGptClient : IChatGptClient
 		d) No, only audio content
 		Answer: b) Yes, any type of content".
 
-		The Questions will always be separated by a new line. You only ever respond with the questions, answers and the correct answer. You do not say anything else. Also the number of questions and answers will differ from test to test. It's up to you to extract the questions and answers from the paragraph but you must return the exact number of questions and answers that the user asked for.
+		The Questions will always be separated by a new line. You only ever respond with the questions, answers, and the correct answer. You do not say anything else. Also, the number of questions and answers will differ from test to test. It's up to you to extract the questions and answers from the paragraph but you must return the exact number of questions and answers per question that the user asked for. Please respect the number of answers per question. The previous example is just an example of how the conversation will go.
 		""");
 
         chat.AppendUserInput(
-            $"""Extract {test.NumberOfQuestions} questions and {test.NumberOfAnswersPerQuestion} answers per question with only one correct answer from the next paragraph: "{message}". You must respect the number of questions and answers per question requested.""");
+            $"""Extract {test.NumberOfQuestions} questions and {test.NumberOfAnswersPerQuestion} answers per question with only one correct answer from the next paragraph: "{message}". You must respect the number of questions and answers per question requested. Remember, I need {test.NumberOfQuestions} questions and {test.NumberOfAnswersPerQuestion} answers per question!""");
 
         var response = await chat.GetResponseFromChatbotAsync();
 

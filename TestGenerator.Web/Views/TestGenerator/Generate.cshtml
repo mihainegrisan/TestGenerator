@@ -10,6 +10,11 @@
 
 <div class="d-flex justify-content-center row">
   <form class="form-width-percent" asp-action="Generate" asp-controller="TestGenerator" method="post" enctype="multipart/form-data">
+    @if (TempData.ContainsKey("ErrorMessage"))
+    {
+      <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+    }
+
     <div class="form-floating mb-3">
       <input asp-for="Name" class="form-control" placeholder="Name"/>
       <label asp-for="Name">Name</label>

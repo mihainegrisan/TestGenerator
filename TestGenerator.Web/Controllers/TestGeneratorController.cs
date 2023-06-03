@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using TestGenerator.DAL.Models;
 using TestGenerator.DAL.Repositories;
 using TestGenerator.Web.Services;
@@ -80,7 +81,16 @@ public class TestGeneratorController : Controller
 
         var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
 
-        var responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
+        string responseMessage;
+        try
+        {
+            responseMessage = await _chatGptClient.SendChatMessage(test, chatMessage);
+        }
+        catch (Exception e)
+        {
+            TempData["ErrorMessage"] = _fileProcessor.GetErrorMessageFromString(e.Message);
+            return View(test);
+        }
 
         _chatGptClient.PopulateTestWithApiResponse(test, responseMessage);
 

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Text.Json;
 using Spire.Doc;
 using Spire.Pdf;
 using Spire.Pdf.Graphics;
@@ -72,41 +73,67 @@ public class FileProcessor : IFileProcessor
 
     public MemoryStream GeneratePdf(Test test)
     {
-        // Create a new PDF document
         var pdfDoc = new PdfDocument();
-
-        // Add a new page to the document
         var page = pdfDoc.Pages.Add();
 
-        // Create a PDF brush for text color
         var brush = new PdfSolidBrush(Color.Black);
-
-        // Create a PDF font for text formatting
         var font = new PdfTrueTypeFont(new Font("Arial", 14f), true);
 
         // Set the starting y-coordinate for the text
         var y = 50f;
 
+        // Set the text formatting options for wrapping
+        var format = new PdfStringFormat
+        {
+            LineAlignment = PdfVerticalAlignment.Top,
+            Alignment = PdfTextAlignment.Left,
+            WordWrap = PdfWordWrapType.Word
+        };
+
         // Add the test name to the PDF
-        page.Canvas.DrawString("Test Name: " + test.Name, font, brush, 50, y);
-        y += 20f;
+        var testNameSize = font.MeasureString("Test Name: " + test.Name, page.GetClientSize().Width - 100, format);
+        if (y + testNameSize.Height > page.GetClientSize().Height)
+        {
+            page = pdfDoc.Pages.Add();
+            y = 50f;
+        }
+        page.Canvas.DrawString("Test Name: " + test.Name, font, brush, new RectangleF(50, y, page.GetClientSize().Width - 100, testNameSize.Height), format);
+        y += testNameSize.Height + 20f;
 
         // Add the test description to the PDF
-        page.Canvas.DrawString("Test Description: " + test.Description, font, brush, 50, y);
-        y += 40f;
+        var testDescriptionSize = font.MeasureString("Test Description: " + test.Description, page.GetClientSize().Width - 100, format);
+        if (y + testDescriptionSize.Height > page.GetClientSize().Height)
+        {
+            page = pdfDoc.Pages.Add();
+            y = 50f;
+        }
+        page.Canvas.DrawString("Test Description: " + test.Description, font, brush, new RectangleF(50, y, page.GetClientSize().Width - 100, testDescriptionSize.Height), format);
+        y += testDescriptionSize.Height + 40f;
 
         // Loop through each question in the test
         for (var i = 0; i < test.Questions.Count; i++)
         {
             // Add the question text to the PDF
-            page.Canvas.DrawString($"Question {i + 1}: {test.Questions[i].QuestionText}", font, brush, 50, y);
-            y += 20f;
+            var questionTextSize = font.MeasureString($"Question {i + 1}: {test.Questions[i].QuestionText}", page.GetClientSize().Width - 100, format);
+            if (y + questionTextSize.Height > page.GetClientSize().Height)
+            {
+                page = pdfDoc.Pages.Add();
+                y = 50f;
+            }
+            page.Canvas.DrawString($"Question {i + 1}: {test.Questions[i].QuestionText}", font, brush, new RectangleF(50, y, page.GetClientSize().Width - 100, questionTextSize.Height), format);
+            y += questionTextSize.Height + 20f;
 
             // Loop through each answer in the question
             for (var j = 0; j < test.Questions[i].Answers.Count; j++)
             {
                 // Add the answer text to the PDF
-                page.Canvas.DrawString($"{(char)(97 + j) + ")"} {test.Questions[i].Answers[j].AnswerText}", font, brush, 70, y);
+                var answerTextSize = font.MeasureString($"{(char)(97 + j) + ")"} {test.Questions[i].Answers[j].AnswerText}", page.GetClientSize().Width - 120, format);
+                if (y + answerTextSize.Height > page.GetClientSize().Height)
+                {
+                    page = pdfDoc.Pages.Add();
+                    y = 50f;
+                }
+                page.Canvas.DrawString($"{(char)(97 + j) + ")"} {test.Questions[i].Answers[j].AnswerText}", font, brush, new RectangleF(70, y, page.GetClientSize().Width - 120, answerTextSize.Height), format);
 
                 // If the answer is correct, mark it as correct in the PDF
                 if (test.Questions[i].Answers[j].IsCorrect)
@@ -114,7 +141,7 @@ public class FileProcessor : IFileProcessor
                     page.Canvas.DrawString("✔", font, brush, 50, y);
                 }
 
-                y += 20f;
+                y += answerTextSize.Height + 20f;
             }
 
             // Add some space between questions
@@ -126,12 +153,31 @@ public class FileProcessor : IFileProcessor
         pdfDoc.SaveToStream(stream);
 
         // Dispose of the PDF document
-        pdfDoc.Dispose();
+        pdfDoc.Close();
 
         // Reset the memory stream position to the beginning
         stream.Position = 0;
 
         return stream;
+    }
+
+
+    public string GetErrorMessageFromString(string input)
+    {
+        string message = string.Empty;
+
+        int startIndex = input.IndexOf("\"message\": \"");
+        if (startIndex != -1)
+        {
+            startIndex += "\"message\": \"".Length;
+            int endIndex = input.IndexOf("\"", startIndex);
+            if (endIndex != -1)
+            {
+                message = input.Substring(startIndex, endIndex - startIndex);
+            }
+        }
+
+        return message;
     }
 
     public MemoryStream GenerateWord(Test test)
