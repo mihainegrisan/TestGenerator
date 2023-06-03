@@ -39,11 +39,21 @@ public class TestRepository : ITestRepository
             .ToListAsync();
     }
 
-    public IQueryable<Test> GetTests(string? sortOrder, string? searchString, bool isAutoCreatedByChatGpt, string currentUserId)
+    public IQueryable<Test> GetTests(
+        string? sortOrder,
+        string? searchString,
+        bool isAutoCreatedByChatGpt,
+        string currentUserId)
     {
         var tests = isAutoCreatedByChatGpt
-            ? _dbContext.Tests.AsNoTracking().Where(t => t.IsAutoCreatedByChatGpt && t.AuthorId == currentUserId).Select(t => t)
-            : _dbContext.Tests.AsNoTracking().Where(t => !t.IsAutoCreatedByChatGpt && t.AuthorId == currentUserId).Select(t => t);
+            ? _dbContext.Tests
+                .AsNoTracking()
+                .Where(t => t.IsAutoCreatedByChatGpt && t.AuthorId == currentUserId)
+                .Select(t => t)
+            : _dbContext.Tests
+                .AsNoTracking()
+                .Where(t => !t.IsAutoCreatedByChatGpt && t.AuthorId == currentUserId)
+                .Select(t => t);
 
         if (!string.IsNullOrEmpty(searchString))
         {

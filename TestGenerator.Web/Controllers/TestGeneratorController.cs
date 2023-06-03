@@ -106,8 +106,6 @@ public class TestGeneratorController : Controller
             return View(test);
         }
 
-        var chatMessage = await _fileProcessor.GetTextFromFileAsync(file);
-
         var responseMessage =
             "1. What is the Factory Method Pattern?\r\na) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\nb) A pattern that uses an interface for creating families of related objects without specifying their concrete classes\r\nc) A pattern that allows you to build complex objects by using a step-by-step approach\r\nd) None of the above\r\nAnswer: a) A pattern that defines an interface for object creation and leaves the instantiation to a subclass\r\n\r\n2. What is the purpose of the Abstract Factory Pattern?\r\na) To decouple code\r\nb) To build complex objects by using a step-by-step approach\r\nc) To enforce the use of related objects together\r\nd) None of the above\r\nAnswer: c) To enforce the use of related objects together\r\n\r\n3. How does the Builder pattern help control object creation?\r\na) By using an interface for object creation and leaving the instantiation to a subclass\r\nb) By using an interface for creating families of related objects without specifying their concrete classes\r\nc) By using a step-by-step approach\r\nd) None of the above\r\nAnswer: c) By using a step-by-step approach";
 
@@ -214,33 +212,19 @@ public class TestGeneratorController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> GenerateTest(Test test)
     {
-        //bool isUploaded = await _fileProcessor.UploadFile(file);
-
-        //if (!isUploaded)
-        //{
-        //  return View();
-        //}
-
-        //TempData["Message"] = "File uploaded successfully";
-        // From now on, work with the saved file
-
         if (!ModelState.IsValid)
         {
             return View(test);
         }
 
         var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser != null)
-        {
-            test.Author = currentUser;
-            test.AuthorId = currentUser.Id;
-            test.CreatedAt = DateTime.Now;
-            test.EditedAt = DateTime.Now;
-        }
-        else
-        {
-            throw new Exception("User not found.");
-        }
+        test.Author = currentUser;
+        test.AuthorId = currentUser.Id;
+        test.CreatedAt = DateTime.Now;
+        test.EditedAt = DateTime.Now;
+        test.IsCreatedManually = false;
+        test.IsAutoCreatedFromQuestions = false;
+        test.IsAutoCreatedByChatGpt = true;
 
         foreach (var question in test.Questions)
         {
@@ -249,10 +233,6 @@ public class TestGeneratorController : Controller
             question.Author = currentUser;
             question.AuthorId = currentUser.Id;
         }
-
-        test.IsCreatedManually = false;
-        test.IsAutoCreatedFromQuestions = false;
-        test.IsAutoCreatedByChatGpt = true;
 
         await _testRepository.AddTestAsync(test);
 
