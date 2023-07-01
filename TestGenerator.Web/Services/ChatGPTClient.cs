@@ -55,7 +55,7 @@ public class ChatGptClient : IChatGptClient
 
     public Test PopulateTestWithApiResponse(Test test, string responseMessage)
     {
-        var questionStrings = responseMessage.Split(new[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+        var questionStrings = responseMessage.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
 
         test.Questions = new List<Question>();
 
@@ -65,12 +65,12 @@ public class ChatGptClient : IChatGptClient
 
             var questionText = GetQuestionText(questionString);
 
-            var answerStartIndex = questionString.IndexOf("\r\na)", StringComparison.Ordinal) + 2;
+            var answerStartIndex = questionString.IndexOf("\na)", StringComparison.Ordinal) + 1;
 
             var options = GetOptions(questionString, answerStartIndex);
 
             // Get answer text and set IsCorrect flag
-            var answerParts = questionString.Substring(answerStartIndex).Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var answerParts = questionString.Substring(answerStartIndex).Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             var startIndex = answerParts[options.Count].IndexOf(' ') + 1; // +1 to skip the space after "Answer:"
             var length = answerParts[options.Count].IndexOf(')') - startIndex + 1; // +1 to take the ")" after the letter "a)"
@@ -83,12 +83,12 @@ public class ChatGptClient : IChatGptClient
             for (var i = 0; i < options.Count; i++)
             {
                 var optionText = questionString.Substring(questionString.IndexOf(options[i], StringComparison.Ordinal) + options[i].Length).Trim();
-                optionText = optionText.Substring(0, optionText.IndexOf("\r\n", StringComparison.Ordinal)).Trim();
+                optionText = optionText.Substring(0, optionText.IndexOf("\n", StringComparison.Ordinal)).Trim();
                 var isCorrect = i == correctAnswerIndex;
                 question.Answers.Add(new Answer { AnswerText = optionText, IsCorrect = isCorrect });
             }
 
-            question.QuestionText = questionText.Substring(0, questionText.IndexOf("\r\n", StringComparison.Ordinal)).Trim();
+            question.QuestionText = questionText.Substring(0, questionText.IndexOf("\n", StringComparison.Ordinal)).Trim();
 
             test.Questions.Add(question);
         }
