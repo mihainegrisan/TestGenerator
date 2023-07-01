@@ -49,7 +49,7 @@
 
     @for (var j = 0; j < numberOfAnswersPerQuestion; j++)
     {
-      var answerLabel = j == 0 ? $"Correct Answer {j + 1}" : $"Answer {j + 1}";
+      var answerLabel = $"Answer {j + 1}";
 
       <div class="row mb-3 align-middle">
         <label asp-for="Questions[i].Answers[j].AnswerText" class="col-sm-2 col-form-label text-end">@answerLabel</label>

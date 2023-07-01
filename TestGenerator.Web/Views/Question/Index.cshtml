@@ -110,13 +110,13 @@
               var controllerName = questionTestVM.Test.IsAutoCreatedByChatGpt ? "TestGenerator" : "Test";
 
               <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@questionTestVM.Test.Name">
-                <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-controller="@controllerName" asp-route-id="@questionTestVM.Test.TestId">@Html.DisplayFor(modelItem => questionTestVM.Test.Name)</a>
+                  <a class="text-dark d-inline-block text-truncate" style="max-width: 200px;" asp-action="Details" asp-controller="@controllerName" asp-route-id="@questionTestVM.Test.TestId">@Html.DisplayFor(modelItem => questionTestVM.Test.Name)</a>
               </span>
             }
           </td>
           <td>
             <span class="d-inline-block popup" tabindex="0" data-bs-placement="right" data-bs-trigger="hover focus" data-bs-toggle="popover" data-bs-content="@questionTestVM.Question.QuestionText">
-              <a class="text-dark text-truncate" style="max-width: 200px;" asp-action="Details" asp-route-id="@questionTestVM.Question.QuestionId">@Html.DisplayFor(modelItem => questionTestVM.Question.QuestionText)</a>
+                <a class="text-dark d-inline-block text-truncate" style="max-width: 350px;" asp-action="Details" asp-route-id="@questionTestVM.Question.QuestionId">@Html.DisplayFor(modelItem => questionTestVM.Question.QuestionText)</a>
             </span>
           </td>
           <td class="text-center">
