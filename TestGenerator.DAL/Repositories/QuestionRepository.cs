@@ -64,7 +64,7 @@ public class QuestionRepository : IQuestionRepository
 
         if (!string.IsNullOrEmpty(searchString))
         {
-            questionViewModels = questionViewModels.Where(q => q.Question.QuestionText.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+            questionViewModels = questionViewModels.Where(q => q.Question.QuestionText.Contains(searchString));
 
             // search by test name
             //if (!questionViewModels.Any())

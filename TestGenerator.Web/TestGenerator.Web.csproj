@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Uploaded\**" />
+    <Content Remove="Uploaded\**" />
+    <EmbeddedResource Remove="Uploaded\**" />
+    <None Remove="Uploaded\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
@@ -30,11 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestGenerator.DAL\TestGenerator.DAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Uploaded\" />
-    <Folder Include="Uploaded\" />
   </ItemGroup>
 
 </Project>

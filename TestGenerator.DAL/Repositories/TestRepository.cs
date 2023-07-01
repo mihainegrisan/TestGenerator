@@ -57,7 +57,7 @@ public class TestRepository : ITestRepository
 
         if (!string.IsNullOrEmpty(searchString))
         {
-            tests = tests.Where(t => t.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+            tests = tests.Where(t => t.Name.Contains(searchString));
         }
 
         tests = sortOrder switch
